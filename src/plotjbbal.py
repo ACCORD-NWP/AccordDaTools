@@ -289,8 +289,8 @@ def main(argv) :
   parser.add_argument('-lloc',dest="lloc",help='Legend location using matplotlib syntax',default=None,required=False)
   parser.add_argument('-d',dest="labels",help='Optional experiment description',default=None,required=False)
   parser.add_argument('-t',dest="type",help='Type of plot',default='stdv',required=False,choices=['stdv','evar_ver','evar_hor'])
-  parser.add_argument('-p',dest="par",help='Parameter',default='PP',required=False,choices=['PP','DD','QQ','TT'])
-  parser.add_argument('-r',dest="rpath",help='Path to data. Default is ./diag_EXP',default='./diag_',required=False)
+  parser.add_argument('-p',dest="par",help='Parameter to plot',default='TT',required=False,choices=['PP','DD','QQ','TT'])
+  parser.add_argument('-r',dest="rpath",help='Path to data. Default is ./diag_',default='./diag_',required=False)
   parser.add_argument('-e',dest="exps",help='Experiments separated by :',required=True)
   parser.add_argument('-b',action='store_true',help='Batch mode, produced png only',default=False,required=False)
   parser.add_argument('-s',action='store_true',help='Split by stat, else by exp. Only for evar_ver',default='False',required=False)
@@ -300,6 +300,11 @@ def main(argv) :
         sys.exit(1)
 
   args = parser.parse_args()
+
+  if args.par not in parfile[args.type] :
+   print(parname[args.par],"not available for",args.type)
+   sys.exit(0)
+
   if args.labels is not None :
    labels = args.labels.split(':')
   else :

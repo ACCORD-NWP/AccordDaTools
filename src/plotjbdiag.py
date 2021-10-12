@@ -8,6 +8,7 @@ global parname,expmap
 
 parname = { 'TT':'unbalanced temperature',
             'PP':'vorticity',
+            'DD':'divergence',
             'QQ':'unbalanced humidity'
           }
 
@@ -112,8 +113,8 @@ def main(argv) :
   parser.add_argument('-l',dest="lev",help='Level',default=65,required=False)
   parser.add_argument('-d',dest="labels",help='Optional experiment description',default=None,required=False)
   parser.add_argument('-t',dest="type",help='Type of plot',default='spdens',required=False,choices=['spdens','vercor'])
-  parser.add_argument('-p',dest="par",help='Parameter',default='PP',required=False,choices=['PP','DD','QQ','TT'])
-  parser.add_argument('-r',dest="rpath",help='Path to data. Default is ./diag_EXP',default='./diag_',required=False)
+  parser.add_argument('-p',dest="par",help='Parameter to plot',default='PP',required=False,choices=['PP','DD','QQ','TT'])
+  parser.add_argument('-r',dest="rpath",help='Path to data. Default is ./diag_',default='./diag_',required=False)
   parser.add_argument('-e',dest="exps",help='Experiments separated by :',required=True)
   parser.add_argument('-a',dest="range",help='Axis range separated by :',required=False,default=None)
   parser.add_argument('-b',action='store_true',help='Batch mode, produced png only',default=False,required=False)
