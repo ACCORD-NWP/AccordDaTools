@@ -24,6 +24,9 @@ file(GLOB_RECURSE sources  src/*.F90 src/*.h)
 add_executable(jbdiagnose.x ${sources})
 
 # install executables and scripts
-install (TARGETS ${EXECUTABLES} 
+install (TARGETS jbdiagnose.x
          PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
-         DESTINATION bin)
+         DESTINATION libexec)
+
+add_subdirectory (scripts)
+add_subdirectory (share)

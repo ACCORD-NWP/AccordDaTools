@@ -274,7 +274,7 @@
 !
       do jk=1,nflevg
          write(fnspdens,1000)jk
- 1000    format('diag/spdensPP',i2.2)
+ 1000    format('diag_spdensPP',i2.2)
          open(unit=50,file=fnspdens,form='formatted')
          do jn=1,nsmax_jb_in
             write(50,*)jn,&
@@ -288,7 +288,7 @@
 !
       do jk=1,nflevg
          write(fnspdens,1001)jk
- 1001    format('diag/spdensDD',i2.2)
+ 1001    format('diag_spdensDD',i2.2)
          open(unit=50,file=fnspdens,form='formatted')
          do jn=1,nsmax_jb_in
             write(50,*)jn,&
@@ -302,7 +302,7 @@
 !
       do jk=1,nflevg
          write(fnspdens,1002)jk
- 1002    format('diag/spdensTT',i2.2)
+ 1002    format('diag_spdensTT',i2.2)
          open(unit=50,file=fnspdens,form='formatted')
          do jn=1,nsmax_jb_in
             write(50,*)jn,&
@@ -315,7 +315,7 @@
 ! Surface pressure
 !
       write(fnspdens,1003)
- 1003 format('diag/spdensSUPS')
+ 1003 format('diag_spdensSUPS')
       open(unit=50,file=fnspdens,form='formatted')
       do jn=1,nsmax_jb_in
          write(50,*)jn,&
@@ -328,7 +328,7 @@
 !
       do jk=1,nflevg
          write(fnspdens,1004)jk
- 1004    format('diag/spdensQQ',i2.2)
+ 1004    format('diag_spdensQQ',i2.2)
          open(unit=50,file=fnspdens,form='formatted')
          do jn=1,nsmax_jb_in
             write(50,*)jn,&
@@ -344,7 +344,7 @@
 !
       do jk=1,nflevg
          write(fnspdens,1010)jk
- 1010    format('diag/vercorPP',i2.2)
+ 1010    format('diag_vercorPP',i2.2)
          open(unit=50,file=fnspdens,form='formatted')
          do jj=1,nflevg
             zsumcov = 0.
@@ -366,7 +366,7 @@
 !
       do jk=1,nflevg
          write(fnspdens,1011)jk
- 1011    format('diag/vercorDD',i2.2)
+ 1011    format('diag_vercorDD',i2.2)
          open(unit=50,file=fnspdens,form='formatted')
          do jj=1,nflevg
             zsumcov = 0.
@@ -388,7 +388,7 @@
 !
       do jk=1,nflevg
          write(fnspdens,1012)jk
- 1012    format('diag/vercorTT',i2.2)
+ 1012    format('diag_vercorTT',i2.2)
          open(unit=50,file=fnspdens,form='formatted')
          do jj=1,nflevg
             zsumcov = 0.
@@ -410,7 +410,7 @@
 !
       do jk=1,nflevg
          write(fnspdens,1013)jk
- 1013    format('diag/vercorQQ',i2.2)
+ 1013    format('diag_vercorQQ',i2.2)
          open(unit=50,file=fnspdens,form='formatted')
          do jj=1,nflevg
             zsumcov = 0.
@@ -840,7 +840,7 @@
 !
 !   Control variable standard deviations
 !
-      open(unit=50,file='diag/stand_devs',form='formatted')
+      open(unit=50,file='diag_stand_devs',form='formatted')
       do jj=1,nflevg
          write(50,4444) jj,&
                   &     pfull_nl(jj),&
@@ -854,7 +854,7 @@
 !
 !   Divergence wave number dependence
 !
-      open(unit=50,file='diag/bal_wn_div',form='formatted')
+      open(unit=50,file='diag_bal_wn_div',form='formatted')
       do jn=1,nsmax_jb_in
          write(50,5880)jn,&
               &  gsize_in*float(max(nlon_in,nlat_in))/1000./float(jn),&
@@ -865,7 +865,7 @@
 !
 !   Divergence level dependence
 !
-      open(unit=50,file='diag/baloperdiv',form='formatted')
+      open(unit=50,file='diag_baloperdiv',form='formatted')
       do jj=1,nflevg
          write(50,5900)jj,pfull_nl(jj),&
                      &   sqrt(ave_var_div_total(jj)),&
@@ -878,7 +878,7 @@
 !
 !   Temperature and surface pressure wave number dependence
 !
-      open(unit=50,file='diag/bal_wn_tps',form='formatted')
+      open(unit=50,file='diag_bal_wn_tps',form='formatted')
       do jn=1,nsmax_jb_in
          write(50,5940)jn,&
               &  gsize_in*float(max(nlon_in,nlat_in))/1000./float(jn),&
@@ -890,7 +890,7 @@
 !
 !   Temperature and surface pressure level dependence
 !
-      open(unit=50,file='diag/balopertps',form='formatted')
+      open(unit=50,file='diag_balopertps',form='formatted')
       do jj=1,nflevg
          write(50,5950)jj,pfull_nl(jj),&
                      &   sqrt(ave_var_tps_total(jj)),&
@@ -905,7 +905,7 @@
 !
 !   Humidity wave number dependence
 !
-      open(unit=50,file='diag/bal_wn_hum',form='formatted')
+      open(unit=50,file='diag_bal_wn_hum',form='formatted')
       do jn=1,nsmax_jb_in
          write(50,5960)jn,&
               &  gsize_in*float(max(nlon_in,nlat_in))/1000./float(jn),&
@@ -918,7 +918,7 @@
 !
 !   Humidity level dependence
 !
-      open(unit=50,file='diag/baloperhum',form='formatted')
+      open(unit=50,file='diag_baloperhum',form='formatted')
       do jj=1,nflevg
          write(50,6000)jj,pfull_nl(jj),&
                      &   sqrt(ave_var_hum_total(jj)),&
