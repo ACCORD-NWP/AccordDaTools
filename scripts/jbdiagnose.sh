@@ -19,7 +19,7 @@ ${bold}NAME${normal}
 
 ${bold}USAGE${normal}
         ${PROGNAME} -b <bal-file> -c <cv-file> -g <grid-spacing>
-                    -l <level-definition> [-L] [ -h ]
+                    -l <level-definition> [-e <exp-name>] [-L] [ -h ]
 
 ${bold}DESCRIPTION${normal}
         Script to start new LBC processing suite
@@ -37,6 +37,10 @@ ${bold}OPTIONS${normal}
         -l ${unline}level-definition${normal}
            Level definition (A's and B's) 
         
+        -e ${unline}exp-name${normal}
+           Experiment name for Jb files. Statistic files will be written to a
+           directory with name supplied
+
         -L List available level definitions
         
         -h Help! Print usage information.
@@ -45,10 +49,10 @@ USAGE
 }
 
 BALFILE=DUMMY
-CVILE=DUMMY
+CVFILE=DUMMY
 GRIDSIZE=DUMMY
 LEVELDEF=DUMMY
-
+EXPNAME=jbdiag
 #
 # Where am I?
 #
@@ -65,7 +69,7 @@ if [ ${#} -eq 0 ]; then
   exit 1
 fi
 
-while getopts b:c:g:l:Lh option
+while getopts b:c:g:l:e:Lh option
 do
   case $option in
     b)
@@ -79,6 +83,9 @@ do
        ;;
     l)
        LEVELDEF=$OPTARG
+       ;;
+    e)
+       EXPNAME=$OPTARG
        ;;
     L)
        echo
@@ -149,6 +156,24 @@ ln ${BALFILE} stabal96.bal
 ln ${CVFILE}  stabal96.cv
 
 ${exedir}/jbdiagnose.x < jbconv.nam
+
+if [ -d ${EXPNAME} ]; then
+  echo "${EXPNAME} already exists. Please choose another experiemnt name"
+else
+  mkdir $EXPNAME
+  mv baloperdiv baloperhum balopertps baloperuv bal_wn_div bal_wn_hum bal_wn_tps ${EXPNAME}/
+  mv stand_devs ${EXPNAME}/
+  mv spdensSUPS ${EXPNAME}/
+  mv spdensDD* ${EXPNAME}/
+  mv spdensPP* ${EXPNAME}/
+  mv spdensQQ* ${EXPNAME}/
+  mv spdensTT* ${EXPNAME}/
+  mv spdensUV* ${EXPNAME}/
+  mv vercorDD* ${EXPNAME}/
+  mv vercorPP* ${EXPNAME}/
+  mv vercorQQ* ${EXPNAME}/
+  mv vercorTT* ${EXPNAME}/
+fi
 
 rm -f stabal96.cv
 rm -f stabal96.bal
