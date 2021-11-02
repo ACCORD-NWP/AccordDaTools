@@ -57,6 +57,10 @@
       real(kind=8),allocatable :: var_hum_bal_tps(:,:)
       real(kind=8),allocatable :: var_hum_u(:,:)
       real(kind=8),allocatable :: var_hum_total(:,:)
+      real(kind=8),allocatable :: var_uv_vor(:,:)
+      real(kind=8),allocatable :: var_uv_div_bal(:,:)
+      real(kind=8),allocatable :: var_uv_div_u(:,:)
+      real(kind=8),allocatable :: var_uv_total(:,:)
 !
       real(kind=8),allocatable :: ave_var_vor(:)
       real(kind=8),allocatable :: ave_var_ppp(:)
@@ -72,6 +76,10 @@
       real(kind=8),allocatable :: ave_var_hum_bal_tps(:)
       real(kind=8),allocatable :: ave_var_hum_u(:)
       real(kind=8),allocatable :: ave_var_hum_total(:)
+      real(kind=8),allocatable :: ave_var_uv_vor(:)
+      real(kind=8),allocatable :: ave_var_uv_div_bal(:)
+      real(kind=8),allocatable :: ave_var_uv_div_u(:)
+      real(kind=8),allocatable :: ave_var_uv_total(:)
 !
 !   Percentages of explained variances as functions of vertical level
 !
@@ -102,7 +110,7 @@
       integer(kind=4),allocatable :: isorel2_in(:),isodor2_in(:)
       integer(kind=4)   ::   ispec2_in,iii 
       character ::  fnspdens*15
-      real(kind=8)      :: zsumcov,zsumvar1,zsumvar2
+      real(kind=8)      :: zsumcov,zsumvar1,zsumvar2,pi,zscale
 !
 !   Initialize some work variables
 !
@@ -110,6 +118,7 @@
       nuljb_in=10
       nulout=06
       nulnam=05
+      pi=atan(1.)*4.
 !
 !   Read namelist
 !
@@ -651,6 +660,10 @@
       allocate(var_hum_bal_tps(nflevg,0:nsmax_jb_in))
       allocate(var_hum_u(nflevg,0:nsmax_jb_in))
       allocate(var_hum_total(nflevg,0:nsmax_jb_in))
+      allocate(var_uv_vor(nflevg,0:nsmax_jb_in))
+      allocate(var_uv_div_bal(nflevg,0:nsmax_jb_in))
+      allocate(var_uv_div_u(nflevg,0:nsmax_jb_in))
+      allocate(var_uv_total(nflevg,0:nsmax_jb_in))
 !
       allocate(ave_var_vor(nflevg))
       allocate(ave_var_ppp(nflevg))
@@ -666,6 +679,10 @@
       allocate(ave_var_hum_bal_tps(nflevg))
       allocate(ave_var_hum_u(nflevg))
       allocate(ave_var_hum_total(nflevg))
+      allocate(ave_var_uv_vor(nflevg))
+      allocate(ave_var_uv_div_bal(nflevg))
+      allocate(ave_var_uv_div_u(nflevg))
+      allocate(ave_var_uv_total(nflevg))
 !
       var_vor(:,:)  = 0.
       var_ppp(:,:)  = 0.
@@ -681,6 +698,10 @@
       var_hum_bal_tps(:,:)  = 0.
       var_hum_u(:,:)  = 0.
       var_hum_total(:,:)  = 0.
+      var_uv_vor(:,:) = 0.
+      var_uv_div_bal(:,:) = 0.
+      var_uv_div_u(:,:) = 0.
+      var_uv_total(:,:) = 0.
 !
 !   Calculate covariance of linearized geopotential
 !
@@ -697,6 +718,7 @@
 !   Calculate the different contributions to the variances
 !
       do jn=1,nsmax_jb_in
+         zscale = (2.*pi*float(jn))**2/lxy_in**2
          do jj=1,nflevg
             var_vor(jj,jn) = zfcovp_in(jj,jj,jn)
             var_ppp(jj,jn) = cov_ppp(jj,jj,jn)
@@ -767,6 +789,16 @@
               &                    var_hum_bal_tps(jj,jn) +&
               &                    var_hum_u(jj,jn)
          end do
+         do jj=1,nflevg
+            var_uv_vor(jj,jn)     = var_vor(jj,jn)/zscale
+            var_uv_div_bal(jj,jn) = var_div_bal_ppp(jj,jn)/zscale
+            var_uv_div_u(jj,jn)   = var_div_u(jj,jn)/zscale
+         end do
+         do jj=1,nflevg
+            var_uv_total(jj,jn) = var_uv_vor(jj,jn) +&
+              &                   var_uv_div_bal(jj,jn) +&
+              &                   var_uv_div_u(jj,jn)
+         end do
       end do
 !
 !   Sum variances over wave-numbers
@@ -782,6 +814,10 @@
          ave_var_hum_bal_tps(jj)  = sum(var_hum_bal_tps(jj,1:nsmax_jb_in))
          ave_var_hum_u(jj)  = sum(var_hum_u(jj,1:nsmax_jb_in))
          ave_var_hum_total(jj)  = sum(var_hum_total(jj,1:nsmax_jb_in))
+         ave_var_uv_vor(jj)  = sum(var_uv_vor(jj,1:nsmax_jb_in))
+         ave_var_uv_div_bal(jj)  = sum(var_uv_div_bal(jj,1:nsmax_jb_in))
+         ave_var_uv_div_u(jj)  = sum(var_uv_div_u(jj,1:nsmax_jb_in))
+         ave_var_uv_total(jj)  = sum(var_uv_total(jj,1:nsmax_jb_in))
       end do
       do jj=1,nflevg+1
          ave_var_tps_bal_ppp(jj)  = sum(var_tps_bal_ppp(jj,1:nsmax_jb_in))
@@ -932,6 +968,34 @@
       end do
  6000 format(i3,f10.2,5f14.10,3f8.4)
       close(unit=50)
+!
+!
+!   Wind components level dependence
+!
+      open(unit=50,file='diag_baloperuv',form='formatted')
+      do jj=1,nflevg
+         write(50,6010)jj,pfull_nl(jj),&
+                     &   sqrt(0.5*ave_var_uv_total(jj)),&
+                     &   sqrt(0.5*ave_var_uv_vor(jj)),&
+                     &   sqrt(0.5*ave_var_uv_div_bal(jj)),&
+                     &   sqrt(0.5*ave_var_uv_div_u(jj))
+      end do
+ 6010 format(i3,f10.2,4f14.10)
+      close(unit=50)
+!
+! Kinetic Energy Spectra
+!
+      do jk=1,nflevg
+         write(fnspdens,6012)jk
+ 6012    format('diag_spdensUV',i2.2)
+         open(unit=50,file=fnspdens,form='formatted')
+         do jn=1,nsmax_jb_in
+            write(50,*)jn,&
+              &  gsize_in*float(max(nlon_in,nlat_in))/1000./float(jn),&
+              &  var_uv_total(jk,jn)
+         end do
+         close(unit=50)
+      end do
 !
 !   De-allocate space for input covariances
 !
