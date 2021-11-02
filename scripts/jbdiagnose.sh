@@ -81,7 +81,10 @@ do
        LEVELDEF=$OPTARG
        ;;
     L)
-       echo "Will list level defs here ..."
+       echo
+       ls -1 ${levdir} | sed 's/.def//g'
+       echo
+       exit 0
        ;;
     h)
        usage
