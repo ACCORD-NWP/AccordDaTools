@@ -8,7 +8,7 @@ function (install_scripts)
   endforeach ()
 endfunction()
 
-install_scripts (jbdiagnose.sh)
+install_scripts (jbdiagnose.sh plotjbbal.py plotjbdiag.py)
 #install (FILES python_script.py
 #         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
 #         DESTINATION bin)
