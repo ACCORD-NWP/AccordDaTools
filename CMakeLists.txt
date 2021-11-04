@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 3.5)
 
 project(HarmonieDaTools)
+
 enable_language(Fortran)
+find_package (Python3 COMPONENTS Interpreter)
+
+enable_testing()
 
 if(CMAKE_Fortran_COMPILER_ID MATCHES "GNU")
     set(dialect "-ffree-form -fimplicit-none -fconvert=big-endian")
@@ -30,3 +34,4 @@ install (TARGETS jbdiagnose.x
 
 add_subdirectory (scripts)
 add_subdirectory (share)
+add_subdirectory (tests)

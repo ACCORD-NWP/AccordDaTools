@@ -8,6 +8,7 @@ mkdir build
 cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=/path/to/da_tools 
 make 
+ctest
 make install
 ```
 Add DA Tools to your PATH:
