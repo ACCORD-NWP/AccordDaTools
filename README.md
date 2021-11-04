@@ -18,6 +18,7 @@ export PATH=/path/to/da_tools:$PATH
 
 ## Tools
 ### Jb diagnose
+Full documentation is available [here](doc/tools/jbdiagnose.md)
 Help/usage:
 ```
 jbdiagnose -h
