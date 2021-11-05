@@ -39,7 +39,12 @@ ${bold}OPTIONS${normal}
         
         -e ${unline}exp-name${normal}
            Experiment name for Jb files. Statistic files will be written to a
-           directory with name supplied
+           directory with name supplied.
+           Default: jbdiag
+
+        -p ${unline}print-level${normal}
+           Verbosity level (integer) in range 0 - 9.
+           Default: 1
 
         -L List available level definitions
         
@@ -53,6 +58,7 @@ CVFILE=DUMMY
 GRIDSIZE=DUMMY
 LEVELDEF=DUMMY
 EXPNAME=jbdiag
+PRINTLEV=1
 #
 # Where am I?
 #
@@ -69,7 +75,7 @@ if [ ${#} -eq 0 ]; then
   exit 1
 fi
 
-while getopts b:c:g:l:e:Lh option
+while getopts b:c:g:l:e:p:Lh option
 do
   case $option in
     b)
@@ -86,6 +92,9 @@ do
        ;;
     e)
        EXPNAME=$OPTARG
+       ;;
+    p)
+       PRINTLEV=$OPTARG
        ;;
     L)
        echo
@@ -128,12 +137,14 @@ if [ ${LEVELDEF} == "DUMMY" ]; then
   exit 1
 fi
 
-echo
-echo "BALFILE=${BALFILE}"
-echo "CVILE=${CVFILE}"
-echo "GRIDSIZE=${GRIDSIZE}"
-echo "LEVELDEF=${LEVELDEF}"
-echo
+if [ $PRINTLEV -gt 0 ]; then
+  echo
+  echo "BALFILE=${BALFILE}"
+  echo "CVILE=${CVFILE}"
+  echo "GRIDSIZE=${GRIDSIZE}"
+  echo "LEVELDEF=${LEVELDEF}"
+  echo
+fi
 
 #
 # Construct namjbconv namelist
@@ -145,8 +156,9 @@ if [ ! -s ${levdir}/${LEVELDEF}.def ]; then
 fi
 
 echo "&namjbconv" > jbconv.nam
+echo "printlev =  ${PRINTLEV},"  >> jbconv.nam
 echo "gsize_in  =  ${GRIDSIZE}," >> jbconv.nam
-cat ${levdir}/${LEVELDEF}.def >> jbconv.nam
+cat ${levdir}/${LEVELDEF}.def    >> jbconv.nam
 echo "/" >> jbconv.nam
 
 #

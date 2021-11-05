@@ -136,7 +136,7 @@ program jbdiagnose
 !   Open input covariance file
 !
   open(nuljb_in,file='stabal96.cv',form='unformatted')
-  write(nulout,*) 'Opening stabal96.cv'
+  write(nulout,*) 'Processing stabal96.cv ...'
 !
 !   Read GSA file header
 !
@@ -428,7 +428,7 @@ program jbdiagnose
 !   Open input balancing file
 !
   open(nuljb_in,file='stabal96.bal',form='unformatted')
-  write(nulout,*) 'Opening stabal96.bal'
+  write(nulout,*) 'Processing stabal96.bal ...'
 !
 !   Read GSA file header
 !
