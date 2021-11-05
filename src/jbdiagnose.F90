@@ -761,185 +761,153 @@ program jbdiagnose
 !
 !   Sum variances over wave-numbers
 !
-      do jj=1,nflevg
-         ave_var_vor(jj) =sum(var_vor(jj,1:nsmax_jb_in))
-         ave_var_ppp(jj) =sum(var_ppp(jj,1:nsmax_jb_in))
-         ave_var_div_bal_ppp(jj) =sum(var_div_bal_ppp(jj,1:nsmax_jb_in))
-         ave_var_div_u(jj) =sum(var_div_u(jj,1:nsmax_jb_in))
-         ave_var_div_total(jj) =sum(var_div_total(jj,1:nsmax_jb_in))
-         ave_var_hum_bal_ppp(jj) =sum(var_hum_bal_ppp(jj,1:nsmax_jb_in))
-         ave_var_hum_bal_div(jj) =sum(var_hum_bal_div(jj,1:nsmax_jb_in))
-         ave_var_hum_bal_tps(jj) =sum(var_hum_bal_tps(jj,1:nsmax_jb_in))
-         ave_var_hum_u(jj) =sum(var_hum_u(jj,1:nsmax_jb_in))
-         ave_var_hum_total(jj) =sum(var_hum_total(jj,1:nsmax_jb_in))
-         ave_var_uv_vor(jj) =sum(var_uv_vor(jj,1:nsmax_jb_in))
-         ave_var_uv_div_bal(jj) =sum(var_uv_div_bal(jj,1:nsmax_jb_in))
-         ave_var_uv_div_u(jj) =sum(var_uv_div_u(jj,1:nsmax_jb_in))
-         ave_var_uv_total(jj) =sum(var_uv_total(jj,1:nsmax_jb_in))
-      end do
-      do jj=1,nflevg+1
-         ave_var_tps_bal_ppp(jj) =sum(var_tps_bal_ppp(jj,1:nsmax_jb_in))
-         ave_var_tps_bal_div(jj) =sum(var_tps_bal_div(jj,1:nsmax_jb_in))
-         ave_var_tps_u(jj) =sum(var_tps_u(jj,1:nsmax_jb_in))
-         ave_var_tps_total(jj) =sum(var_tps_total(jj,1:nsmax_jb_in))
-      end do
+  do jj=1,nflevg
+    ave_var_vor(jj) =sum(var_vor(jj,1:nsmax_jb_in))
+    ave_var_ppp(jj) =sum(var_ppp(jj,1:nsmax_jb_in))
+    ave_var_div_bal_ppp(jj) =sum(var_div_bal_ppp(jj,1:nsmax_jb_in))
+    ave_var_div_u(jj) =sum(var_div_u(jj,1:nsmax_jb_in))
+    ave_var_div_total(jj) =sum(var_div_total(jj,1:nsmax_jb_in))
+    ave_var_hum_bal_ppp(jj) =sum(var_hum_bal_ppp(jj,1:nsmax_jb_in))
+    ave_var_hum_bal_div(jj) =sum(var_hum_bal_div(jj,1:nsmax_jb_in))
+    ave_var_hum_bal_tps(jj) =sum(var_hum_bal_tps(jj,1:nsmax_jb_in))
+    ave_var_hum_u(jj) =sum(var_hum_u(jj,1:nsmax_jb_in))
+    ave_var_hum_total(jj) =sum(var_hum_total(jj,1:nsmax_jb_in))
+    ave_var_uv_vor(jj) =sum(var_uv_vor(jj,1:nsmax_jb_in))
+    ave_var_uv_div_bal(jj) =sum(var_uv_div_bal(jj,1:nsmax_jb_in))
+    ave_var_uv_div_u(jj) =sum(var_uv_div_u(jj,1:nsmax_jb_in))
+    ave_var_uv_total(jj) =sum(var_uv_total(jj,1:nsmax_jb_in))
+  end do
+  do jj=1,nflevg+1
+    ave_var_tps_bal_ppp(jj) =sum(var_tps_bal_ppp(jj,1:nsmax_jb_in))
+    ave_var_tps_bal_div(jj) =sum(var_tps_bal_div(jj,1:nsmax_jb_in))
+    ave_var_tps_u(jj) =sum(var_tps_u(jj,1:nsmax_jb_in))
+    ave_var_tps_total(jj) =sum(var_tps_total(jj,1:nsmax_jb_in))
+  end do
 !
 !   Allocate and calculate fractions of explained variance as
 !   functions of vertical level
 !
-      allocate(expl_div_ppp(nflevg))
-      allocate(expl_tps_ppp(nflevg+1))
-      allocate(expl_tps_div(nflevg+1))
-      allocate(expl_hum_ppp(nflevg))
-      allocate(expl_hum_div(nflevg))
-      allocate(expl_hum_tps(nflevg))
+  allocate(expl_div_ppp(nflevg))
+  allocate(expl_tps_ppp(nflevg+1))
+  allocate(expl_tps_div(nflevg+1))
+  allocate(expl_hum_ppp(nflevg))
+  allocate(expl_hum_div(nflevg))
+  allocate(expl_hum_tps(nflevg))
 !
-      do jj=1,nflevg
-         expl_div_ppp(jj)=ave_var_div_bal_ppp(jj)/ave_var_div_total(jj)
-         expl_hum_ppp(jj)=ave_var_hum_bal_ppp(jj)/ave_var_hum_total(jj)
-         expl_hum_div(jj)=ave_var_hum_bal_div(jj)/ave_var_hum_total(jj)
-         expl_hum_tps(jj)=ave_var_hum_bal_tps(jj)/ave_var_hum_total(jj)
-      end do
-      do jj=1,nflevg+1
-         expl_tps_ppp(jj)=ave_var_tps_bal_ppp(jj)/ave_var_tps_total(jj)
-         expl_tps_div(jj)=ave_var_tps_bal_div(jj)/ave_var_tps_total(jj)
-      end do
+  do jj=1,nflevg
+    expl_div_ppp(jj)=ave_var_div_bal_ppp(jj)/ave_var_div_total(jj)
+    expl_hum_ppp(jj)=ave_var_hum_bal_ppp(jj)/ave_var_hum_total(jj)
+    expl_hum_div(jj)=ave_var_hum_bal_div(jj)/ave_var_hum_total(jj)
+    expl_hum_tps(jj)=ave_var_hum_bal_tps(jj)/ave_var_hum_total(jj)
+  end do
+  do jj=1,nflevg+1
+    expl_tps_ppp(jj)=ave_var_tps_bal_ppp(jj)/ave_var_tps_total(jj)
+    expl_tps_div(jj)=ave_var_tps_bal_div(jj)/ave_var_tps_total(jj)
+  end do
 !
 !   Allocate and calculate fractions of explained variance as
 !   functions of vertical level
 !
-      allocate(expl_div_ppp_hor(0:nsmax_jb_in))
-      allocate(expl_tps_ppp_hor(0:nsmax_jb_in))
-      allocate(expl_tps_div_hor(0:nsmax_jb_in))
-      allocate(expl_hum_ppp_hor(0:nsmax_jb_in))
-      allocate(expl_hum_div_hor(0:nsmax_jb_in))
-      allocate(expl_hum_tps_hor(0:nsmax_jb_in))
+  allocate(expl_div_ppp_hor(0:nsmax_jb_in))
+  allocate(expl_tps_ppp_hor(0:nsmax_jb_in))
+  allocate(expl_tps_div_hor(0:nsmax_jb_in))
+  allocate(expl_hum_ppp_hor(0:nsmax_jb_in))
+  allocate(expl_hum_div_hor(0:nsmax_jb_in))
+  allocate(expl_hum_tps_hor(0:nsmax_jb_in))
 !
-      do jn=0,nsmax_jb_in
-         expl_div_ppp_hor(jn)=sum(var_div_bal_ppp(1:nflevg,jn))/&
-                          &     sum(var_div_total(1:nflevg,jn))
-         expl_tps_ppp_hor(jn)=sum(var_tps_bal_ppp(1:nflevg,jn))/&
-                          &     sum(var_tps_total(1:nflevg,jn))
-         expl_tps_div_hor(jn)=sum(var_tps_bal_div(1:nflevg,jn))/&
-                          &     sum(var_tps_total(1:nflevg,jn))
-         expl_hum_ppp_hor(jn)=sum(var_hum_bal_ppp(1:nflevg,jn))/&
-                          &     sum(var_hum_total(1:nflevg,jn))
-         expl_hum_div_hor(jn)=sum(var_hum_bal_div(1:nflevg,jn))/&
-                          &     sum(var_hum_total(1:nflevg,jn))
-         expl_hum_tps_hor(jn)=sum(var_hum_bal_tps(1:nflevg,jn))/&
-                          &     sum(var_hum_total(1:nflevg,jn))
-      end do
+  do jn=0,nsmax_jb_in
+    expl_div_ppp_hor(jn)=sum(var_div_bal_ppp(1:nflevg,jn))/sum(var_div_total(1:nflevg,jn))
+    expl_tps_ppp_hor(jn)=sum(var_tps_bal_ppp(1:nflevg,jn))/sum(var_tps_total(1:nflevg,jn))
+    expl_tps_div_hor(jn)=sum(var_tps_bal_div(1:nflevg,jn))/sum(var_tps_total(1:nflevg,jn))
+    expl_hum_ppp_hor(jn)=sum(var_hum_bal_ppp(1:nflevg,jn))/sum(var_hum_total(1:nflevg,jn))
+    expl_hum_div_hor(jn)=sum(var_hum_bal_div(1:nflevg,jn))/sum(var_hum_total(1:nflevg,jn))
+    expl_hum_tps_hor(jn)=sum(var_hum_bal_tps(1:nflevg,jn))/sum(var_hum_total(1:nflevg,jn))
+  end do
 !
 !   Diagnostic output files
 !
 !   Control variable standard deviations
 !
-      open(unit=50,file='stand_devs',form='formatted')
-      do jj=1,nflevg
-         write(50,4444) jj,&
-                  &     pfull_nl(jj),&
-                  &     sqrt(ave_var_vor(jj)),&
-                  &     sqrt(ave_var_div_u(jj)),&
-                  &     sqrt(ave_var_tps_u(jj)),&
-                  &     sqrt(ave_var_hum_u(jj))
+  open(unit=50,file='stand_devs',form='formatted')
+  do jj=1,nflevg
+    write(50,4444) jj,pfull_nl(jj),sqrt(ave_var_vor(jj)),sqrt(ave_var_div_u(jj)),sqrt(ave_var_tps_u(jj)),sqrt(ave_var_hum_u(jj))
  4444    format(i4,f10.2,4e15.6)
-      end do
-      close(unit=50)
+  end do
+  close(unit=50)
 !
 !   Divergence wave number dependence
 !
-      open(unit=50,file='bal_wn_div',form='formatted')
-      do jn=1,nsmax_jb_in
-         write(50,5880)jn,&
-              &  gsize_in*float(max(nlon_in,nlat_in))/1000./float(jn),&
-              &   expl_div_ppp_hor(jn)
-      end do
+  open(unit=50,file='bal_wn_div',form='formatted')
+  do jn=1,nsmax_jb_in
+    write(50,5880)jn,gsize_in*float(max(nlon_in,nlat_in))/1000./float(jn),expl_div_ppp_hor(jn)
+  end do
  5880 format(i3,f8.1,f8.4)
-      close(unit=50)
+  close(unit=50)
 !
 !   Divergence level dependence
 !
-      open(unit=50,file='baloperdiv',form='formatted')
-      do jj=1,nflevg
-         write(50,5900)jj,pfull_nl(jj),&
-                     &   sqrt(ave_var_div_total(jj)),&
-                     &   sqrt(ave_var_div_bal_ppp(jj)),&
-                     &   sqrt(ave_var_div_u(jj)),&
-                     &   expl_div_ppp(jj)
-      end do
+  open(unit=50,file='baloperdiv',form='formatted')
+  do jj=1,nflevg
+    write(50,5900)jj,pfull_nl(jj),sqrt(ave_var_div_total(jj)),sqrt(ave_var_div_bal_ppp(jj)),sqrt(ave_var_div_u(jj)),expl_div_ppp(jj)
+  end do
  5900 format(i3,f10.2,3f14.10,f8.4)
-      close(unit=50)
+  close(unit=50)
 !
 !   Temperature and surface pressure wave number dependence
 !
-      open(unit=50,file='bal_wn_tps',form='formatted')
-      do jn=1,nsmax_jb_in
-         write(50,5940)jn,&
-              &  gsize_in*float(max(nlon_in,nlat_in))/1000./float(jn),&
-              &   expl_tps_ppp_hor(jn),&
-              &   expl_tps_div_hor(jn)
-      end do
+  open(unit=50,file='bal_wn_tps',form='formatted')
+  do jn=1,nsmax_jb_in
+    write(50,5940)jn,gsize_in*float(max(nlon_in,nlat_in))/1000./float(jn),expl_tps_ppp_hor(jn),expl_tps_div_hor(jn)
+  end do
  5940 format(i3,f8.1,2f8.4)
-      close(unit=50)
+  close(unit=50)
 !
 !   Temperature and surface pressure level dependence
 !
-      open(unit=50,file='balopertps',form='formatted')
-      do jj=1,nflevg
-         write(50,5950)jj,pfull_nl(jj),&
-                     &   sqrt(ave_var_tps_total(jj)),&
-                     &   sqrt(ave_var_tps_bal_ppp(jj)),&
-                     &   sqrt(ave_var_tps_bal_div(jj)),&
-                     &   sqrt(ave_var_tps_u(jj)),&
-                     &   expl_tps_ppp(jj),&
-                     &   expl_tps_div(jj)
-      end do
+  open(unit=50,file='balopertps',form='formatted')
+  do jj=1,nflevg
+    write(50,5950)jj,pfull_nl(jj),&
+                & sqrt(ave_var_tps_total(jj)),sqrt(ave_var_tps_bal_ppp(jj)),&
+                & sqrt(ave_var_tps_bal_div(jj)),sqrt(ave_var_tps_u(jj)),&
+                & expl_tps_ppp(jj),expl_tps_div(jj)
+  end do
  5950 format(i3,f10.2,4f14.10,2f8.4)
-      close(unit=50)
+  close(unit=50)
 !
 !   Humidity wave number dependence
 !
-      open(unit=50,file='bal_wn_hum',form='formatted')
-      do jn=1,nsmax_jb_in
-         write(50,5960)jn,&
-              &  gsize_in*float(max(nlon_in,nlat_in))/1000./float(jn),&
-              &   expl_hum_ppp_hor(jn),&
-              &   expl_hum_div_hor(jn),&
-              &   expl_hum_tps_hor(jn)
-      end do
+  open(unit=50,file='bal_wn_hum',form='formatted')
+  do jn=1,nsmax_jb_in
+    write(50,5960)jn,gsize_in*float(max(nlon_in,nlat_in))/1000./float(jn),expl_hum_ppp_hor(jn),&
+                & expl_hum_div_hor(jn),expl_hum_tps_hor(jn)
+  end do
  5960 format(i3,f8.1,3f8.4)
-      close(unit=50)
+  close(unit=50)
 !
 !   Humidity level dependence
 !
-      open(unit=50,file='baloperhum',form='formatted')
-      do jj=1,nflevg
-         write(50,6000)jj,pfull_nl(jj),&
-                     &   sqrt(ave_var_hum_total(jj)),&
-                     &   sqrt(ave_var_hum_bal_ppp(jj)),&
-                     &   sqrt(ave_var_hum_bal_div(jj)),&
-                     &   sqrt(ave_var_hum_bal_tps(jj)),&
-                     &   sqrt(ave_var_hum_u(jj)),&
-                     &   expl_hum_ppp(jj),&
-                     &   expl_hum_div(jj),&
-                     &   expl_hum_tps(jj)
-      end do
+  open(unit=50,file='baloperhum',form='formatted')
+  do jj=1,nflevg
+    write(50,6000)jj,pfull_nl(jj),&
+                & sqrt(ave_var_hum_total(jj)),&
+                & sqrt(ave_var_hum_bal_ppp(jj)),sqrt(ave_var_hum_bal_div(jj)),&
+                & sqrt(ave_var_hum_bal_tps(jj)),sqrt(ave_var_hum_u(jj)),&
+                & expl_hum_ppp(jj),expl_hum_div(jj),expl_hum_tps(jj)
+  end do
  6000 format(i3,f10.2,5f14.10,3f8.4)
-      close(unit=50)
+  close(unit=50)
 !
 !
 !   Wind components level dependence
 !
-      open(unit=50,file='baloperuv',form='formatted')
-      do jj=1,nflevg
-         write(50,6010)jj,pfull_nl(jj),&
-                     &   sqrt(0.5*ave_var_uv_total(jj)),&
-                     &   sqrt(0.5*ave_var_uv_vor(jj)),&
-                     &   sqrt(0.5*ave_var_uv_div_bal(jj)),&
-                     &   sqrt(0.5*ave_var_uv_div_u(jj))
-      end do
+  open(unit=50,file='baloperuv',form='formatted')
+  do jj=1,nflevg
+    write(50,6010)jj,pfull_nl(jj),&
+                & sqrt(0.5*ave_var_uv_total(jj)),sqrt(0.5*ave_var_uv_vor(jj)),&
+                & sqrt(0.5*ave_var_uv_div_bal(jj)),sqrt(0.5*ave_var_uv_div_u(jj))
+  end do
  6010 format(i3,f10.2,4f14.10)
-      close(unit=50)
+  close(unit=50)
 !
 ! Kinetic Energy Spectra
 !
@@ -1067,39 +1035,40 @@ subroutine bfact_print(nulout,nsmax,nmsmax,ispec2,bfact)
 
   return
 end subroutine bfact_print
-      SUBROUTINE ELLIPS(KSMAX,KMSMAX,KNTMP,KMTMP)
-      INTEGER(KIND=4) :: KSMAX, KMSMAX
-      INTEGER(KIND=4) :: KNTMP(0:KMSMAX),KMTMP(0:KSMAX)
-      INTEGER(KIND=4) :: JM, JN
-      REAL(KIND=8) :: ZEPS, ZKN, ZKM, ZAUXIL
-      integer, parameter :: jpdblr=8
 
-      ZEPS=1.E-10
-      ZAUXIL=0.
-      DO 110 JM=1,KMSMAX-1
-      ZKN=REAL(KSMAX,JPDBLR)/REAL(KMSMAX,JPDBLR)*&
-     & SQRT(MAX(ZAUXIL,REAL(KMSMAX**2-JM**2,JPDBLR)))
-        KNTMP(JM)=INT(ZKN+ZEPS)
- 110  CONTINUE
+subroutine ellips(ksmax,kmsmax,kntmp,kmtmp)
+  integer(kind=4) :: ksmax, kmsmax
+  integer(kind=4) :: kntmp(0:kmsmax),kmtmp(0:ksmax)
+  integer(kind=4) :: jm, jn
+  real(kind=8) :: zeps, zkn, zkm, zauxil
+  integer, parameter :: jpdblr=8
 
-      IF( KMSMAX.EQ.0 )THEN
-         KNTMP(0)=KSMAX
-      ELSE
-         KNTMP(0)=KSMAX
-         KNTMP(KMSMAX)=0
-      ENDIF
+  zeps=1.e-10
+  zauxil=0.
+  do jm=1,kmsmax-1
+    zkn=real(ksmax,jpdblr)/real(kmsmax,jpdblr)*&
+     & sqrt(max(zauxil,real(kmsmax**2-jm**2,jpdblr)))
+    kntmp(jm)=int(zkn+zeps)
+  enddo
 
-      DO 210 JN=1,KSMAX-1
-       ZKM=REAL(KMSMAX,JPDBLR)/REAL(KSMAX,JPDBLR)*&
-     & SQRT(MAX(ZAUXIL,REAL(KSMAX**2-JN**2,JPDBLR)))
-        KMTMP(JN)=INT(ZKM+ZEPS)
- 210  CONTINUE
+  if( kmsmax.eq.0 )then
+    kntmp(0)=ksmax
+  else
+    kntmp(0)=ksmax
+    kntmp(kmsmax)=0
+  endif
 
-      IF( KSMAX.EQ.0 )THEN
-         KMTMP(0)=KMSMAX
-      ELSE
-         KMTMP(0)=KMSMAX
-         KMTMP(KSMAX)=0
-      ENDIF
-      RETURN
-      END      
+  do jn=1,ksmax-1
+    zkm=real(kmsmax,jpdblr)/real(ksmax,jpdblr)*&
+     & sqrt(max(zauxil,real(ksmax**2-jn**2,jpdblr)))
+    kmtmp(jn)=int(zkm+zeps)
+  enddo
+
+  if( ksmax.eq.0 )then
+    kmtmp(0)=kmsmax
+  else
+    kmtmp(0)=kmsmax
+    kmtmp(ksmax)=0
+  endif
+  return
+end subroutine ellips
