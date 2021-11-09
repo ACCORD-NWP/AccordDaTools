@@ -1,5 +1,14 @@
 # AccordDaTools
-Collection of ACCORD DA tools
+Collection of ACCORD DA tools. So far we have jbdiagnose and associated plotting. 
+
+Desirables:
+- diacov
+- festat
+- VarBC coeff plotting
+- TuneBR
+- obstat
+- DFS?
+- Other ...
 
 ## Installation
 ```
