@@ -9,7 +9,5 @@ function (install_scripts)
 endfunction()
 
 install_scripts (jbdiagnose.sh plotjbbal.py plotjbdiag.py)
-#install (FILES python_script.py
-#         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
-#         DESTINATION bin)
-#
+install_scripts (diacov.sh)
+#install_scripts (diacov.sh festat.sh)

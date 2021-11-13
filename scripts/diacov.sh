@@ -19,8 +19,8 @@ ${bold}NAME${normal}
 
 ${bold}USAGE${normal}
         ${PROGNAME} -b <bal-file> -c <cv-file> -g <grid-spacing>
-                    -l <level-definition> [-e <exp-name>]
-                    [-p <print-level>] [-L] [ -h ]
+                    -l <num-levels> -d <diacov-binary> [-e <exp-name>]
+                    [-p <print-level>] [ -h ]
 
 ${bold}DESCRIPTION${normal}
         Script to start new LBC processing suite
@@ -38,17 +38,17 @@ ${bold}OPTIONS${normal}
         -l ${unline}level-definition${normal}
            Level definition (A's and B's) 
         
+        -d ${unline}diacov-binary${normal}
+           PATH to DIACOV executabel compiled by makeup/GMKPACK.
+        
         -e ${unline}exp-name${normal}
            Experiment name for Jb files. Statistic files will be written to a
-           directory with name supplied.
-           Default: jbdiag
+           directory with name supplied
 
         -p ${unline}print-level${normal}
            Verbosity level (integer) in range 0 - 9.
            Default: 1
 
-        -L List available level definitions
-        
         -h Help! Print usage information.
 
 USAGE
@@ -57,8 +57,9 @@ USAGE
 BALFILE=DUMMY
 CVFILE=DUMMY
 GRIDSIZE=DUMMY
-LEVELDEF=DUMMY
-EXPNAME=jbdiag
+LEVELNUM=DUMMY
+BINPATH=DUMMY
+EXPNAME=diacov_stat
 PRINTLEV=1
 #
 # Where am I?
@@ -76,7 +77,7 @@ if [ ${#} -eq 0 ]; then
   exit 1
 fi
 
-while getopts b:c:g:l:e:p:Lh option
+while getopts b:c:g:l:d:e:p:h option
 do
   case $option in
     b)
@@ -89,19 +90,17 @@ do
        GRIDSIZE=$OPTARG
        ;;
     l)
-       LEVELDEF=$OPTARG
+       LEVELNUM=$OPTARG
+       ;;
+
+    d)
+       BINPATH=$OPTARG
        ;;
     e)
        EXPNAME=$OPTARG
        ;;
     p)
        PRINTLEV=$OPTARG
-       ;;
-    L)
-       echo
-       ls -1 ${levdir} | sed 's/.def//g'
-       echo
-       exit 0
        ;;
     h)
        usage
@@ -132,8 +131,14 @@ if [ ${GRIDSIZE} == "DUMMY" ]; then
   exit 1
 fi
 
-if [ ${LEVELDEF} == "DUMMY" ]; then
-  echo "Please define level-definition using -l"
+if [ ${BINPATH} == "DUMMY" ]; then
+  echo "Please location of DIACOV executabel using -p"
+  echo "Try '${PROGNAME} -h' for more information"
+  exit 1
+fi
+
+if [ ${LEVELNUM} == "DUMMY" ]; then
+  echo "Please define num-levels using -l"
   echo "Try '${PROGNAME} -h' for more information"
   exit 1
 fi
@@ -143,53 +148,50 @@ if [ $PRINTLEV -gt 0 ]; then
   echo "BALFILE=${BALFILE}"
   echo "CVILE=${CVFILE}"
   echo "GRIDSIZE=${GRIDSIZE}"
-  echo "LEVELDEF=${LEVELDEF}"
+  echo "LEVELNUM=${LEVELNUM}"
   echo
 fi
 
 #
-# Construct namjbconv namelist
+# Construct fort.4 namelist
 #
-if [ ! -s ${levdir}/${LEVELDEF}.def ]; then
-  echo "${levdir}/${LEVELDEF}.def not found"
-  echo "Try $PROGNAME -L to list available level definitions"
-  exit 1
-fi
 
-echo "&namjbconv" > jbconv.nam
-echo "printlev =  ${PRINTLEV},"  >> jbconv.nam
-echo "gsize_in  =  ${GRIDSIZE}," >> jbconv.nam
-cat ${levdir}/${LEVELDEF}.def    >> jbconv.nam
-echo "/" >> jbconv.nam
+echo "&NAMDIACOV"                 > fort.4
+echo "NFLEV=${LEVELNUM},"        >> fort.4
+echo "NSMAX=24,"                 >> fort.4
+echo "NDGL=50,"                  >> fort.4
+echo "PPDELTAX=${GRIDSIZE},"     >> fort.4
+echo "CJBTYPE='STABAL96',"       >> fort.4
+echo "/"                         >> fort.4
 
 #
 # Create soft links for jbdiagnose.x
 #
-ln ${BALFILE} stabal96.bal
-ln ${CVFILE}  stabal96.cv
-
-${exedir}/jbdiagnose.x < jbconv.nam
+ln -s ${BALFILE} stabal.bal
+ln -s ${CVFILE}  stabal.cv
 
 if [ -d ${EXPNAME} ]; then
   echo "${EXPNAME} already exists. Please choose another experiemnt name"
 else
+  ${BINPATH}/DIACOV > diacov.log 2>&1
   mkdir $EXPNAME
-  mv baloperdiv baloperhum balopertps baloperuv bal_wn_div bal_wn_hum bal_wn_tps ${EXPNAME}/
-  mv stand_devs ${EXPNAME}/
-  mv spdensSUPS ${EXPNAME}/
-  mv spdensDD* ${EXPNAME}/
-  mv spdensPP* ${EXPNAME}/
-  mv spdensQQ* ${EXPNAME}/
-  mv spdensTT* ${EXPNAME}/
-  mv spdensUV* ${EXPNAME}/
-  mv vercorDD* ${EXPNAME}/
-  mv vercorPP* ${EXPNAME}/
-  mv vercorQQ* ${EXPNAME}/
-  mv vercorTT* ${EXPNAME}/
+  mv diacov.log $EXPNAME/
+  mv conumdu.y  conumqu.y  conumtpsu.y  conumv.y ${EXPNAME}/
+  mv corpsu.y ${EXPNAME}/
+  mv lscdu.y lscqu.y lsctu.y lscvtot.y ${EXPNAME}/
+  mv stdavdu.y stdavqu.y stdavtu.y stdavvtot.y stdevpsu.y ${EXPNAME}/
+  mv varsppsu.y ${EXPNAME}/
+  mv cordu.xy corpsu.xy corqu.xy cortu.xy corvtot.xy ${EXPNAME}/
+  mv stdevdu.xy stdevlogdu.xy stdevlogqu.xy stdevlogtu.xy stdevlogvtot.xy ${EXPNAME}/
+  mv stdevqu.xy stdevtu.xy stdevvtot.xy ${EXPNAME}/
+  mv varspdu[0-9][0-9]*.y varspqu[0-9][0-9]*.y varsptu[0-9][0-9]*.y varspvtot[0-9][0-9]*.y ${EXPNAME}/
+  mv corlogdu[0-9][0-9]*.xy corlogqu[0-9][0-9]*.xy corlogtu[0-9][0-9]*.xy corlogvtot[0-9][0-9]*.xy ${EXPNAME}/
+  mv cordu[0-9][0-9]*.xy corqu[0-9][0-9]*.xy cortu[0-9][0-9]*.xy corvtot[0-9][0-9]*.xy ${EXPNAME}/
+  echo "Statistics and log file moved to ${EXPNAME}/"
 fi
 
-rm -f stabal96.cv
-rm -f stabal96.bal
-rm -f jbconv.nam
+rm -f stabal.cv
+rm -f stabal.bal
+rm -f fort.4
 
 exit 0
