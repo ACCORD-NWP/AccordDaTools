@@ -2,6 +2,8 @@ name: checkout
 on: [push]
 jobs:
   checkout:
+    # This workflow should only run in ewhelan/AccordDaTools to save on GitHub credit
+    if: github.repository == 'ewhelan/AccordDaTools'
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
