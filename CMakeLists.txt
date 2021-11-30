@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(HarmonieDaTools)
+project(HarmonieDaTools LANGUAGES Fortran)
 
-enable_language(Fortran)
 find_package (Python3 COMPONENTS Interpreter)
 
 enable_testing()
