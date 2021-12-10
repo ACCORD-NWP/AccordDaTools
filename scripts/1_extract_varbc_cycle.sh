@@ -90,14 +90,15 @@ do
   esac
 done
 
-echo "$0: Starting to loop over files ..."
+echo "Starting to loop over files ..."
 
+echo "Processing ..."
 find ${VARBCINP} -name "VARBC.cycle" | while read FILEIN; do
 
   YYYYMMDD=$(awk 'NR == 2 {print $2; exit}' ${FILEIN})
   HHMMSS_S=$(awk 'NR == 2 {print $3; exit}' ${FILEIN})
   HHMMSS=$(printf "%06d\n" ${HHMMSS_S})
-  echo "$0: Processing ${FILEIN} ${YYYYMMDD} ${HHMMSS}"
+  echo -e "Processing ${FILEIN} ${YYYYMMDD} ${HHMMSS}\e[1A"
 
   # $2 is the number of observations, so for $2 > 1 only satellite channels are selected 
   # so GNSS stations are excluded
@@ -140,5 +141,7 @@ find ${VARBCINP} -name "VARBC.cycle" | while read FILEIN; do
 #    done  # end of list_sat
   done  # end of list_nl
 done # end of scan
-
+echo
+echo "Scan complete ..."
+echo "Output available in ${VARBCOUT}"
 exit 0
