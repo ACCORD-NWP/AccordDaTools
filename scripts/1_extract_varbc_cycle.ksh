@@ -1,5 +1,6 @@
 #!/bin/ksh
 
+#Eoin suggests having some more documentation here...
 
 . $PWD/include.paths
 
