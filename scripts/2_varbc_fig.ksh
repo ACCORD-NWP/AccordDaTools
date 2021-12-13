@@ -11,23 +11,120 @@
 # channels and cycle (hh) which will be used as the input for the Rscript
 # which will plot the time evolution of the coefficients
 
-# SEVIRI: data in all cycles (from 00 to 21), 
-# if FCINT = 03 plotting of ALL cycles (from 00 to 21)
-# if FCINT != 03 plotting for HH in $list_hh
+#Current::
+# Scan directory for VarBC predictor data files (produced by xxxx) and 
+# produce time-series plots
 
-#list_sat="70"
-FCINT=03
 
-# ATOVS: data in cycles in list_hh, FCINT=24
-# METOP-B
+PROGNAME=`basename $0`
 
-#list_sat="3" 
+# Define a usage function
+usage() {
+
+bold=$(tput bold)
+normal=$(tput sgr0)
+unline=$(tput smul)
+
+cat << USAGE
+
+${bold}NAME${normal}
+        ${PROGNAME} - process VarBC predictor information
+
+${bold}USAGE${normal}
+        ${PROGNAME} -i <input-directory> -o <output-directory>
+                    [ -h ]
+
+${bold}DESCRIPTION${normal}
+        Script to process VarBC predictor information from VARBC.cycle files
+        produced by IAAAH NWP System.
+
+${bold}OPTIONS${normal}
+        -i ${unline}input-directory${normal}
+           input directory
+
+        -o ${unline}output-file${normal}
+           output file-name
+
+        -S ${unline}list-sat${normal}
+           colon separted list of satellites to process. For example,
+           -S 3:4:5 to process Metop-A, Metop-B and Metop-C. See
+           https://apps.ecmwf.int/odbgov/satelliteidentifier/ for more
+           details.
+
+        -s ${unline}list-sen${normal}
+           colon separted list of sensors to process. For example,
+           -s 3:15 to process AMSU-A and MHS. See 
+           https://apps.ecmwf.int/odbgov/sensor/ for more details.
+
+        -b ${unline}begin-dtg${normal}
+           DTG (YYYYMMDDHH) to start time-series
+
+        -e ${unline}end-dtg${normal}
+           DTG (YYYYMMDDHH) to end time-series
+
+        -c ${unline}assim-cycle${normal}
+           Interval between cycles. [default: 24]
+
+        -h Help! Print usage information.
+
+USAGE
+}
+
+if [ ${#} -eq 0 ]; then
+  echo "No command line arguments provided"
+  echo "Try '${PROGNAME} -h' for more information"
+  exit 1
+fi
+
+#Defaults
+VARBCINP=DUMMY
+VARBCOUT=DUMMY
+SATLIST=DUMMY
+SENLIST=DUMMY
+DTGBEG=DUMMY
+DTGBEG=DUMMY
 FCINT=24
+
+while getopts i:o:S:s:b:e:c:h option
+do
+  case $option in
+    i)
+       VARBCINP=$OPTARG
+       ;;
+    o)
+       VARBCOUT=$OPTARG
+       mkdir -p ${VARBCOUT}
+       ;;
+    S)
+       SATLIST=$OPTARG
+       ;;
+    s)
+       SENLIST=$OPTARG
+       ;;
+    b)
+       DTGBEG=$OPTARG
+       ;;
+    e)
+       DTGEND=$OPTARG
+       ;;
+    c)
+       FCINT=$OPTARG
+       ;;
+    h)
+       usage
+       exit 0
+       ;;
+    *)
+       echo
+       echo "Try '${PROGNAME} -h' for more information"
+       ;;
+  esac
+done
+
 
 # usually for SEVIRI and ATOVS VarBC is done with 5 predictors
 # but less predictors are possible
 npred=5
-
 
 echo "############################################"
 echo "Cycling " $FCINT 

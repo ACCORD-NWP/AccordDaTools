@@ -9,13 +9,11 @@
 # the so-called VARBC_${sat}_${sensor}_${channel}_${YYYY}${MM}${DD}_${HH} files
 # stored in $DIR_TMP
 # 
-#Currenta::
+#Current::
 # Scan directory for VARBC.cycle files and write all information
 # to output directory
 
 #TODO:
-#    * add satellite_id option - do we want this? -n
-#    * add satellite_sensor option - do we want this? -s
 #    * add DTGBEG option - do we want this? -b
 #    * add DTGEND option - do we want this? -e
 
