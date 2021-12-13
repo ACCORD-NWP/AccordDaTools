@@ -9,5 +9,5 @@ function (install_scripts)
 endfunction()
 
 install_scripts (jbdiagnose.sh plotjbbal.py plotjbdiag.py)
-install_scripts (diacov.sh 1_extract_varbc_cycle.sh)
+install_scripts (diacov.sh 1_extract_varbc_cycle.sh 2_varbc_fig.sh)
 #install_scripts (diacov.sh festat.sh)

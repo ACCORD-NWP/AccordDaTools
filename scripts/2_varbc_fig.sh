@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/bash
 
 . $PWD/include.paths
 
