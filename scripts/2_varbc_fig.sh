@@ -1,10 +1,9 @@
 #!/bin/bash
 
-. $PWD/include.paths
+#set -x
+#set -xe
 
-#DTGBEG=2021060806
-#DTGEND=2021063021
-
+#Old::
 # after runnning 1_extract_VARBC_cycle.ksh files
 # VARBC_${sat}_${sensor}_${channel}_${YYYY}${MM}${DD}_${HH} files
 # in $DIR_TMP are grouped with selected loops for sat, sensor, 
@@ -28,14 +27,14 @@ unline=$(tput smul)
 cat << USAGE
 
 ${bold}NAME${normal}
-        ${PROGNAME} - process VarBC predictor information
+        ${PROGNAME} - plot VarBC predictor time-series
 
 ${bold}USAGE${normal}
         ${PROGNAME} -i <input-directory> -o <output-directory>
                     [ -h ]
 
 ${bold}DESCRIPTION${normal}
-        Script to process VarBC predictor information from VARBC.cycle files
+        Plot VarBC predictor information from VARBC.cycle files
         produced by IAAAH NWP System.
 
 ${bold}OPTIONS${normal}
@@ -62,6 +61,9 @@ ${bold}OPTIONS${normal}
         -e ${unline}end-dtg${normal}
            DTG (YYYYMMDDHH) to end time-series
 
+        -x ${unline}exp-name${normal}
+           Experiment name
+
         -c ${unline}assim-cycle${normal}
            Interval between cycles. [default: 24]
 
@@ -78,14 +80,15 @@ fi
 
 #Defaults
 VARBCINP=DUMMY
-VARBCOUT=DUMMY
+VARBCOUT=varbc_pred.png
 SATLIST=DUMMY
 SENLIST=DUMMY
 DTGBEG=DUMMY
 DTGBEG=DUMMY
 FCINT=24
+EXPNAME=EXP
 
-while getopts i:o:S:s:b:e:c:h option
+while getopts i:o:S:s:b:e:c:x:h option
 do
   case $option in
     i)
@@ -93,7 +96,6 @@ do
        ;;
     o)
        VARBCOUT=$OPTARG
-       mkdir -p ${VARBCOUT}
        ;;
     S)
        SATLIST=$OPTARG
@@ -110,6 +112,9 @@ do
     c)
        FCINT=$OPTARG
        ;;
+    x)
+       EXPNAME=$OPTARG
+       ;;
     h)
        usage
        exit 0
@@ -121,120 +126,124 @@ do
   esac
 done
 
-
-# usually for SEVIRI and ATOVS VarBC is done with 5 predictors
-# but less predictors are possible
-npred=5
-
-echo "############################################"
-echo "Cycling " $FCINT 
-echo "VARBC file with " $npred " coefficients"
-echo "############################################"
-
-
-
-cd $DIR_DAT
-
-for sat  in $list_sat
-do
-
-# list_hh depends on the satellite and the domain
-if [[ $sat == 70  &&  $FCINT == "03" ]] ; then 
-#   list_sensor="29" ; list_hh="ALL"
-    list_hh="ALL"
-else
-   case $sat in
-   209) list_hh="09 21" ;; 
-   223) list_hh="06 18" ;;
-   3|4|5) list_hh="09 12 21" ;;
-   70) list_hh="00 06 12 18" ;;
-   esac
+if [ "${VARBCINP}" == "DUMMY" ]; then
+  echo "Please specify input directory using '-i'."
+  echo "Try '$0 -h' for more information"
+  exit 1
 fi
 
-for sensor in $list_sensor
-do
-
-if [[ $sat == 209  &&  $sensor == 3 ]] ; then list_channel="6 7 8"; fi
-if [[ $sat == 223  &&  $sensor == 3 ]] ; then list_channel="6 9"; fi
-if [[ $sat == 223  &&  $sensor == 15 ]] ; then list_channel="4 5"; fi
-if [[ $sat == 3  &&  $sensor == 3 ]] ; then list_channel="6 7 8 9"; fi
-if [[ $sat == 3  &&  $sensor == 15 ]] ; then list_channel="3 4 5"; fi
-if [[ $sat == 4  &&  $sensor == 3 ]] ; then list_channel="6 9"; fi
-if [[ $sat == 4  &&  $sensor == 15 ]] ; then list_channel="3 4 5"; fi
-if [[ $sat == 5  &&  $sensor == 3 ]] ; then list_channel="6 7 8 9"; fi
-if [[ $sat == 5  &&  $sensor == 15 ]] ; then list_channel="3 4 5"; fi
-if [[ $sat == 70  &&  $sensor == 29 ]] ; then list_channel="2 3 4 6 7 8"; fi
-
-
-for channel in $list_channel
-do
-
-for hh in $list_hh
-do
-
-file_out=${DIR_DAT}/VARBC_${sat}_${sensor}_${channel}_${hh}
-
-if [ -s ${file_out} ] ; then 
-    rm ${file_out} 
+if [ ! -d "${VARBCINP}" ]; then
+  echo "Directory ${VARBCINP} does not exist."
+  echo "Please check"
+  exit 1
 fi
 
+if [ "${SATLIST}" == "DUMMY" ]; then
+  echo "Please specify satellite identifier using '-S'."
+  echo "Try '$0 -h' for more information"
+  exit 1
+fi
 
+if [ "${SENLIST}" == "DUMMY" ]; then
+  echo "Please specify satellite sensor using '-s'."
+  echo "Try '$0 -h' for more information"
+  exit 1
+fi
 
-#DTG=$DTGBEG
-    YYYY=`echo $DTGBEG|cut -c1-4`
-    MM=`echo $DTGBEG|cut -c5-6`
-    DD=`echo $DTGBEG|cut -c7-8`
-    HH=`echo $DTGBEG|cut -c9-10`
+if [ "${DTGBEG}" == "DUMMY" ]; then
+  echo "Please specify DTGBEG using '-b'."
+  echo "Try '$0 -h' for more information"
+  exit 1
+fi
 
-    if [ $FCINT == "03" ] ; then
-      DTG=$DTGBEG
-    else
-      DTG=$YYYY$MM$DD$hh
-    fi
+if [ "${DTGEND}" == "DUMMY" ]; then
+  echo "Please specify DTGBEG using '-e'."
+  echo "Try '$0 -h' for more information"
+  exit 1
+fi
 
-echo "Start " $DTG $sat $sensor $channel $hh 
+# Derive npred from first input files
 
-while [ $DTG -le $DTGEND ]
+list_sat=$(echo $SATLIST | sed 's/:/ /g')
+list_sensor=$(echo $SENLIST | sed 's/:/ /g')
+
+for sat in $list_sat
 do
 
-    YYYY=`echo $DTG|cut -c1-4`
-    MM=`echo $DTG|cut -c5-6`
-    DD=`echo $DTG|cut -c7-8`
-    HH=`echo $DTG|cut -c9-10`
+  # list_hh depends on the satellite and the domain
+  if [[ $sat == 70  &&  $FCINT == "03" ]] ; then 
+  #   list_sensor="29" ; list_hh="ALL"
+      list_hh="ALL"
+  else
+    case $sat in
+      209) list_hh="09 21" ;; 
+      223) list_hh="06 18" ;;
+      3|4|5) list_hh="09 12 21" ;;
+      70) list_hh="00 06 12 18" ;;
+    esac
+  fi
+  for sensor in $list_sensor; do
+    if [[ $sat == 209  &&  $sensor == 3 ]] ; then list_channel="6 7 8"; fi
+    if [[ $sat == 223  &&  $sensor == 3 ]] ; then list_channel="6 9"; fi
+    if [[ $sat == 223  &&  $sensor == 15 ]] ; then list_channel="4 5"; fi
+    if [[ $sat == 3  &&  $sensor == 3 ]] ; then list_channel="6 7 8 9"; fi
+    if [[ $sat == 3  &&  $sensor == 15 ]] ; then list_channel="3 4 5"; fi
+    if [[ $sat == 4  &&  $sensor == 3 ]] ; then list_channel="6 9"; fi
+    if [[ $sat == 4  &&  $sensor == 15 ]] ; then list_channel="3 4 5"; fi
+    if [[ $sat == 5  &&  $sensor == 3 ]] ; then list_channel="6 7 8 9"; fi
+    if [[ $sat == 5  &&  $sensor == 15 ]] ; then list_channel="3 4 5"; fi
+    if [[ $sat == 70  &&  $sensor == 29 ]] ; then list_channel="2 3 4 6 7 8"; fi
 
-
-    if [ $FCINT == "03" ] ; then
-         ff=${DIR_TMP}/VARBC_${sat}_${sensor}_${channel}_${YYYY}${MM}${DD}_${HH}
-    else
-         ff=${DIR_TMP}/VARBC_${sat}_${sensor}_${channel}_${YYYY}${MM}${DD}_${hh}
-    fi
-
-
-       if [ -s  $ff ]  ; then
-          cat  $ff >> ${file_out}
-       else
-          # if no there is not data in $DTG, a dummy line is included to avoid problems with varbc_plot.Rsh
-          # echo $YYYY $MM $DD $HH $key $ndata $npred $params $param0 $predcs 
-          nobs=0
-          if [ $npred -eq 1 ] ; then
-            echo $YYYY $MM $DD $HH $sat $sensor $channel $nobs $npred "NaN NaN 0" >> ${file_out}
+    for channel in $list_channel; do
+      for hh in $list_hh; do
+        file_out=${VARBCINP}/VARBC_${sat}_${sensor}_${channel}_${hh}
+        if [ -s ${file_out} ] ; then 
+          rm ${file_out} 
+        fi
+        #DTG=$DTGBEG
+        YYYY=`echo $DTGBEG|cut -c1-4`
+        MM=`echo $DTGBEG|cut -c5-6`
+        DD=`echo $DTGBEG|cut -c7-8`
+        HH=`echo $DTGBEG|cut -c9-10`
+        if [ $FCINT == "03" ] ; then
+          DTG=$DTGBEG
+        else
+          DTG=$YYYY$MM$DD$hh
+        fi
+        echo "Start " $DTG $sat $sensor $channel $hh 
+        while [ $DTG -le $DTGEND ]; do
+          YYYY=`echo $DTG|cut -c1-4`
+          MM=`echo $DTG|cut -c5-6`
+          DD=`echo $DTG|cut -c7-8`
+          HH=`echo $DTG|cut -c9-10`
+          if [ $FCINT == "03" ] ; then
+            ff=${VARBCINP}/VARBC_${sat}_${sensor}_${channel}_${YYYY}${MM}${DD}_${HH}0000
           else
-            echo $YYYY $MM $DD $HH $sat $sensor $channel $nobs $npred "NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 0 1 8 9 10" >> ${file_out}
+            ff=${VARBCINP}/VARBC_${sat}_${sensor}_${channel}_${YYYY}${MM}${DD}_${hh}0000
           fi
-       fi
-
-
-DTG=`mandtg $DTG + $FCINT`
-
-done # end do while DTG
-
-
-echo "Plotting " $EXP $sat $sensor $channel $hh 
-
-${DIR_SCR}/varbc_plot.Rsh $sat $sensor $channel $hh $EXP > /dev/null 2>&1
-
-
-done # for hh
-done # for channel
-done # for sensor
+#Hard-codeed for now
+#Should be able to scrape from first input file
+          npred=5
+          if [ -s  $ff ]  ; then
+            cat $ff >> ${file_out}
+          else
+            # if no there is not data in $DTG, a dummy line is included to avoid problems with varbc_plot.Rsh
+            # echo $YYYY $MM $DD $HH $key $ndata $npred $params $param0 $predcs 
+            nobs=0
+            if [ $npred -eq 1 ] ; then
+              echo ${YYYY}${MM}${DD} ${HH}0000 $sat $sensor $channel $nobs $npred "NaN NaN 0" >> ${file_out}
+            else
+              echo ${YYYY}${MM}${DD} ${HH}0000 $sat $sensor $channel $nobs $npred "NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 0 1 8 9 10" >> ${file_out}
+            fi
+          fi
+          DTG=$(date -d "${YYYY}-${MM}-${DD} ${HH}:00:00 ${FCINT} hour" '+%Y%m%d%H')
+        done # end do while DTG
+        echo "Plotting " $EXPNAME $sat $sensor $channel $hh 
+#        varbc_plot.Rsh $sat $sensor $channel $hh $EXP > /dev/null 2>&1
+        varbc_plot $sat $sensor $channel $hh EXPNAME ${VARBCINP}
+      done # for hh
+    done # for channel
+  done # for sensor
 done # for sat
+
+exit 0

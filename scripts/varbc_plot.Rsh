@@ -3,13 +3,14 @@
 
 args <- commandArgs(trailingOnly = TRUE)
 
-if ( length(args) != 5 ) {print("Incorrect number of arguments"); quit()}
+if ( length(args) != 6 ) {print("Incorrect number of arguments"); quit()}
 
 sat <- as.numeric(args[1])
 sensor <- as.numeric(args[2])
 channel <- as.numeric(args[3])
 hh <- as.character(args[4])
 exp <- as.character(args[5])
+indir <- as.character(args[6])
 
 if (sat == 206 ) {
      satb = "NOAA15" 
@@ -43,26 +44,26 @@ if (sensor == 3 ) {
      sensorb = "UNKNOWN"
 }
 
-
 # name of the input file (for instance VARBC_209_3_9_03)
-file_varbc=sprintf("VARBC_%s_%s_%s_%s",sat,sensor,channel,hh)
+file_varbc=sprintf("%s/VARBC_%s_%s_%s_%s",indir,sat,sensor,channel,hh)
 
 if (!file.exists(file_varbc)) { stop("the file does not exist") }
 
-#x <- read.table(file_varbc,fill=TRUE,col.names=1:nc)
 x <- read.table(file_varbc,fill=TRUE)
     
 # General description of file columns:
-# x[,1:4] year, month, day, hour
-# x[,5:7] sat, sensor, channel
-# x[,8] ndata
-# x[,9] number of predictors 
+# x[,1:2] year, month, day, hour
+# x[,3:5] sat, sensor, channel
+# x[,6] ndata
+# x[,7] number of predictors 
 # the number of predictors is always the same
-npred=x[1,9]
+#DEBUG print (x)
+
+npred=x[1,7]
 
 # parameter estimates 'params'
 # first and last value for 'params'
-n1=10; n2=n1+npred-1
+n1=8; n2=n1+npred-1
 # x[,n1:n2] parameter estimates 'param0'
 
 # parameter backgroud 'param0'
@@ -81,18 +82,14 @@ col_pred=c("black","red","magenta","blue","cyan")
 
 # time evolution of parameters 
 
-# n= diference between %Y-01-01 and %Y-%m-%d (in days)
-cd0=sprintf("%s-01-01",x[1,1]); d0=as.numeric(strftime(cd0,format="%j"))
-cd1=sprintf("%s-%s-%s",x[,1],x[,2],x[,3]); d1=as.numeric(strftime(cd1,format="%j"))
-
-n <- (d1-d0+1) + (x[,4]*0.125/3.)
+#DEBUG print (x[,1])
+#DEBUG print (x[,n1:n2])
 
 ####################################################################3
 
 # 2 plots in a figure: 
 # 1st time evolution of the varbc coefficents
 # 2nd time evolution of the number of observations
-
 
 file.png=sprintf("varbc_%s_%s_%s_%s.png",sat,sensor,channel,hh)
 png(filename=file.png,width=720,height=720)
@@ -101,12 +98,11 @@ par(mfrow=c(2,1))
 #par(mfrow=c(3,1))
 
 # 1st Plot 
-matplot(n,x[,n1:n2],pch=19,col=col_pred,lwd=3,lty=1,xlab="day",ylab="bias parameter estimates")
-matlines(n,x[,n1:n2],type="l",col=col_pred,lwd=3,lty=1)
+matplot(x[,1],x[,n1:n2],pch=19,col=col_pred,lwd=3,lty=1,xlab="day",ylab="bias parameter estimates")
+matlines(x[,1],x[,n1:n2],type="l",col=col_pred,lwd=3,lty=1)
 
 # to plot param0, uncomment next line 
 #matplot(n,x[,n11:n22],type="l",col=col_pred,lwd=3,lty=2,ylab="bias parameter estimates",add=T)
-
 
 #legend("topleft",predic,col=col_pred,lwd=3,lty=1)
 legend("top",predic,col=col_pred,lwd=3,lty=1)
@@ -114,10 +110,11 @@ title(sprintf("%s     Sat= %s (%s)  Sensor= %s (%s)   Channel= %s  HH= %s UTC",e
 grid()
 
 # 2nd Plot
-plot(n,x[,8],type="h",xlab="day",ylab="number of active observations",ylim=c(0,900))
+plot(x[,1],x[,6],type="h",xlab="day",ylab="number of active observations",ylim=c(0,900))
+
 # mean data number
-mean_num_obs=round(mean(x[,8]),digits=0)
-title(sprintf("Mean number of observations:  %s",mean_num_ob))
+mean_num_obs=round(mean(x[,6]),digits=0)
+title(sprintf("Mean number of observations:  %s",mean_num_obs))
 
 
 dev.off()

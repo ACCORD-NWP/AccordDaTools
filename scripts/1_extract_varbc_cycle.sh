@@ -149,7 +149,7 @@ find ${VARBCINP} -name "VARBC.cycle" | while read FILEIN; do
     file_out=VARBC_${name_key}_${YYYYMMDD}_${HHMMSS}
 
     if [[ "$SATLIST" == "ALL" ]]; then
-          echo $YYYYMMDD $HHMMSS $key $ndata $npred $params $param0 $predcs > $VARBCOUT/${file_out}
+      echo $YYYYMMDD $HHMMSS $key $ndata $npred $params $param0 $predcs > $VARBCOUT/${file_out}
     else
       list_sat=$(echo $SATLIST | sed 's/:/ /g')
       list_sensor=$(echo $SENLIST | sed 's/:/ /g')
