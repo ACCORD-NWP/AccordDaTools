@@ -39,7 +39,7 @@ ${bold}NAME${normal}
         ${PROGNAME} - process VarBC predictor information
 
 ${bold}USAGE${normal}
-        ${PROGNAME} -i <input-directory> -o <oupput-directory>
+        ${PROGNAME} -i <input-directory> -o <output-directory>
                     [ -h ]
 
 ${bold}DESCRIPTION${normal}
@@ -47,11 +47,22 @@ ${bold}DESCRIPTION${normal}
         produced by IAAAH NWP System.
 
 ${bold}OPTIONS${normal}
-        -i ${unline}bal-file${normal}
+        -i ${unline}input-directory${normal}
            input directory
 
-        -o ${unline}cv-file${normal}
+        -o ${unline}output-directory${normal}
            output directory
+
+        -S ${unline}list-sat${normal}
+           colon separted list of satellites to process. For example,
+           -S 3:4:5 to process Metop-A, Metop-B and Metop-C. See
+           https://apps.ecmwf.int/odbgov/satelliteidentifier/ for more
+           details.
+
+        -s ${unline}list-sen${normal}
+           colon separted list of sensors to process. For example,
+           -s 3:15 to process AMSU-A and MHS. See 
+           https://apps.ecmwf.int/odbgov/sensor/ for more details.
 
         -h Help! Print usage information.
 
@@ -68,8 +79,10 @@ fi
 #Defaults
 VARBCINP=DUMMY
 VARBCOUT=DUMMY
+SATLIST=ALL
+SENLIST=ALL
 
-while getopts i:o:h option
+while getopts i:o:S:s:h option
 do
   case $option in
     i)
@@ -78,6 +91,12 @@ do
     o)
        VARBCOUT=$OPTARG
        mkdir -p ${VARBCOUT}
+       ;;
+    S)
+       SATLIST=$OPTARG
+       ;;
+    s)
+       SENLIST=$OPTARG
        ;;
     h)
        usage
@@ -130,15 +149,20 @@ find ${VARBCINP} -name "VARBC.cycle" | while read FILEIN; do
 
     # Only NOAA-18, 19 (209 and 223) and METOP-A,B,C (4,3,5) and METOPSAT-11 are selected
     file_out=VARBC_${name_key}_${YYYYMMDD}_${HHMMSS}
-   
-#    for SAT in $list_sat ; do
-#      for SENSOR in $list_sensor ; do
-#        if [[ $sat == $SAT  &&  $sensor == $SENSOR ]] ; then
-#          echo $YYYY $MM $DD $HH $key $ndata $npred $params $param0 $predcs > $VARBCOUT/${file_out}
+
+    if [[ "$SATLIST" == "ALL" ]]; then
           echo $YYYYMMDD $HHMMSS $key $ndata $npred $params $param0 $predcs > $VARBCOUT/${file_out}
-#        fi
-#      done  # end of list_sensor
-#    done  # end of list_sat
+    else
+      list_sat=$(echo $SATLIST | sed 's/:/ /g')
+      list_sensor=$(echo $SENLIST | sed 's/:/ /g')
+      for SAT in $list_sat ; do
+        for SENSOR in $list_sensor ; do
+          if [[ $sat == $SAT  &&  $sensor == $SENSOR ]] ; then
+            echo $YYYYMMDD $HHMMSS $key $ndata $npred $params $param0 $predcs > $VARBCOUT/${file_out}
+          fi
+        done  # end of list_sensor
+      done  # end of list_sat
+    fi
   done  # end of list_nl
 done # end of scan
 echo
