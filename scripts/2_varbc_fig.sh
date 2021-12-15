@@ -81,6 +81,7 @@ fi
 #Defaults
 VARBCINP=DUMMY
 VARBCOUT=varbc_pred.png
+VARBCOUT=DUMMY
 SATLIST=DUMMY
 SENLIST=DUMMY
 DTGBEG=DUMMY
@@ -196,7 +197,7 @@ do
 
     for channel in $list_channel; do
       for hh in $list_hh; do
-        file_out=${VARBCINP}/VARBC_${sat}_${sensor}_${channel}_${hh}
+        file_out=${VARBCOUT}/VARBC_${sat}_${sensor}_${channel}_${hh}
         if [ -s ${file_out} ] ; then 
           rm ${file_out} 
         fi
@@ -240,7 +241,7 @@ do
         done # end do while DTG
         echo "Plotting " $EXPNAME $sat $sensor $channel $hh 
 #        varbc_plot.Rsh $sat $sensor $channel $hh $EXP > /dev/null 2>&1
-        varbc_plot $sat $sensor $channel $hh EXPNAME ${VARBCINP}
+        varbc_plot $sat.Rsh $sensor $channel $hh EXPNAME ${VARBCOUT}
       done # for hh
     done # for channel
   done # for sensor
