@@ -91,7 +91,8 @@ col_pred=c("black","red","magenta","blue","cyan")
 # 1st time evolution of the varbc coefficents
 # 2nd time evolution of the number of observations
 
-file.png=sprintf("varbc_%s_%s_%s_%s.png",sat,sensor,channel,hh)
+#file.png=sprintf("varbc_%s_%s_%s_%s.png",sat,sensor,channel,hh)
+file.png=sprintf("%s/varbc_%s_%s_%s_%s.png",indir,sat,sensor,channel,hh)
 png(filename=file.png,width=720,height=720)
 
 par(mfrow=c(2,1))
