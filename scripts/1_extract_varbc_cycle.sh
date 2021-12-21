@@ -88,7 +88,12 @@ do
        ;;
     o)
        VARBCOUT=$OPTARG
-       mkdir -p ${VARBCOUT}
+       if [ -d $VARBCOUT ]; then
+         echo "Directory ${VARBCOUT} already exists. Please choose another name"
+         exit 1
+       else
+         mkdir -p ${VARBCOUT}
+       fi
        ;;
     S)
        SATLIST=$OPTARG
@@ -107,10 +112,11 @@ do
   esac
 done
 
+
 echo "Starting to loop over files ..."
 
 echo "Processing ..."
-find ${VARBCINP} -name "VARBC.cycle" | while read FILEIN; do
+find ${VARBCINP} -name "VARBC.cycle" | sort | while read FILEIN; do
 
   YYYYMMDD=$(awk 'NR == 2 {print $2; exit}' ${FILEIN})
   HHMMSS_S=$(awk 'NR == 2 {print $3; exit}' ${FILEIN})
@@ -145,18 +151,20 @@ find ${VARBCINP} -name "VARBC.cycle" | while read FILEIN; do
     sensor=`echo $key|awk '{print $2}'`
     channel=`echo $key|awk '{print $3}'`
 
-    # Only NOAA-18, 19 (209 and 223) and METOP-A,B,C (4,3,5) and METOPSAT-11 are selected
     file_out=VARBC_${name_key}_${YYYYMMDD}_${HHMMSS}
+    file_out=VARBC_${name_key}
 
     if [[ "$SATLIST" == "ALL" ]]; then
-      echo $YYYYMMDD $HHMMSS $key $ndata $npred $params $param0 $predcs > $VARBCOUT/${file_out}
+      echo ${YYYYMMDD}:${HHMMSS} $key $ndata $npred $params $param0 $predcs >> $VARBCOUT/${file_out}_${HHMMSS}
+      echo ${YYYYMMDD}:${HHMMSS} $key $ndata $npred $params $param0 $predcs >> $VARBCOUT/${file_out}
     else
       list_sat=$(echo $SATLIST | sed 's/:/ /g')
       list_sensor=$(echo $SENLIST | sed 's/:/ /g')
       for SAT in $list_sat ; do
         for SENSOR in $list_sensor ; do
           if [[ $sat == $SAT  &&  $sensor == $SENSOR ]] ; then
-            echo $YYYYMMDD $HHMMSS $key $ndata $npred $params $param0 $predcs > $VARBCOUT/${file_out}
+            echo ${YYYYMMDD}:${HHMMSS} $key $ndata $npred $params $param0 $predcs >> $VARBCOUT/${file_out}_${HHMMSS}
+            echo ${YYYYMMDD}:${HHMMSS} $key $ndata $npred $params $param0 $predcs >> $VARBCOUT/${file_out}
           fi
         done  # end of list_sensor
       done  # end of list_sat

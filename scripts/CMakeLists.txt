@@ -8,6 +8,6 @@ function (install_scripts)
   endforeach ()
 endfunction()
 
-install_scripts (jbdiagnose.sh plotjbbal.py plotjbdiag.py)
+install_scripts (jbdiagnose.sh plotjbbal.py plotjbdiag.py plotvarbcpred.py)
 install_scripts (diacov.sh 1_extract_varbc_cycle.sh 2_varbc_fig.sh varbc_plot.Rsh)
 #install_scripts (diacov.sh festat.sh)
