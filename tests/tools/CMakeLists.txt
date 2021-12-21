@@ -1,7 +1,10 @@
 list( APPEND tools_tests_scripts
              test_jbdiagnose_help.sh
              test_plotjbbal_help.sh
-             test_plotjbdiag_help.sh )
+             test_plotjbdiag_help.sh
+             test_varbcdiagnose_help.sh
+             test_plotvarbcpred_help.sh
+     )
 
 
 foreach( _script ${tools_tests_scripts} )
