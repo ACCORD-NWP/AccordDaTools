@@ -100,13 +100,20 @@ sat_map = {
            523 : "FY-3D",
           }
 sen_map = {
+            0 : "HIRS",
+            1 : "MSU",
+            2 : "SSU",
             3 : "AMSU-A",
             4 : "AMSU-B",
+           11 : "AIRS",
            15 : "MHS",
            16 : "IASI",
            19 : "ATMS",
            27 : "CRIS",
-           29 : "SEVIRI",
+           21 : "SEVIRI",
+           29 : "SEVIRI HR",
+           34 : "SAPHIR",
+           72 : "MWTS2",
            73 : "MWHS2",
           }
 
