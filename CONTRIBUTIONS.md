@@ -26,13 +26,20 @@ Click **Make a contribution** at the bottom of any docs page to make small chang
 Scan through [existing issues](https://github.com/Hirlam/AccordDaTools/issues) to find one that interests you. You can narrow down the search using `labels` as filters. As a general rule, we don’t assign issues to anyone. If you find an issue to work on, you are welcome to open a PR with a fix.
 
 #### Make changes locally - fork & branch
-
-1. Fork the repository.
-  - [Fork the repo](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo#fork-an-example-repository) so that you can make your changes without affecting the original project until you're ready to merge them.
+1. Fork the repository: [Fork the repo](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo#fork-an-example-repository) so that you can make your changes without affecting the original project until you're ready to merge them.
 2. Create a working branch and start with your changes!
 
-### Commit your update
+### For developers
+The following requirements should be kept in mind by developers:
+#### Installation
+AccordDaTools makes use of [https://cmake.org/](CMake) to configure and install the code. Your new developments should be captured by the CMake insfrastructure.
+#### Execution
+ - All new tools should have a built-in help option: `$~> new_da_tool -h` that provides some brief instructions on how to use the tool.
+ - In general, AccordDaTools have data-processing scripts and plotting scripts. Try to avoid anything in between!
+ - All options should be provided via the command-line interface (CLI)
+ - No Python version 2 allowed!
 
+### Commit your update
 Commit the changes once you are happy with them. See [Atom's contributing guide](https://github.com/atom/atom/blob/master/CONTRIBUTING.md#git-commit-messages) to know how to use emoji for commit messages. Once your changes are ready, don't forget to [self-review](/contributing/self-review.md) to speed up the review process:zap:.
 
 ### Pull Request
