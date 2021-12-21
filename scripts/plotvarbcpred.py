@@ -106,7 +106,7 @@ sen_map = {
            16 : "IASI",
            19 : "ATMS",
            27 : "CRIS",
-           70 : "SEVIRI",
+           29 : "SEVIRI",
            73 : "MWHS2",
           }
 
