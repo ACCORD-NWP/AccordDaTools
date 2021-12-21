@@ -3,7 +3,9 @@ Thank you for investing your time in contributing to our project! <!-- Any contr
 
 ## New contributor guide
 
-To get an overview of the AccordDaTools, read the [README](README.md). Here are some resources to help you get started with open source contributions:
+To get an overview of the AccordDaTools, read the [README](README.md).
+
+Here are some resources to help you get started with open source contributions:
 
 - [Finding ways to contribute to open source on GitHub](https://docs.github.com/en/get-started/exploring-projects-on-github/finding-ways-to-contribute-to-open-source-on-github)
 - [Set up Git](https://docs.github.com/en/get-started/quickstart/set-up-git)
@@ -12,14 +14,10 @@ To get an overview of the AccordDaTools, read the [README](README.md). Here are 
 
 ### Issues
 #### Create a new issue
-
-If you spot a problem with the docs, [search if an issue already exists](https://docs.github.com/en/github/searching-for-information-on-github/searching-on-github/searching-issues-and-pull-requests#search-by-the-title-body-or-comments). If a related issue doesn't exist, you can open a new issue using a relevant [issue form](https://github.com/github/docs/issues/new/choose). 
-
-
+If you spot a problem , [search if an issue already exists](https://github.com/Hirlam/AccordDaTools/issues). If a related issue doesn't exist, you can open a new issue using a relevant [issue form](https://github.com/Hirlam/AccordDaTools/issues/new/choose).
 
 #### Solve an issue
 If you find an issue to work on, you are welcome to open a PR with a fix!
-
 
 ### Make Changes
 #### Make changes in the UI
@@ -29,15 +27,8 @@ Scan through [existing issues](https://github.com/Hirlam/AccordDaTools/issues) t
 
 #### Make changes locally - fork & branch
 
-
 1. Fork the repository.
-
-- Using the command line:
   - [Fork the repo](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo#fork-an-example-repository) so that you can make your changes without affecting the original project until you're ready to merge them.
-
-- GitHub Codespaces:
-  - [Fork, edit, and preview](https://docs.github.com/en/free-pro-team@latest/github/developing-online-with-codespaces/creating-a-codespace) using [GitHub Codespaces](https://github.com/features/codespaces) without having to install and run the project locally.
-
 2. Create a working branch and start with your changes!
 
 ### Commit your update
