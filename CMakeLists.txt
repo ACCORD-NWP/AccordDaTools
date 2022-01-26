@@ -23,11 +23,15 @@ set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${dialect}")
 # Compile.
 #
 
-file(GLOB_RECURSE sources  src/*.F90 src/*.h)
-add_executable(jbdiagnose.x ${sources})
+add_executable(jbdiagnose.x src/jbdiagnose.F90)
+add_executable(dfscomp.x src/dfscomp.F90)
 
 # install executables and scripts
 install (TARGETS jbdiagnose.x
+         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
+         DESTINATION libexec)
+
+install (TARGETS dfscomp.x
          PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
          DESTINATION libexec)
 

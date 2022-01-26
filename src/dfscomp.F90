@@ -1,0 +1,304 @@
+  PROGRAM DFSCOMP
+
+! =====================================================
+! Compute Degrees of Freedom for Signal (DFS)
+! =====================================================
+!
+!
+! Method
+! =====================================================
+!
+! Implemented formulation is:
+!
+! DFS = (obsvalue* - obsvalue ) * (final_obs_error^-2) * 
+! [ (fg_depar - an_depar)* - (fg_depar - an_depar) ] 
+!
+! i.e. DFS = ( y* - y ) * R^-1 * (Hdx* - Hdx )
+!
+! where * indicates perturbed observations and
+! analysis from perturbed observations.
+!
+!
+! Practicals
+! =====================================================
+!
+! The program reads two file, 1 and 2, from
+! perturbed and unperturbed analysis respectively
+! for the same observations dataset.
+! Files are obtained by running COMPSTAT in the
+! CCMA directory.
+!
+!
+! Scientific Documentation
+! =====================================================
+!
+! Chapnik et al., 2006, QJRMS 132 pp543--565
+!
+!
+! Modifications
+! =====================================================
+!
+! Andrea Storto *met.no*, 05.02.2008 : Original
+!
+
+
+IMPLICIT NONE
+
+
+ CHARACTER(LEN=300) :: CFILE1,CFILE2
+ LOGICAL            :: LEX
+ INTEGER            :: INUM,IERR
+ INTEGER            :: NUN1,NUN2,NUN3
+ INTEGER, PARAMETER :: NUMV=25
+ REAL               :: ZDFS(NUMV)
+ INTEGER            :: NDFS(NUMV)
+ INTEGER            :: ITOT,INOTC,ICHAN
+ 
+ INTEGER            :: IOT1,IOS1,IOSE1,IOV1
+ REAL               :: ZLAT1,ZLON1,ZOBS1,ZERR1,ZFGDEP1,ZANDEP1
+ INTEGER            :: IOT2,IOS2,IOSE2,IOV2
+ REAL               :: ZLAT2,ZLON2,ZOBS2,ZERR2,ZFGDEP2,ZANDEP2
+ CHARACTER(LEN=10)  :: CHST1,CHST2
+ REAL               :: ZCH1,ZCH2
+ INTEGER            :: IIND
+ INTEGER            :: II
+ LOGICAL            :: LLVERBCS, Skip_Line
+ 
+
+ NUN1=21
+ NUN2=22
+ NUN3=23
+ NDFS(:)=0
+ ZDFS(:)=0
+ ITOT = 0 
+ INOTC = 0
+ LLVERBCS=.TRUE.
+
+ CFILE1='file1'
+ CFILE1='file2'
+ CALL GETARG(1,CFILE1)
+ CALL GETARG(2,CFILE2)
+
+ if (LEN_TRIM(CFILE1) .EQ. 0 .OR. &
+   & LEN_TRIM(CFILE2) .EQ. 0 ) CALL USAGE
+
+
+ INQUIRE(FILE=CFILE1,EXIST=LEX)
+ IF(.NOT.LEX) CALL USAGE
+ INQUIRE(FILE=CFILE2,EXIST=LEX)
+ IF(.NOT.LEX) CALL USAGE
+
+ OPEN(NUN1,FILE=CFILE1)
+ OPEN(NUN2,FILE=CFILE2)
+ IF(LLVERBCS) OPEN(32,FILE='csat.dfs',POSITION='APPEND')
+
+ IERR=0
+
+ READ(NUN1,*,IOSTAT=IERR)
+write(*,*) 'IERR NUN1',IERR
+ READ(NUN2,*,IOSTAT=IERR)
+write(*,*) 'IERR NUN2',IERR
+Skip_Line=.FALSE.
+
+ obs_cycle : DO WHILE (IERR .EQ. 0)
+
+!
+! The ODB request is:
+!
+! SELECT
+! obstype,codetype,press,sensor,statid,varno,degrees(lat),degrees(lon),
+! obsvalue,final_obs_error,fg_depar,an_depar
+! FROM  hdr,desc,body,errstat
+! WHERE (an_depar is not NULL)
+!
+
+  IF (.NOT.Skip_Line) THEN
+    READ(NUN1,*,IOSTAT=IERR) IOT1,IOS1,ZCH1,IOSE1,CHST1,IOV1,&
+                           & ZLAT1,ZLON1,ZOBS1,ZERR1,ZFGDEP1,ZANDEP1 
+  ENDIF
+  READ(NUN2,*,IOSTAT=IERR) IOT2,IOS2,ZCH2,IOSE2,CHST2,IOV2,&
+                         & ZLAT2,ZLON2,ZOBS2,ZERR2,ZFGDEP2,ZANDEP2 
+ !write(271,*) IOT1, IOSE1, ZERR1
+
+  IF (IERR .NE. 0 ) THEN
+     WRITE(31,*) 'iostat != 0 : '
+     WRITE(31,*) IOT1,IOS1,ZCH1,IOSE1,CHST1,IOV1,&
+                         & ZLAT1,ZLON1,ZOBS1,ZERR1,ZFGDEP1,ZANDEP1
+     WRITE(31,*) IOT2,IOS2,ZCH2,IOSE2,CHST2,IOV2,&
+                         & ZLAT2,ZLON2,ZOBS2,ZERR2,ZFGDEP2,ZANDEP2
+  ENDIF
+
+  IF (ZLON1 .NE. ZLON2 .OR. ZLAT1 .NE. ZLAT2 .OR. &
+    & IOT1 .NE. IOT2 .OR. IOS1 .NE. IOS2 .OR. IOV1 .NE. IOV2 &
+    & .OR. ZERR1 .NE. ZERR2) THEN
+ 
+    WRITE(*,*) 'ZLON ',ZLON1,ZLON2
+    WRITE(*,*) 'ZLAT ',ZLAT1,ZLAT2
+    WRITE(*,*) 'IOT   ',IOT1,IOT2
+    WRITE(*,*) 'IOS   ',IOS1,IOS2
+    WRITE(*,*) 'IOV   ',IOV1,IOV2
+    WRITE(*,*) 'ZERR  ',ZERR1,ZERR2
+    WRITE(*,*) 'INCONSISTENCY BETWEEN INPUT FILES, SKIP THIS OBS'
+    Skip_Line=.TRUE.
+    CYCLE
+  ELSE 
+    Skip_Line=.FALSE.
+  ENDIF
+
+  IIND=0
+
+  ICHAN=NINT(ZCH1)
+
+  IF (IOT1 .EQ. 1 ) THEN
+      ! SYNOPP
+      IF (IOV1.EQ.1) IIND=1
+      ! SYNOPT
+      IF (IOV1.EQ.39) IIND=2
+      ! SYNOPQ
+      IF (IOV1.EQ.58 .OR. IOV1.EQ.40) IIND=3
+      ! SYNOPU
+      IF (IOV1.EQ.41 .OR. IOV1.EQ.42) IIND=4
+      ! ZTD
+      IF (IOV1.EQ.128) IIND=5
+  ENDIF
+
+  IF (IOT1 .EQ. 5 ) THEN
+      ! TEMPU
+      IF (IOV1.EQ.3 .OR. IOV1.EQ.4 .OR. IOV1.EQ.41 .OR. IOV1.EQ.42) IIND=6
+      ! TEMPT
+      IF (IOV1.EQ.2 .OR. IOV1.EQ.39) IIND=7
+      ! TEMPZ
+      IF (IOV1.EQ.1) IIND=8
+      ! TEMPQ
+      IF (IOV1.EQ.58 .OR. IOV1.EQ.59 .OR. IOV1.EQ.40 .OR. &
+        & IOV1.EQ.7) IIND=9
+      ! CLOUDSAT
+      IF (IOV1.EQ.29 .AND. CHST1(1:3) .EQ.'CLS' ) IIND=23
+  ENDIF
+
+  ! AIREP
+  IF (IOT1 .EQ. 2) THEN
+      ! AIREP-T
+      IF (IOV1.EQ.2 .OR. IOV1.EQ.39) IIND=10
+      ! AIREPU
+      IF (IOV1.EQ.3 .OR. IOV1.EQ.4 .OR. IOV1.EQ.41 .OR. IOV1.EQ.42) IIND=11
+  ENDIF
+
+  ! SATOB
+  IF (IOT1 .EQ. 3) IIND=12
+
+  ! DRIBU
+  IF (IOT1 .EQ. 4) IIND=13
+
+  ! PILOT
+  IF (IOT1 .EQ. 6) THEN
+      ! PILOTZ
+      IF (IOV1.EQ.1) IIND=14
+      ! PILOTU
+      IF (IOV1.EQ.3 .OR. IOV1.EQ.4 .OR. IOV1.EQ.41 .OR. IOV1.EQ.42) IIND=15
+  ENDIF
+
+  ! SCATT
+  IF (IOT1 .EQ. 9) IIND=16
+
+  IF (IOT1 .EQ. 7) THEN
+
+      ! AMSU-A
+      IF (IOSE1 .EQ. 3 ) IIND=17
+      ! AMSU-B and MHS
+      IF (IOSE1 .EQ. 4 .OR. IOSE1 .EQ. 15) IIND=18
+      ! SEVIRI-WV
+      IF (IOSE1 .EQ. 29 .AND. ( ICHAN .EQ. 2 .OR. ICHAN .EQ. 3 ) ) IIND=19
+      ! SEVIRI-WINDOW
+      IF (IOSE1 .EQ. 29 .AND. &
+         ( ICHAN .EQ. 4 .OR. ICHAN .EQ. 6 .OR. ICHAN .EQ. 7 ) ) IIND=20
+      ! SEVIRI-11
+      IF (IOSE1 .EQ. 29 .AND. ICHAN .EQ. 8 ) IIND=21
+      ! IASI
+      IF (IOSE1 .EQ. 16) IIND=22
+
+  ENDIF
+
+  ! RADAR
+  IF (IOT1 .EQ. 13) THEN
+      ! RFL
+      IF (IOV1.EQ.29) IIND=24
+      ! DOW
+      IF (IOV1.EQ.195) IIND=25
+  ENDIF
+
+  IF (IIND .EQ. 0 ) THEN
+     INOTC = INOTC + 1
+     ! This should not happen
+     WRITE(31,*)  IOT1,IOV1,IOS1,IOSE1,ICHAN,CHST1
+     CYCLE obs_cycle
+  ENDIF
+
+! Compute DFS 
+
+      ! AMSU-A
+      IF (IOSE1 .EQ. 3 ) IIND=17
+      ! AMSU-B and MHS
+      IF (IOSE1 .EQ. 4 .OR. IOSE1 .EQ. 15) IIND=18
+      ! SEVIRI-WV
+      IF (IOSE1 .EQ. 29 .AND. ( ICHAN .EQ. 2 .OR. ICHAN .EQ. 3 ) ) IIND=19
+      ! SEVIRI-WINDOW
+      IF (IOSE1 .EQ. 29 .AND. &
+         ( ICHAN .EQ. 4 .OR. ICHAN .EQ. 6 .OR. ICHAN .EQ. 7 ) ) IIND=20
+      ! SEVIRI-11
+
+  NDFS(IIND)=NDFS(IIND)+1
+  ZDFS(IIND)=ZDFS(IIND)+ABS( (ZOBS1-ZOBS2)*(1./(ZERR1*ZERR1))* &
+           & ((ZFGDEP1-ZANDEP1)-(ZFGDEP2-ZANDEP2)) )
+  !IF (IOT1 .EQ. 7 .AND. IOSE1 .EQ. 16) THEN
+  !   write(370,*) NDFS(IIND), ZOBS1-ZOBS2, ZFGDEP1-ZANDEP1,ZFGDEP2-ZANDEP2
+  !   write(371,*) NDFS(IIND), ZOBS1-ZOBS2, ZFGDEP1-ZANDEP1,ZFGDEP2-ZANDEP2,ZDFS(IIND)
+  !ENDIF
+  !IF (IOT1 .EQ. 7 .AND. IOSE1 .EQ. 3) THEN
+  !   write(374,*) NDFS(IIND), ZOBS1-ZOBS2, ZFGDEP1-ZANDEP1,ZFGDEP2-ZANDEP2
+  !   write(375,*) NDFS(IIND), ZOBS1-ZOBS2, ZFGDEP1-ZANDEP1,ZFGDEP2-ZANDEP2,ZDFS(IIND)
+  !ENDIF
+
+
+  ! Verbose for CloudSat
+  IF(IIND .EQ. 23 .AND. LLVERBCS) THEN
+     WRITE(32,*) ZLON1,ZLAT1,ICHAN,( (ZOBS1-ZOBS2)*(1./(ZERR1*ZERR1))* &
+           & ((ZFGDEP1-ZANDEP1)-(ZFGDEP2-ZANDEP2)) )
+  ENDIF
+
+ ENDDO obs_cycle
+
+ CLOSE(NUN1)
+ CLOSE(NUN2)
+ IF(LLVERBCS) CLOSE(32)
+
+ ITOT=SUM(NDFS(:))
+
+ WRITE(*,*) ' ' 
+ WRITE(*,*) '==================================' 
+ WRITE(*,*) 'Observations used   :',ITOT 
+ WRITE(*,*) 'Observations unused :',INOTC
+ WRITE(*,*) '==================================' 
+ WRITE(*,*) ' ' 
+
+ OPEN(NUN3,FILE='dfs.dat')
+
+ DO II=1,NUMV
+   WRITE(NUN3,'(I6,I6,F10.3)') II,NDFS(II),ZDFS(II)
+ ENDDO
+
+ CONTAINS
+
+ SUBROUTINE USAGE
+
+ WRITE(*,*) 
+ WRITE(*,*) 'Usage: dfscomp.x file1 file2'
+ WRITE(*,*) '       file1 : ODB query from perturbed CCMA '
+ WRITE(*,*) '       file2 : ODB query from unperturbed CCMA '
+ WRITE(*,*) 
+
+ STOP
+
+ END SUBROUTINE USAGE
+
+ END PROGRAM DFSCOMP
