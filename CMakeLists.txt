@@ -31,6 +31,15 @@ install (TARGETS jbdiagnose.x
          PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
          DESTINATION libexec)
 
+function (install_Rscripts)
+  foreach (file ${ARGV})
+    get_filename_component (name_without_extension ${file} NAME_WE)
+    install (FILES ${file}
+             DESTINATION libexec)
+  endforeach ()
+endfunction()
+install_Rscripts (src/preparing_conv.R)
+
 add_subdirectory (scripts)
 add_subdirectory (share)
 add_subdirectory (tests)
