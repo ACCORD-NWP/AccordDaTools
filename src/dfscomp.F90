@@ -49,7 +49,7 @@ IMPLICIT NONE
  LOGICAL            :: LEX
  INTEGER            :: INUM,IERR
  INTEGER            :: NUN1,NUN2,NUN3
- INTEGER, PARAMETER :: NUMV=25
+ INTEGER, PARAMETER :: NUMV=29
  REAL               :: ZDFS(NUMV)
  INTEGER            :: NDFS(NUMV)
  INTEGER            :: ITOT,INOTC,ICHAN
@@ -108,8 +108,7 @@ Skip_Line=.FALSE.
 ! SELECT
 ! obstype,codetype,press,sensor,statid,varno,degrees(lat),degrees(lon),
 ! obsvalue,final_obs_error,fg_depar,an_depar
-! FROM  hdr,desc,body,errstat
-! WHERE (an_depar is not NULL)
+! FROM  hdr,desc,body,errstat WHERE (an_depar is not NULL)
 !
 
   IF (.NOT.Skip_Line) THEN
@@ -149,6 +148,38 @@ Skip_Line=.FALSE.
 
   ICHAN=NINT(ZCH1)
 
+! INDEX : OB_VAR (varno)
+!     1 : SYNOP_Z
+!     2 : SYNOP_T2
+!     3 : SYNOP_R2
+!     4 : SYNOP_U10
+!     5 : SYNOP_ZTD
+!     6 : TEMP_U
+!     7 : TEMP_T
+!     8 : TEMP_Z
+!     9 : TEMP_Q
+!    10 : AIREP_T
+!    11 : AIREP_U
+!    12 : SATOB_U
+!    13 : DRIBU_Z
+!    14 : DRIBU_U
+!    15 : PILOT_Z
+!    16 : PILOT_U
+!    17 : AMSUA
+!    18 : MHS
+!    19 : MWHS2
+!    20 : ATMS
+!    21 : IASI
+!    22 : CRIS
+!    23 : SEV_WV
+!    24 : SEV_WIN
+!    25 : SEV_C11
+!    26 : SCATT_U
+!    27 : RADAR_Z
+!    28 : RADAR_U
+!    29 : TEMP_CLS
+
+
   IF (IOT1 .EQ. 1 ) THEN
       ! SYNOPP
       IF (IOV1.EQ.1) IIND=1
@@ -173,7 +204,7 @@ Skip_Line=.FALSE.
       IF (IOV1.EQ.58 .OR. IOV1.EQ.59 .OR. IOV1.EQ.40 .OR. &
         & IOV1.EQ.7) IIND=9
       ! CLOUDSAT
-      IF (IOV1.EQ.29 .AND. CHST1(1:3) .EQ.'CLS' ) IIND=23
+      IF (IOV1.EQ.29 .AND. CHST1(1:3) .EQ.'CLS' ) IIND=29
   ENDIF
 
   ! AIREP
@@ -188,43 +219,52 @@ Skip_Line=.FALSE.
   IF (IOT1 .EQ. 3) IIND=12
 
   ! DRIBU
-  IF (IOT1 .EQ. 4) IIND=13
+  IF (IOT1 .EQ. 4) THEN
+      ! DRIBUZ
+      IF (IOV1.EQ.1) IIND=13
+      ! DRIBUU
+      IF (IOV1.EQ.3 .OR. IOV1.EQ.4 .OR. IOV1.EQ.41 .OR. IOV1.EQ.42) IIND=14
+  ENDIF
 
   ! PILOT
   IF (IOT1 .EQ. 6) THEN
       ! PILOTZ
-      IF (IOV1.EQ.1) IIND=14
+      IF (IOV1.EQ.1) IIND=15
       ! PILOTU
-      IF (IOV1.EQ.3 .OR. IOV1.EQ.4 .OR. IOV1.EQ.41 .OR. IOV1.EQ.42) IIND=15
+      IF (IOV1.EQ.3 .OR. IOV1.EQ.4 .OR. IOV1.EQ.41 .OR. IOV1.EQ.42) IIND=16
+  ENDIF
+
+  IF (IOT1 .EQ. 7) THEN
+      ! AMSU-A
+      IF (IOSE1 .EQ. 3) IIND=17
+      ! AMSU-B and MHS
+      IF (IOSE1 .EQ. 4 .OR. IOSE1 .EQ. 15) IIND=18
+      ! ATMS
+      IF (IOSE1 .EQ. 19) IIND=19
+      ! MWHS2
+      IF (IOSE1 .EQ. 73) IIND=20
+      ! IASI
+      IF (IOSE1 .EQ. 16) IIND=21
+      ! CRIS
+      IF (IOSE1 .EQ. 27) IIND=22
+      ! SEVIRI-WV
+      IF (IOSE1 .EQ. 29 .AND. ( ICHAN .EQ. 2 .OR. ICHAN .EQ. 3 ) ) IIND=23
+      ! SEVIRI-WINDOW
+      IF (IOSE1 .EQ. 29 .AND. &
+         ( ICHAN .EQ. 4 .OR. ICHAN .EQ. 6 .OR. ICHAN .EQ. 7 ) ) IIND=24
+      ! SEVIRI-11
+      IF (IOSE1 .EQ. 29 .AND. ICHAN .EQ. 8 ) IIND=25
   ENDIF
 
   ! SCATT
-  IF (IOT1 .EQ. 9) IIND=16
-
-  IF (IOT1 .EQ. 7) THEN
-
-      ! AMSU-A
-      IF (IOSE1 .EQ. 3 ) IIND=17
-      ! AMSU-B and MHS
-      IF (IOSE1 .EQ. 4 .OR. IOSE1 .EQ. 15) IIND=18
-      ! SEVIRI-WV
-      IF (IOSE1 .EQ. 29 .AND. ( ICHAN .EQ. 2 .OR. ICHAN .EQ. 3 ) ) IIND=19
-      ! SEVIRI-WINDOW
-      IF (IOSE1 .EQ. 29 .AND. &
-         ( ICHAN .EQ. 4 .OR. ICHAN .EQ. 6 .OR. ICHAN .EQ. 7 ) ) IIND=20
-      ! SEVIRI-11
-      IF (IOSE1 .EQ. 29 .AND. ICHAN .EQ. 8 ) IIND=21
-      ! IASI
-      IF (IOSE1 .EQ. 16) IIND=22
-
-  ENDIF
+  IF (IOT1 .EQ. 9) IIND=26
 
   ! RADAR
   IF (IOT1 .EQ. 13) THEN
       ! RFL
-      IF (IOV1.EQ.29) IIND=24
+      IF (IOV1.EQ.29) IIND=27
       ! DOW
-      IF (IOV1.EQ.195) IIND=25
+      IF (IOV1.EQ.195) IIND=28
   ENDIF
 
   IF (IIND .EQ. 0 ) THEN

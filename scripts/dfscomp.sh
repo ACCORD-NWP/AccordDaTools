@@ -19,7 +19,7 @@ ${bold}NAME${normal}
 
 ${bold}USAGE${normal}
         ${PROGNAME} -p <pert-file> -u <unpert-file>
-                    [-o <output-file>] [ -h ]
+                [-o <output-file>] [ -h ]
 
 ${bold}DESCRIPTION${normal}
         DFS computation
@@ -31,8 +31,8 @@ ${bold}OPTIONS${normal}
         -u ${unline}unpert-file${normal}
            unperturbed data file
 
-        -o ${unline}cv-file${normal}
-           cv file
+        -o ${unline}dfs-output${normal}
+           output file with DFS values
 
         -L List available level definitions
         
