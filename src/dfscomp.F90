@@ -49,7 +49,7 @@ IMPLICIT NONE
  LOGICAL            :: LEX
  INTEGER            :: INUM,IERR
  INTEGER            :: NUN1,NUN2,NUN3
- INTEGER, PARAMETER :: NUMV=29
+ INTEGER, PARAMETER :: NUMV=27
  REAL               :: ZDFS(NUMV)
  INTEGER            :: NDFS(NUMV)
  INTEGER            :: ITOT,INOTC,ICHAN
@@ -171,13 +171,11 @@ Skip_Line=.FALSE.
 !    20 : ATMS
 !    21 : IASI
 !    22 : CRIS
-!    23 : SEV_WV
-!    24 : SEV_WIN
-!    25 : SEV_C11
-!    26 : SCATT_U
-!    27 : RADAR_Z
-!    28 : RADAR_U
-!    29 : TEMP_CLS
+!    23 : SEVIRI
+!    24 : SCATT_U
+!    25 : RADAR_Z
+!    26 : RADAR_U
+!    27 : TEMP_CLS
 
 
   IF (IOT1 .EQ. 1 ) THEN
@@ -204,7 +202,7 @@ Skip_Line=.FALSE.
       IF (IOV1.EQ.58 .OR. IOV1.EQ.59 .OR. IOV1.EQ.40 .OR. &
         & IOV1.EQ.7) IIND=9
       ! CLOUDSAT
-      IF (IOV1.EQ.29 .AND. CHST1(1:3) .EQ.'CLS' ) IIND=29
+      IF (IOV1.EQ.29 .AND. CHST1(1:3) .EQ.'CLS' ) IIND=27
   ENDIF
 
   ! AIREP
@@ -247,24 +245,19 @@ Skip_Line=.FALSE.
       IF (IOSE1 .EQ. 16) IIND=21
       ! CRIS
       IF (IOSE1 .EQ. 27) IIND=22
-      ! SEVIRI-WV
-      IF (IOSE1 .EQ. 29 .AND. ( ICHAN .EQ. 2 .OR. ICHAN .EQ. 3 ) ) IIND=23
-      ! SEVIRI-WINDOW
-      IF (IOSE1 .EQ. 29 .AND. &
-         ( ICHAN .EQ. 4 .OR. ICHAN .EQ. 6 .OR. ICHAN .EQ. 7 ) ) IIND=24
-      ! SEVIRI-11
-      IF (IOSE1 .EQ. 29 .AND. ICHAN .EQ. 8 ) IIND=25
+      ! SEVIRI
+      IF (IOSE1 .EQ. 29) IIND=23
   ENDIF
 
   ! SCATT
-  IF (IOT1 .EQ. 9) IIND=26
+  IF (IOT1 .EQ. 9) IIND=24
 
   ! RADAR
   IF (IOT1 .EQ. 13) THEN
       ! RFL
-      IF (IOV1.EQ.29) IIND=27
+      IF (IOV1.EQ.29) IIND=25
       ! DOW
-      IF (IOV1.EQ.195) IIND=28
+      IF (IOV1.EQ.195) IIND=26
   ENDIF
 
   IF (IIND .EQ. 0 ) THEN
@@ -275,17 +268,6 @@ Skip_Line=.FALSE.
   ENDIF
 
 ! Compute DFS 
-
-      ! AMSU-A
-      IF (IOSE1 .EQ. 3 ) IIND=17
-      ! AMSU-B and MHS
-      IF (IOSE1 .EQ. 4 .OR. IOSE1 .EQ. 15) IIND=18
-      ! SEVIRI-WV
-      IF (IOSE1 .EQ. 29 .AND. ( ICHAN .EQ. 2 .OR. ICHAN .EQ. 3 ) ) IIND=19
-      ! SEVIRI-WINDOW
-      IF (IOSE1 .EQ. 29 .AND. &
-         ( ICHAN .EQ. 4 .OR. ICHAN .EQ. 6 .OR. ICHAN .EQ. 7 ) ) IIND=20
-      ! SEVIRI-11
 
   NDFS(IIND)=NDFS(IIND)+1
   ZDFS(IIND)=ZDFS(IIND)+ABS( (ZOBS1-ZOBS2)*(1./(ZERR1*ZERR1))* &
