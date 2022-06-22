@@ -90,15 +90,18 @@ IMPLICIT NONE
 
  OPEN(NUN1,FILE=CFILE1)
  OPEN(NUN2,FILE=CFILE2)
- IF(LLVERBCS) OPEN(32,FILE='csat.dfs',POSITION='APPEND')
 
  IERR=0
 
  READ(NUN1,*,IOSTAT=IERR)
-write(*,*) 'IERR NUN1',IERR
+ IF (IERR .NE. 0 ) THEN
+   WRITE(*,*) 'IERR NUN1',IERR
+ ENDIF
  READ(NUN2,*,IOSTAT=IERR)
-write(*,*) 'IERR NUN2',IERR
-Skip_Line=.FALSE.
+ IF (IERR .NE. 0 ) THEN
+   WRITE(*,*) 'IERR NUN2',IERR
+ ENDIF
+ Skip_Line=.FALSE.
 
  obs_cycle : DO WHILE (IERR .EQ. 0)
 
@@ -117,14 +120,17 @@ Skip_Line=.FALSE.
   ENDIF
   READ(NUN2,*,IOSTAT=IERR) IOT2,IOS2,ZCH2,IOSE2,CHST2,IOV2,&
                          & ZLAT2,ZLON2,ZOBS2,ZERR2,ZFGDEP2,ZANDEP2 
- !write(271,*) IOT1, IOSE1, ZERR1
 
   IF (IERR .NE. 0 ) THEN
-     WRITE(31,*) 'iostat != 0 : '
-     WRITE(31,*) IOT1,IOS1,ZCH1,IOSE1,CHST1,IOV1,&
-                         & ZLAT1,ZLON1,ZOBS1,ZERR1,ZFGDEP1,ZANDEP1
-     WRITE(31,*) IOT2,IOS2,ZCH2,IOSE2,CHST2,IOV2,&
-                         & ZLAT2,ZLON2,ZOBS2,ZERR2,ZFGDEP2,ZANDEP2
+    IF (IERR .EQ. -1 ) THEN
+      WRITE(6,*)'dfscomp: File reading complete'
+    ELSE
+      WRITE(6,*) 'iostat != 0 : ', IERR
+      WRITE(6,*) IOT1,IOS1,ZCH1,IOSE1,CHST1,IOV1,&
+                  & ZLAT1,ZLON1,ZOBS1,ZERR1,ZFGDEP1,ZANDEP1
+      WRITE(6,*) IOT2,IOS2,ZCH2,IOSE2,CHST2,IOV2,&
+                  & ZLAT2,ZLON2,ZOBS2,ZERR2,ZFGDEP2,ZANDEP2
+    ENDIF
   ENDIF
 
   IF (ZLON1 .NE. ZLON2 .OR. ZLAT1 .NE. ZLAT2 .OR. &
@@ -263,7 +269,7 @@ Skip_Line=.FALSE.
   IF (IIND .EQ. 0 ) THEN
      INOTC = INOTC + 1
      ! This should not happen
-     WRITE(31,*)  IOT1,IOV1,IOS1,IOSE1,ICHAN,CHST1
+     WRITE(6,*)  IOT1,IOV1,IOS1,IOSE1,ICHAN,CHST1
      CYCLE obs_cycle
   ENDIF
 
@@ -282,26 +288,15 @@ Skip_Line=.FALSE.
   !ENDIF
 
 
-  ! Verbose for CloudSat
-  IF(IIND .EQ. 23 .AND. LLVERBCS) THEN
-     WRITE(32,*) ZLON1,ZLAT1,ICHAN,( (ZOBS1-ZOBS2)*(1./(ZERR1*ZERR1))* &
-           & ((ZFGDEP1-ZANDEP1)-(ZFGDEP2-ZANDEP2)) )
-  ENDIF
-
  ENDDO obs_cycle
 
  CLOSE(NUN1)
  CLOSE(NUN2)
- IF(LLVERBCS) CLOSE(32)
 
  ITOT=SUM(NDFS(:))
 
- WRITE(*,*) ' ' 
- WRITE(*,*) '==================================' 
- WRITE(*,*) 'Observations used   :',ITOT 
- WRITE(*,*) 'Observations unused :',INOTC
- WRITE(*,*) '==================================' 
- WRITE(*,*) ' ' 
+ WRITE(*,*) 'dfscomp: Observations used   :',ITOT 
+ WRITE(*,*) 'dfscomp: Observations unused :',INOTC
 
  OPEN(NUN3,FILE='dfs.dat')
 

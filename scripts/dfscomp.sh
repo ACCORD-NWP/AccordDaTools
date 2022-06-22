@@ -103,10 +103,6 @@ ln -s ${UPRFILE} file2
 
 ${exedir}/dfscomp.x file1 file2
 
-echo "IO stats:"
-cat fort.31
-rm -f fort.31
-rm -f csat.dfs
 rm -f file1
 rm -f file2
 
