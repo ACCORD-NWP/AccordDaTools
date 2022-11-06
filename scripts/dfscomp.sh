@@ -38,6 +38,12 @@ ${bold}OPTIONS${normal}
         
         -h Help! Print usage information.
 
+The ${unline}pert-file${normal} and ${unline}unpert-file${normal} files are the
+output from the following ODB SQL:
+SELECT obstype,codetype,press,sensor,statid,varno,degrees(lat),degrees(lon),
+obsvalue,final_obs_error,fg_depar,an_depar FROM  hdr,desc,body,errstat
+WHERE (an_depar is not NULL)
+
 USAGE
 }
 
