@@ -7,7 +7,7 @@ Process DIACOV output and plot results
 
 ```mermaid
 flowchart LR
-A[Output from FESTAT] --> B<DIACOV> --> C<diag_diacov> --> D<plotdiacov>;
+A{Output from FESTAT} --> B{DIACOV} --> C{diag_diacov} --> D{plotdiacov};
 ```
 
 
