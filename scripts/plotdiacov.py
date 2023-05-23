@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import argparse
 import sys
 import glob
+import matplotlib as mpl
+mpl.use('Agg')
 
 # Authors Magnus Lindskog and Ulf Andrae, Dec 2021
 
@@ -43,14 +45,15 @@ def plotme(idata, oplot) :
   plt.title(title, fontsize=14)
 
   plt.savefig(oplot)
+  plt.close()
 
 #############################################################################################
 def main(argv) :
 
   parser = argparse.ArgumentParser(description='Plotting DIACOV diagnostics')
-  parser.add_argument('-d',dest="indir",help='iPlot all input data files in this directory',default=False,required=False)
+  parser.add_argument('-d',dest="indir",help='Plot all input data files in this directory',default=False,required=False)
   parser.add_argument('-i',dest="idata",help='Input data files',default=False,required=False)
-  parser.add_argument('-o',dest="oplot",help='Level',default='output.png',required=False)
+  parser.add_argument('-o',dest="oplot",help='Output plot file names',default='output.png',required=False)
 
   if len(argv) == 1:
     parser.print_help()
