@@ -9,7 +9,7 @@ test_wd=$(pwd)/test_rundiacov_help
 mkdir -p ${test_wd}
 cd ${test_wd}
 
-rundiacov.sh -h > /dev/null && echo "diag_diacov help/usage works"
+rundiacov.sh -h > /dev/null && echo "rundiacov help/usage works"
 
 
 # Clean up
