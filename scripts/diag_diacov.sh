@@ -23,14 +23,14 @@ ${bold}USAGE${normal}
                     [ -h ]
 
 ${bold}DESCRIPTION${normal}
-        Process DIACOV output for plotting for plotting using the 
+        Process DIACOV output for plotting using the 
         plotdiacov tool
 
 ${bold}OPTIONS${normal}
         -i ${unline}input-dir${normal}
            Input directory containing files produced by DIACOV
 
-        -o ${unline}cv-file${normal}
+        -o ${unline}output-dir${normal}
            Output directory for processed files
 
         -h Help! Print usage information.
@@ -229,7 +229,9 @@ done
 #---------------------
 prefix="cor"
 for var in vtot v d du q qu t tu logvtot logv logd logdu logq logqu logt logtu; do
-  for lev in 05 11 17 23 29 35 41 47 53 59 65; do
+  NUMBERS=$(ls ${INPDIR}/${prefix}${var}??.xy | xargs -n 1 basename | tr '\n' ' ' | sed -e 's/[^0-9]/ /g' -e 's/^ *//g' -e 's/ *$//g' | tr -s ' ' | sed 's/ /\n/g')
+  for lev in $NUMBERS; do
+#  for lev in 05 11 17 23 29 35 41 47 53 59 65; do
     FILE="${INPDIR}/${prefix}${var}${lev}.xy"
     if [[ -e "$FILE" ]]
     then

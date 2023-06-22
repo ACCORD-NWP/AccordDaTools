@@ -10,6 +10,6 @@ endfunction()
 
 install_scripts (jbdiagnose.sh plotjbbal.py plotjbdiag.py)
 install_scripts (varbcdiagnose.sh plotvarbcpred.py)
-install_scripts (diacov.sh diag_diacov.sh plotdiacov.py)
+install_scripts (rundiacov.sh diag_diacov.sh plotdiacov.py)
 install_scripts (dfscomp.sh plotdfs.py)
 #install_scripts (diacov.sh festat.sh)
