@@ -1,0 +1,99 @@
+#!/bin/bash
+#SBATCH --cpus-per-task=8
+#SBATCH --error=festat_OUT.log
+#SBATCH --job-name=FESTAT
+#SBATCH --nodes=37
+#SBATCH --output=festat_OUT.log
+#SBATCH --qos=np
+#SBATCH --ntasks-per-node=27
+#SBATCH --time=02:00:00
+#
+#
+# Magnus Lindskog 20211227 based on Javier Sanchez original version.
+# Jan Barkmeijer: adapted to use CY46 FESTAT
+# NPROC the total number of forecasts and
+# NFRGRP to the number of forecasts per cycle
+# so you may want to change the loop over the forecasts
+# Swapan Mallick 20231122  adapted to 10-member EPS CY46 FESTAT_CY46 and FA file system
+# Swapan Mallick 20231210  FESTAT using  2500 grid point 10 ensemble FA file ; 999 FA file
+# 
+#
+export MPPEXEC="srun"
+export NPROC=999
+export NPROCX=1
+export NPROCY=1
+export OMP_MAX_ACTIVE_LEVELS=1
+export OMP_NUM_THREADS=8
+export OMP_STACKSIZE=256M
+eojcmd=""
+ulimit -S -s unlimited || ulimit -s
+ulimit -S -m unlimited || ulimit -m
+ulimit -S -d unlimited || ulimit -d
+set -e # stop the shell on first error
+##
+##
+EXP=CARRA2_CY46
+#
+VLEV=65
+# adapt to relevant input
+HM_DATA=/ec/res4/scratch/swe4281/hm_home/$EXP
+BINDIR=/ec/res4/scratch/swe4281/hm_home/$EXP/bin/R64
+BINDIR2=/perm/swe4281/hm_lib/$EXP
+DATADIR=/scratch/swe4281/FESTAT_WORK/EXPERIMENT_ALL
+#
+source $BINDIR2/Env_system
+echo $BINDIR/FESTAT
+echo $BINDIR2/Env_system
+##
+##
+DTGBEG=2022010300
+DTGEND=2022013000
+##
+MM=`echo $DTGBEG | cut -c5-6`
+YY=`echo $DTGBEG | cut -c1-4`
+
+fctime=6  # Change here for forecast 3HR or 6HR forecast file
+
+jforecast=1  # start of indexing
+
+# First five members from a summer month
+date=$DTGBEG
+while [ $date -le $DTGEND ]
+do
+  DD=$( $BINDIR2/scr/mandtg -day $date )
+  HH=$( $BINDIR2/scr/mandtg -hour $date )
+
+  for i in  1 2 3 4 5 6 7 8 9
+  do
+    index=$(printf "%03d" $jforecast)
+        ln -sf $DATADIR/$EXP/$YY/$MM/$DD/$HH/mbr00$i/ICMSHHARM+000$fctime ICMSHHARM+0$index
+        echo $DATADIR/$EXP/$YY/$MM/$DD/$HH/mbr00$i/ICMSHHARM+000$fctime, ICMSHHARM+0$index
+        jforecast=$( expr $jforecast + 1 )
+    done
+  date=$( $BINDIR2/scr/mandtg $date + 6 )
+done
+# Get the domain properties
+# Build the namelist and run festat
+cat > fort.4 << EOF
+&NAMFESTAT
+  NCASES=$NPROC,
+  LSTABAL=.true.,
+  LANAFBAL=.true., 
+  LELAM=.TRUE., 
+  CNAME='ICMSHHARM+0', 
+  NFRGRP=9,
+  NPRINTLEV=0,
+  LOZONE=.FALSE.,
+  LOZBAL=.FALSE.,
+  LUVBAL=.FALSE.,
+  OUTBAL='stab.bal'
+  OUTCVT='stab.cvt',
+  OUTCVU='stab.cv',
+/
+EOF
+
+$MPPEXEC $BINDIR/FESTAT  || exit
+#
+rm -rf ICMSHHARM+0*
+trap - 0
+exit
