@@ -16,7 +16,7 @@ os.chdir(TMPOUT)
 ens_mem=range(1,10)                                    # Ensemble member (ens1,ens2.....,ens9)
 filename = "ICMSHHARM+0006"                            # 6 hour forecast FA file
 fnumber=1
-#
+##
 while dtg <= dtgend:
     #
     YY = str(dtg.year).ljust(4, '0')
