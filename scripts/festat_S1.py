@@ -7,10 +7,8 @@ EXP    = "SURF_CARRA2_CY46"                            # Change the experiment n
 dtg    = datetime.strptime('2022011500', '%Y%m%d%H')   # Change Start date
 dtgend = datetime.strptime('2022021218', '%Y%m%d%H')   # Change End date
 #--------------------------------
-#
 cycl =  timedelta(hours=6)                             # Assimilation cycle at 00 06 12 and 18 UTC
 SCRATCH = os.environ['SCRATCH']
-HM_DATA = os.path.join(SCRATCH,'hm_home',EXP,'archive')
 HM_DATA = os.path.join(SCRATCH,'hm_home',EXP,'archive')
 TMPOUT  = os.path.join(SCRATCH,'tmp_festat')           # Working directory 'tmp_festat' 
 os.makedirs(TMPOUT, mode=0o755, exist_ok=True)
@@ -29,12 +27,7 @@ while dtg <= dtgend:
     for mm in ens_mem:
         mem='mbr00'.ljust(6,str(mm))
         target = os.path.join(HM_DATA, YY, MM, DD, HH, mem, filename)
-        #print(target)
-        #
-        filecond =  {fnumber <= 9: filename[:-1]+str(fnumber),
-            10  <=  fnumber <= 99: filename[:-2]+str(fnumber),
-           100  <= fnumber <= 999: filename[:-3]+str(fnumber)}
-        filelink = filecond.get(True,None)
+        filelink = filename[:-4] + str(fnumber).zfill(4)
         if os.path.isfile(str(filelink)):
               os.remove(str(filelink))
         os.symlink(str(target),str(filelink))
