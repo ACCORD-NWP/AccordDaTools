@@ -16,7 +16,11 @@ The statistical de-correlation operator D, also known as the balance operator, i
 ## Fortran code structure for FESTAT:
 Figure 1. Flowchart of FASTEM Fortran code.
 ```mermaid
-graph LR
+classDiagram
+
+FESTAT <|-- SUFESTAT
+FESTAT <|-- NMCSTAT
+
 
 ```
 here,
