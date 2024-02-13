@@ -31,10 +31,10 @@ ${bold}OPTIONS${normal}
             [ECMWF|LOCAL]
         -x ${unline}nprocx${normal}
             Number of processors in x-direction for 2D domain decomposition
-        
+
         -y ${unline}nprocy${normal}
             Number of processors in y-direction for 2D domain decomposition
-        
+
         -t ${unline}threads${normal}
             Number of OpenMP threads [ default : 1 ]
 
@@ -188,13 +188,13 @@ fi
 # Build the namelist
 cat > fort.4 << EOF
 &NAMFESTAT
-  NCASES=$NPROC,
-  LSTABAL=.true.,
-  LANAFBAL=.true., 
-  LELAM=.TRUE., 
-  CNAME='ICMSHHARM+0', 
-  NFRGRP=9,
   NPRINTLEV=0,
+  NCASES=$NPROC,
+  NFRGRP=9,
+  CNAME='ICMSHHARM+0',
+  LSTABAL=.TRUE.,
+  LANAFBAL=.TRUE.,
+  LELAM=.TRUE.,
   LOZONE=.FALSE.,
   LOZBAL=.FALSE.,
   LUVBAL=.FALSE.,
