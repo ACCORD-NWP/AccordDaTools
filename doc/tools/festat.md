@@ -87,8 +87,8 @@ The _runfestat_ script for FA is driven by a namelist file (fort.4) in the curre
 
 where 
 
-|= Name =|= Description =|
-|--------|---------------|
+| Name   | Description |
+|:-------|:--------------|
 |NCASES  |CNAME which is set to fit the name of the native historical files. The actual names of the files will be CNAME completed with a number on 3 digits (from 1 to NCASES). |
 |NFRGRP  |NFRGRP represents the number of members per group of files. This variable is serving the former need of femars. The ensemble of files is divided into groups. Each member n of a group, except the last one, is computed as the difference between the historical files n+1 and n ; the latest member of a group is computed as the difference between the historical files 1 and n. In that example the number of members in each group is NFRGRP=6. Consequently the number of groups here is 9. |
 |
