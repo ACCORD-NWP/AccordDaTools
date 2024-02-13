@@ -205,11 +205,18 @@ cat > fort.4 << EOF
   OUTCVU='stab.cv',
 /
 EOF
-echo "#!/bin/bash"  > festat_batch.job
-cat batch.tmp      >> festat_batch.job
-echo "${MPPEXEC} ${BINDIR}/FESTAT || exit " >> festat_batch.job
 
-${SUBMIT} ./festat_batch.job
+echo " ... add system specific settings and required environment variables to a run script"
+echo "#!/bin/bash"  > festat_${PARTITION}_${NPROCX}_${NPROCY}_${THREADS}.sh
+cat batch.tmp      >> festat_${PARTITION}_${NPROCX}_${NPROCY}_${THREADS}.sh
+echo "${MPPEXEC} ${BINDIR}/FESTAT || exit " >> festat_${PARTITION}_${NPROCX}_${NPROCY}_${THREADS}.sh
+chmod 755 festat_${PARTITION}_${NPROCX}_${NPROCY}_${THREADS}.sh
+
+echo " ... submit job with ... "
+echo " ...                     ${SUBMIT} ./festat_${PARTITION}_${NPROCX}_${NPROCY}_${THREADS}.sh"
+echo " "
+
+${SUBMIT} ./festat_${PARTITION}_${NPROCX}_${NPROCY}_${THREADS}.sh
 #
 trap - 0
 exit
