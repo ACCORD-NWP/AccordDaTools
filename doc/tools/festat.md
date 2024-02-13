@@ -18,10 +18,16 @@ Figure 1. Flowchart of FASTEM Fortran code.
 ```mermaid
 classDiagram
 
-FESTAT <|-- SUFESTAT
-FESTAT <|-- NMCSTAT
-
-
+FESTAT --|> SUFESTAT
+FESTAT --|> NMCSTAT
+NMCSTAT --|> SUFESPEC
+NMCSTAT --|> EREGPDIV
+NMCSTAT --|> EREGPDT
+NMCSTAT --|> EREGPDTQ
+NMCSTAT --|> EWGSABAL
+NMCSTAT --|> ECALCOV
+SUFESPEC --|> SUFESPECA
+SUFESPEC --|> SUFESPECG1
 ```
 here,
 - A.	Festet.F90 is the main Fortran probeam that has two subroutine (B, C)
