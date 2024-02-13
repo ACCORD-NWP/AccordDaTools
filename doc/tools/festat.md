@@ -1,10 +1,11 @@
-# FESTAT - Forecast Error STATistics: A Technical Summary
+# FESTAT - Forecast Error STATistics
 
 ## Introduction
 
-The background error statistics (BGE), generally referred to as structure functions, are produced using the standalone FESTAT (Forecast Error Statistics) method. The FESTAT for FA test has been completed and is currently accessible in cycle CY46h1. To mitigate the substantial storage problem, the B-matrix is computed in terms of control vectors, assuming statistical independence among them. The control variables encompass vorticity, divergence, specific humidity, surface pressure, and temperature.
-
-                          **V** **D** **F** (Forecast Error Vector)  ---------->    Control Vector
+The background error (BGE) statistics, generally referred to as structure functions, are produced using the standalone FESTAT (Forecast Error Statistics) method. The FESTAT for FA test has been completed and is currently accessible in cycle CY46h1. To mitigate the substantial storage problem, the B-matrix is computed in terms of control vectors, assuming statistical independence among them. The control variables encompass vorticity, divergence, specific humidity, surface pressure, and temperature. The forecast BGE vector, delta chi, is transformed to a control vector X:
+```math
+			  \chi = VDF \delta X
+```
 
 Here, **F** represents the horizontal 2-dimensional Fourier transform, transitioning from physical grid point space to spectral space. **D** functions as a balancing operator, and **V** is a vertical transform that utilizes the eigen-vectors of vertical covariance matrices.
 
@@ -12,7 +13,7 @@ The spectral transformation (denoted as **F**) is essential because certain fiel
 
 The statistical de-correlation operator **D**, also known as the balance operator, is derived in spectral space using multiple regression techniques, performed separately for each wavenumber component. The multiple regression operates stepwise, commencing with the background forecast errors of vorticity, divergence, temperature, surface pressure, and specific humidity in spectral space. In summary, the FESTAT software manages multiple tasks related to the error statistics, including (1) converting variables from gridpoint space to spectral point space, (2) computing the balance operator, (3) generating horizontal variance density spectra for control variables, and (4) determining vertical correlations for the control variables.
 
-## The FESTAT run script
+## The run script
 
 The festat standalone script _runfestat_ reading FA-files has been tested with nine ensemble members. An example of how to run the Festat standalone script with a total 999 files is described below.
 ### Options
@@ -110,7 +111,7 @@ The nine ensemble member (FA files) are organized into 111 groups. Each member "
 It's important to note that the current FORTRAN code is designed for a maximum of 999 FA files. If the number exceeds 999, the sufespeca.F90 program will terminate with the following message.
 
 
-## Fortran code structure for FESTAT:
+## Fortran code
 
 ```mermaid
 classDiagram
