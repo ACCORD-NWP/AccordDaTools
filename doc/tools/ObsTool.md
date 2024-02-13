@@ -1,23 +1,22 @@
-#Documentation about How to use Obstool.
+# Documentation about How to use Obstool
 
-1)Get the ascii file from odb: see HoWtogetINPUTfiles_obstool
-2)Set and Run scripts/1prepare_obstool.sh
-3)Set and Run scripts/2monitor_obstool.sh
+ 1. Get the ascii file from odb: see HoWtogetINPUTfiles_obstool
+ 1. Set and Run scripts/1prepare_obstool.sh
+ 1. Set and Run scripts/2monitor_obstool.sh
 
-#-----------------------------------------------------------------------------------------------------------------------------
-HoWtogetINPUTfiles_obstool:
+## How to get INPUT files_obstool:
 
 HOW to get the input files: From ODB files : examples for gnss ztd, radar, and sat obs
 
-#gnss ztd obs............................................................
-
-odb sql 'select statid,lat,lon,an_depar,fg_depar,obsvalue where
-varno=128' -i ccma.odb > ${DIROUT}/gnss_odb_${yyyy}${mm}${dd}${hh}
-
+## gnss ztd obs
+The SQL from ODB2
+```bash
+odb sql 'select statid,lat,lon,an_depar,fg_depar,obsvalue where varno=128' -i ccma.odb > ${DIROUT}/gnss_odb_${yyyy}${mm}${dd}${hh}
 grep -v "obsvalue" ${DIROUT}/gnss_odb_${yyyy}${mm}${dd}${hh} > ${DIROUT}/ccma_mon_${yyyy}${mm}${dd}${hh}
-
+```
 
 Using conv.40h1.sql like:
+```
 CREATE VIEW mondb AS
 SELECT
     type@desc                  ,
@@ -75,29 +74,27 @@ SELECT
     mf_stddev@body
 FROM desc,timeslot_index,hdr,modsurf,conv,body,errstat
 WHERE obstype>=1 AND obstype<=6;
+```
 
-
-#Radar RH y DOW...................................................
-
-odb sql 'select statid,varno,lat,lon,vertco,an_depar,fg_depar,obsvalue where
-obstype=13 and varno=29' -i ccma.odb > ${DIROUT}/radar_RH_${yyyy}${mm}${dd}${hh}
-
-odb sql 'select statid,varno,lat,lon,an_depar,fg_depar,obsvalue where
-obstype=13 and varno=195' -i ccma.odb > ${DIROUT}/radar_DOW_${yyyy}${mm}${dd}${hh}
-
+##Radar RH and DOW
+```bash
+odb sql 'select statid,varno,lat,lon,vertco,an_depar,fg_depar,obsvalue where obstype=13 and varno=29' -i ccma.odb > ${DIROUT}/radar_RH_${yyyy}${mm}${dd}${hh}
+odb sql 'select statid,varno,lat,lon,an_depar,fg_depar,obsvalue where obstype=13 and varno=195' -i ccma.odb > ${DIROUT}/radar_DOW_${yyyy}${mm}${dd}${hh}
 grep -v "obsvalue" ${DIROUT}/radar_RH_${yyyy}${mm}${dd}${hh} > ${DIROUT}/ccma_mon_${yyyy}${mm}${dd}${hh}
-or 
+# or 
 grep -v "obsvalue" ${DIROUT}/radar_DOW_${yyyy}${mm}${dd}${hh} > ${DIROUT}/ccma_mon_${yyyy}${mm}${dd}${hh}
+```
 
-
-using radarv.cy40.sql like:
+Using radarv.cy40.sql like:
+```
 CREATE VIEW radarv
 SELECT
 obstype@hdr,codetype@hdr,statid,varno,lat@hdr,lon@hdr,vertco_type@body,vertco_reference_1@body,sensor@hdr,date,time@hdr,report_status.active@hdr,report_status.blacklisted@hdr,report_status.passive@hdr,report_status.rejected@hdr,datum_status.active@body,datum_status.blacklisted@body,datum_status.passive@body,datum_status.rejected@body,an_depar,fg_depar,obsvalue,final_obs_error@errstat,elevation@radar_body,distance@radar_body,azimuth@radar_body
 FROM  hdr,desc,body,errstat,sat,radar,radar_body
 WHERE (varno /= 91 ) AND (an_depar is not NULL)
+```
 
-#Satem obs ........................................................
+## Satem obs
 
 odbsql  -T -q 'SELECT
 statid,vertco_reference_1,sensor,rad2deg(lat),rad2deg(lon),an_depar,tdiff(date,time,andate,antime)/60,fg_depar,obsvalue
