@@ -76,7 +76,8 @@ FROM desc,timeslot_index,hdr,modsurf,conv,body,errstat
 WHERE obstype>=1 AND obstype<=6;
 ```
 
-##Radar RH and DOW
+## Radar RH and DOW
+
 ```bash
 odb sql 'select statid,varno,lat,lon,vertco,an_depar,fg_depar,obsvalue where obstype=13 and varno=29' -i ccma.odb > ${DIROUT}/radar_RH_${yyyy}${mm}${dd}${hh}
 odb sql 'select statid,varno,lat,lon,an_depar,fg_depar,obsvalue where obstype=13 and varno=195' -i ccma.odb > ${DIROUT}/radar_DOW_${yyyy}${mm}${dd}${hh}
