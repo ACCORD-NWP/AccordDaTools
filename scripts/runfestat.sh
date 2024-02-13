@@ -49,6 +49,8 @@ EOFUSAGE
 
 }
 
+set -e
+
 NPROCX=-1
 NPROCY=-1
 THREADS=1
@@ -130,6 +132,10 @@ if [ ${HOST} == "ECMWF" ] ; then
 #SBATCH --time=02:00:00
 #
 
+EXP=SURF_CARRA2_CY46
+ENV=${HOME}/hm_home/$EXP
+source ${ENV}/Env_system
+
 export MPPEXEC="srun"
 export NPROC=999
 export NPROCX=1
@@ -178,14 +184,6 @@ else
   exit 1
 
 fi
-
-set -e 
-##
-EXP=SURF_CARRA2_CY46
-ENV=${HOME}/hm_home/$EXP
-
-#source ${ENV}/Env_system
-
 
 # Build the namelist
 cat > fort.4 << EOF
