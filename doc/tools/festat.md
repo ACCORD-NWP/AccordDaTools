@@ -4,7 +4,7 @@
 
 The background error statistics (BGE), generally referred to as structure functions, are produced using the standalone FESTAT (Forecast Error Statistics) method. The FESTAT for FA test has been completed and is currently accessible in cycle CY46h1. To mitigate the substantial storage problem, the B-matrix is computed in terms of control vectors, assuming statistical independence among them. The control variables encompass vorticity, divergence, specific humidity, surface pressure, and temperature.
 
-                          **V****D**F** (Forecast Error Vector)  ---------->    Control Vector
+                          **V** **D** **F** (Forecast Error Vector)  ---------->    Control Vector
 
 Here, **F** represents the horizontal 2-dimensional Fourier transform, transitioning from physical grid point space to spectral space. **D** functions as a balancing operator, and **V** is a vertical transform that utilizes the eigen-vectors of vertical covariance matrices.
 
@@ -87,12 +87,22 @@ The _runfestat_ script for FA is driven by a namelist file (fort.4) in the curre
 
 where 
 
-| Name   | Description |
-|:-------|:--------------|
-|NCASES  |CNAME which is set to fit the name of the native historical files. The actual names of the files will be CNAME completed with a number on 3 digits (from 1 to NCASES). |
-|NFRGRP  |NFRGRP represents the number of members per group of files. This variable is serving the former need of femars. The ensemble of files is divided into groups. Each member n of a group, except the last one, is computed as the difference between the historical files n+1 and n ; the latest member of a group is computed as the difference between the historical files 1 and n. In that example the number of members in each group is NFRGRP=6. Consequently the number of groups here is 9. |
-|
-
+| Name       | Description |
+|:-----------|:--------------|
+|NCASES      |Number of cases; i.e. the total number of files |
+|NFRGRP      |NFRGRP represents the number of members per group of files. This variable is serving the former need of femars. The ensemble of files is divided into groups. Each member n of a group, except the last one, is computed as the difference between the historical files n+1 and n ; the latest member of a group is computed as the difference between the historical files 1 and n. In that example the number of members in each group is NFRGRP=6. Consequently the number of groups here is 9. |
+|CNAME       |CNAME which is set to fit the name of the native historical files. The actual names of the files will be CNAME completed with a number on 3 digits (from 1 to NCASES). |
+|LSTABAL     |logical switch to compute balance statistics |
+|LANAFBAL    |logical switch to compute analytic f-plane horizontal balance for vorticity |
+|LELAM       |logical switch to indicate LAM model (or not) |
+|LOZONE      |logical switch to process O3 covariances |
+|LOZBAL      |logical switch to put O3 covariances in the balance |
+|LUVBAL      |logical switch to activate the reading of mean wind (LAM model) |
+|LNETCDF_IO  |logical switch to output in netcdf for bal/cv files |
+|NPRINTLEV   |verbosity setting (integer) |
+|OUTBAL      |filename for balance linear regression coefficients |
+|OUTCVT      |filename for vertical error covariances? |
+|OUTCVU      |filename for vertical error covariances? |
 
 
 The nine ensemble member (FA files) are organized into 111 groups. Each member "n" within a group is computed as the difference between the historical files "n+m" and "n," except for the last one. The final member of a group is calculated as the difference between FA files "n" and "m"
