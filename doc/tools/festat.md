@@ -18,6 +18,8 @@ Figure 1. Flowchart of FASTEM Fortran code.
 ```mermaid
 classDiagram
 
+note "FESTAT FORTRAN code structure"
+
 FESTAT --|> SUFESTAT
 FESTAT --|> NMCSTAT
 NMCSTAT --|> SUFESPEC
