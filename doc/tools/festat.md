@@ -14,7 +14,7 @@ The statistical de-correlation operator D, also known as the balance operator, i
 
 
 ## Fortran code structure for FESTAT:
-Figure 1. Flowchart of FASTEM Fortran code.
+
 ```mermaid
 classDiagram
 
@@ -30,9 +30,21 @@ NMCSTAT --|> EWGSABAL
 NMCSTAT --|> ECALCOV
 SUFESPEC --|> SUFESPECA
 SUFESPEC --|> SUFESPECG1
+
+NMCSTAT: PROGRAM()
+SUFESTAT: SUBROUTINE()
+NMCSTAT: SUBROUTINE()
+SUFESPEC: SUBROUTINE()
+EREGPDIV: SUBROUTINE()
+EREGPDT: SUBROUTINE()
+EREGPDTQ: SUBROUTINE()
+EWGSABAL: SUBROUTINE()
+ECALCOV: SUBROUTINE()
+SUFESPECA: SUBROUTINE()
+SUFESPECG1: SUBROUTINE()
 ```
 here,
-- A.	Festet.F90 is the main Fortran probeam that has two subroutine (B, C)
+- A.	Festat.F90 is the main Fortran program that has two subroutine (B, C)
 - B.	Subroutine SUFESTAT (sufestat.F90) handle namelist (fort.4) and MPI setup for the program FESTAT. This Fortran program also check the file type FA or GRIB2
 - C.	Subroutine NMCSTAT (nmcstat.F90) mainly handles error statistics, covariances using NMC forecast differences. This subroutine is called multiple subroutines to calculate forecast difference and the error statistics. Few of them are listed below.
 - C1. Subroutine SUFESPEC (sufespec.F90) reads input file  (CNAME = 'ICMSHHARM+0') either in FA or GRIB2 format.
