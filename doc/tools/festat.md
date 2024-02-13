@@ -1,16 +1,16 @@
-# FESTAT- Forecast Error statistics: A Technical Summary
+# FESTAT - Forecast Error STATistics: A Technical Summary
 
-## Introduction: 
+## Introduction
 
-The background error statistics (BGE), generally referred to as structure functions, are produced through the standalone FESTAT (Forecast Error Statistics) method. The FESTAT for FA test has been completed and is currently accessible in cycle CY46h1. To mitigate the substantial storage problem, the B-matrix is computed in terms of control vectors, assuming statistical independence among them. The control variables encompass vorticity, divergence, specific humidity, surface pressure, and temperature.
+The background error statistics (BGE), generally referred to as structure functions, are produced using the standalone FESTAT (Forecast Error Statistics) method. The FESTAT for FA test has been completed and is currently accessible in cycle CY46h1. To mitigate the substantial storage problem, the B-matrix is computed in terms of control vectors, assuming statistical independence among them. The control variables encompass vorticity, divergence, specific humidity, surface pressure, and temperature.
 
-                          VDF (Forecast Error Vector)  ---------->    Control Vector
+                          **V****D**F** (Forecast Error Vector)  ---------->    Control Vector
 
-Here, F represents the horizontal 2-dimensional Fourier transform, transitioning from physical grid point space to spectral space. D functions as a balancing operator, and V is a vertical transform that utilizes the eigen-vectors of vertical covariance matrices.
+Here, **F** represents the horizontal 2-dimensional Fourier transform, transitioning from physical grid point space to spectral space. **D** functions as a balancing operator, and **V** is a vertical transform that utilizes the eigen-vectors of vertical covariance matrices.
 
-The spectral transformation (denoted as F) is essential because certain fields are expressed in grid points rather than spectral coefficients. Moreover, FESTAT requires vorticity and divergence derived from geographical wind components in the input FA file. To calculate vorticity and divergence, the initial step involves computing, bi-periodicizing, and smoothing the map factor in spectral space. Subsequently, the wind is reduced by the map factor in gridpoint space. Finally, the wind components are transformed into vorticity and divergence.
+The spectral transformation (denoted as **F**) is essential because certain fields are expressed in grid points rather than spectral coefficients. Moreover, FESTAT requires vorticity and divergence derived from geographical wind components in the input FA file. To calculate vorticity and divergence, the initial step involves computing, bi-periodicizing, and smoothing the map factor in spectral space. Subsequently, the wind is reduced by the map factor in gridpoint space. Finally, the wind components are transformed into vorticity and divergence.
 
-The statistical de-correlation operator D, also known as the balance operator, is derived in spectral space using multiple regression techniques, performed separately for each wavenumber component. The multiple regression operates stepwise, commencing with the background forecast errors of vorticity, divergence, temperature, surface pressure, and specific humidity in spectral space. In summary, the FESTAT software manages multiple tasks related to the error statistics, including (1) converting variables from gridpoint space to spectral point space, (2) computing the balance operator, (3) generating horizontal variance density spectra for control variables, and (4) determining vertical correlations for the control variables.
+The statistical de-correlation operator **D**, also known as the balance operator, is derived in spectral space using multiple regression techniques, performed separately for each wavenumber component. The multiple regression operates stepwise, commencing with the background forecast errors of vorticity, divergence, temperature, surface pressure, and specific humidity in spectral space. In summary, the FESTAT software manages multiple tasks related to the error statistics, including (1) converting variables from gridpoint space to spectral point space, (2) computing the balance operator, (3) generating horizontal variance density spectra for control variables, and (4) determining vertical correlations for the control variables.
 
 ## The FESTAT run script
 
@@ -86,8 +86,12 @@ The _runfestat_ script for FA is driven by a namelist file (fort.4) in the curre
 ```
 
 where 
-NCASES = Number of cases (total number of file)
-NFRGRP = Number of members per group of files.
+
+|= Name =|= Description =|
+|--------|---------------|
+|NCASES  |CNAME which is set to fit the name of the native historical files. The actual names of the files will be CNAME completed with a number on 3 digits (from 1 to NCASES). |
+|NFRGRP  |NFRGRP represents the number of members per group of files. This variable is serving the former need of femars. The ensemble of files is divided into groups. Each member n of a group, except the last one, is computed as the difference between the historical files n+1 and n ; the latest member of a group is computed as the difference between the historical files 1 and n. In that example the number of members in each group is NFRGRP=6. Consequently the number of groups here is 9. |
+|
 
 
 
