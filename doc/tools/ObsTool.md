@@ -96,12 +96,12 @@ WHERE (varno /= 91 ) AND (an_depar is not NULL)
 
 ## Satem obs
 
-odbsql  -T -q 'SELECT
-statid,vertco_reference_1,sensor,rad2deg(lat),rad2deg(lon),an_depar,tdiff(date,time,andate,antime)/60,fg_depar,obsvalue
-FROM hdr,body,desc where obstype=7' > ${DIROUT}/ccma_mon_${yyyy}${mm}${dd}${hh}
-
+```
+odbsql  -T -q 'SELECT statid,vertco_reference_1,sensor,rad2deg(lat),rad2deg(lon),an_depar,tdiff(date,time,andate,antime)/60,fg_depar,obsvalue FROM hdr,body,desc where obstype=7' > ${DIROUT}/ccma_mon_${yyyy}${mm}${dd}${hh}
+```
 
 using  satem.40h1.sql like:
+```
 CREATE VIEW mondb AS
 SELECT
     type@desc                  ,
@@ -245,9 +245,4 @@ SELECT
     obs_corr_mask@errstat      ,
     obs_corr_diag_1@errstat
 FROM desc,timeslot_index,hdr,modsurf,sat,radiance,radiance_body,body,errstat WHERE obstype@hdr=7;
-
-
-
-
-
-
+```
