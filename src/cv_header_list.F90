@@ -39,8 +39,6 @@ program cv_header_list
 !
   integer(kind=4)          :: itrunc,nflevg
   integer(kind=4)          :: jn,jk,jj,jl
-  real(kind=8)             :: zdummy,zeps
-  real(kind=8)             :: lx_in,ly_in,lxy_in
   integer(kind=4)          :: nsmax_jb_in,nmsmax_jb_in
   integer(kind=4),allocatable :: isorel2_in(:),isodor2_in(:)
   integer(kind=4)          ::   ispec2_in,iii 
@@ -49,7 +47,6 @@ program cv_header_list
 !
 !   Initialize some work variables
 !
-  zeps=0.0000001
   nuljb_in=10
   nulout=06
   nulnam=05
@@ -59,16 +56,17 @@ program cv_header_list
 !   Open input covariance file
 !
   open(nuljb_in,file='stabal96.cv',form='unformatted')
-  write(nulout,*) 'Processing stabal96.cv ...'
+  write(nulout,*) 'cv header'
 !
 !   Read GSA file header
 !
   read(nuljb_in) clid
   read(nuljb_in) clcom
   read(nuljb_in) iorig,idate,itime,inbset
-  write(nulout,*) 'Description : ',clcom
-  write(nulout,*) 'GSA ID=',clid
-  write(nulout,*) ' Center=',iorig,' Date=',idate,' Time=',itime
+  write(nulout,*) 'Description :: ',clcom
+  write(nulout,*) 'GSA ID   :: ',clid
+  write(nulout,*) 'Center   :: ',iorig
+  write(nulout,*) ''
 !
 !   Read  GSA set 0 header : model geometry definition (LAM case !)
 !
@@ -79,16 +77,16 @@ program cv_header_list
   read(nuljb_in) zlon1,zlat1,zlon2,zlat2,zlon0,zlat0,&
        &       idgl,idlon,idgux,idlux,iismax,imsmax,iflevg,ichkwd
 
-  write(nulout,*) ' inbmat=',inbmat,' iweight=',iweight,' itypmat=',itypmat
-  write(nulout,*) ' isetdist=',isetdist,' ilendef=',ilendef
-  write(nulout,*) ' idim1=',idim1,' idim2=',idim2,' ipar1=',ipar1
-  write(nulout,*) ' ipar2=',ipar2,' itypdi1=',itypdi1,' itypdi2=',itypdi2
-  write(nulout,*) ' zlon1=',zlon1,' zlat1=',zlat1,' zlon2=',zlon2
-  write(nulout,*) ' zlat2=',zlat2,' zlon0=',zlon0,' zlat0=',zlat0
-  write(nulout,*) ' idgl=',idgl,' idlon=',idlon
-  write(nulout,*) ' idgux=',idgux,' idlux=',idlux
-  write(nulout,*) ' iismax=', iismax,' imsmax=',imsmax
-  write(nulout,*) ' iflevg=',iflevg,' ichkwd=',ichkwd
+  write(nulout,*) 'JPDAYS   :: ',iweight
+  write(nulout,*) 'zlon1    :: ',zlon1,'zlat1 :: ',zlat1,' zlon2 :: ',zlon2
+  write(nulout,*) 'zlat2    :: ',zlat2,'zlon0 :: ',zlon0,' zlat0 :: ',zlat0
+  write(nulout,*) 'NDGL     :: ',idgl
+  write(nulout,*) 'NDLON    :: ',idlon
+  write(nulout,*) 'NDGUX    :: ',idgux
+  write(nulout,*) 'NDLUX    :: ',idlux
+  write(nulout,*) 'NSMAX    :: ',iismax
+  write(nulout,*) 'NMSMAX   :: ',imsmax
+  write(nulout,*) 'NFLEVG   :: ',iflevg
 !
   stop
 end program cv_header_list

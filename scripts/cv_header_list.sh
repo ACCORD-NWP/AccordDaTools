@@ -83,7 +83,7 @@ fi
 #
 # Create soft links for cv_header_list.x
 #
-ln ${CVFILE} stabal96.cv
+ln -sf ${CVFILE} stabal96.cv
 
 ${exedir}/cv_header_list.x
 
