@@ -56,14 +56,12 @@ program cv_header_list
 !   Open input covariance file
 !
   open(nuljb_in,file='stabal96.cv',form='unformatted')
-  write(nulout,*) 'cv header'
 !
 !   Read GSA file header
 !
   read(nuljb_in) clid
   read(nuljb_in) clcom
   read(nuljb_in) iorig,idate,itime,inbset
-  write(nulout,*) 'Description :: ',clcom
   write(nulout,*) ''
 !
 !   Read  GSA set 0 header : model geometry definition (LAM case !)
