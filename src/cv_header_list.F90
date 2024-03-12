@@ -64,8 +64,6 @@ program cv_header_list
   read(nuljb_in) clcom
   read(nuljb_in) iorig,idate,itime,inbset
   write(nulout,*) 'Description :: ',clcom
-  write(nulout,*) 'GSA ID   :: ',clid
-  write(nulout,*) 'Center   :: ',iorig
   write(nulout,*) ''
 !
 !   Read  GSA set 0 header : model geometry definition (LAM case !)
@@ -77,16 +75,17 @@ program cv_header_list
   read(nuljb_in) zlon1,zlat1,zlon2,zlat2,zlon0,zlat0,&
        &       idgl,idlon,idgux,idlux,iismax,imsmax,iflevg,ichkwd
 
-  write(nulout,*) 'JPDAYS   :: ',iweight
-  write(nulout,*) 'zlon1    :: ',zlon1,'zlat1 :: ',zlat1,' zlon2 :: ',zlon2
-  write(nulout,*) 'zlat2    :: ',zlat2,'zlon0 :: ',zlon0,' zlat0 :: ',zlat0
-  write(nulout,*) 'NDGL     :: ',idgl
-  write(nulout,*) 'NDLON    :: ',idlon
-  write(nulout,*) 'NDGUX    :: ',idgux
-  write(nulout,*) 'NDLUX    :: ',idlux
-  write(nulout,*) 'NSMAX    :: ',iismax
-  write(nulout,*) 'NMSMAX   :: ',imsmax
-  write(nulout,*) 'NFLEVG   :: ',iflevg
+  write(nulout,*) 'JPDAYS       :: ',iweight
+  write(nulout,*) 'SW(lon-lat)  :: ',zlon1,zlat1
+  write(nulout,*) 'NE(lon-lat)  :: ',zlon2,zlat2
+  write(nulout,*) 'REF(lon-lat) :: ',zlon0,zlat0
+  write(nulout,*) 'NDGL         :: ',idgl
+  write(nulout,*) 'NDLON        :: ',idlon
+  write(nulout,*) 'NDGUX        :: ',idgux
+  write(nulout,*) 'NDLUX        :: ',idlux
+  write(nulout,*) 'NSMAX        :: ',iismax
+  write(nulout,*) 'NMSMAX       :: ',imsmax
+  write(nulout,*) 'NFLEVG       :: ',iflevg
 !
   stop
 end program cv_header_list
