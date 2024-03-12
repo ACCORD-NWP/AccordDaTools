@@ -16,8 +16,7 @@ ${bold}NAME${normal}
 
 ${bold}USAGE${normal}
         ${PROGNAME} -i <data-dir>
-		    -c <cv-file>
-                    -t <cvt-file>
+		    -c <jb-file-name>
 		    -l <level-nr>
 		    -g <grid-spacing>
 		    -m <nsmax>
@@ -32,11 +31,8 @@ ${bold}OPTIONS${normal}
 	-i ${unline}data-dir${normal}
 	   Input data directory (full path)
 
-        -c ${unline}cv-file${normal}
-           .cv file
-
-        -t ${unline}cvt-file${normal}
-           .cvt file
+        -c ${unline}jb-file-name${normal}
+	   Name of *.cv and *.cvt files (without extension)
 		   
 	-l ${unline}level-nr${normal}
            Number of domain's vertical levels
@@ -51,7 +47,7 @@ ${bold}OPTIONS${normal}
            NDGL parameter specified in domain properties
 		   
 	-d ${unline}diacov-binary${normal}
-           PATH to DIACOV executable compiled by makeup/GMKPACK.
+           PATH to DIACOV binary.
 
         -h Help! Print usage information.
 
@@ -59,8 +55,7 @@ USAGE
 }
 
 DATADIR=DUMMY
-CVFILE=DUMMY
-CVTFILE=DUMMY
+JBFILE=DUMMY
 LEVELNUM=DUMMY
 GRIDSIZE=DUMMY
 NSMAX=DUMMY
@@ -79,17 +74,14 @@ if [ ${#} -eq 0 ]; then
   exit 1
 fi
 
-while getopts i:c:t:l:g:m:n:d:h option
+while getopts i:c:l:g:m:n:d:h option
 do
   case $option in
     i)
        DATADIR=$OPTARG
        ;;
     c)
-       CVFILE=$OPTARG
-       ;;
-    t)
-       CVTFILE=$OPTARG
+       JBFILE=$OPTARG
        ;;
     l)
        LEVELNUM=$OPTARG
@@ -123,14 +115,8 @@ if [ ${DATADIR} == "DUMMY" ]; then
   exit 1
 fi
 
-if [ ${CVFILE} == "DUMMY" ]; then
-  echo "Please define cv-file using -c"
-  echo "Try '${PROGNAME} -h' for more information"
-  exit 1
-fi
-
-if [ ${CVTFILE} == "DUMMY" ]; then
-  echo "Please define cvt-file using -t"
+if [ ${JBFILE} == "DUMMY" ]; then
+  echo "Please define jb-file-name using -c"
   echo "Try '${PROGNAME} -h' for more information"
   exit 1
 fi
@@ -190,14 +176,14 @@ cat > nam_diag2 <<EOF
 EOF
 
 #Run DIACOV with stabal.cv
-ln -sf ../${DATADIR}/$CVTFILE stabal.cvt
+ln -sf ../${DATADIR}/${JBFILE}.cvt stabal.cvt
 cp nam_diag1 fort.4
-../${BINPATH}
+${BINPATH}
 
 #Run DIACOV with stabal.cvt
-ln -sf ../${DATADIR}/$CVFILE stabal.cv
+ln -sf ../${DATADIR}/${JBFILE}.cv stabal.cv
 cp nam_diag2 fort.4
-../${BINPATH}
+${BINPATH}
 
 # Take care of results
 mv *.xy ../${DATADIR}/.

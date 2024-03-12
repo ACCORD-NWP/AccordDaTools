@@ -617,7 +617,7 @@ program jbdiagnose
 !
   allocate(bfact_iso(0:nsmax_jb_in))
 !
-  call calc_bfact_iso(nflevg,nsmax_jb_in,nmsmax_jb_in,ispec2_in,1.5,bfact_in,bfact_iso)
+  call calc_bfact_iso(nflevg,nsmax_jb_in,nmsmax_jb_in,ispec2_in,1.5_8,bfact_in,bfact_iso)
 !
 !   Diagnostic balance operator files
 !
