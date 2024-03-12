@@ -2,7 +2,8 @@ using Documenter
 
 
 pages = [
-   "jbdiagnose" => "jbdiagnose.md"
+   "Jb diagnose" => "jbdiagnose.md",
+   "VarBc Coeff" => "varbccoeff.md"
 ]
 
 
