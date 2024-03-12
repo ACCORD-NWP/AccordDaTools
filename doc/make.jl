@@ -2,7 +2,7 @@ using Documenter
 
 
 pages = [
-   "jbdiagnose" => "jbdiagnose.md",
+   "jbdiagnose" => "jbdiagnose.md"
    "cv header list" => "cvheaderlist.md"
 ]
 
