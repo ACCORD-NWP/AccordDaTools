@@ -3,6 +3,7 @@ using Documenter
 
 pages = [
    "jbdiagnose" => "jbdiagnose.md"
+   "cv header list" => "cvheaderlist.md"
 ]
 
 
