@@ -3,27 +3,26 @@
 
 ## 1. Purpose
 
-This diagnostic tool is intended for use in the evaluation of the performance of the variational bias correction (VarBC) used for satellite observations in the context of HARMONIE-AROME data assimilation systems. In particular for evaluating the performance in time the VarBC coefficients used to derive the bias to be corrected (Dee, 2004).
+This diagnostic tool is intended for use in the evaluation of the performance of the variational bias correction (VarBC) used for satellite observations in the context of HARMONIE-AROME data assimilation systems. In particular for evaluating the performance in time of the VarBC coefficients.
 
 
 ## 2. Content
 
-The tool comprises two shell scripts:
+The tool comprises two scripts:
 
-- **varbcdiagnosis.sh** for data extraction
+- **varbcdiagnosis** for data extraction
 
-- **plotvarbccoeff.sh** for VarBC coefficient time-series plotting (actually this script needs the python script **plotvarbccoeff.py** but in the future it is intented to use only the python one)
-
+- **plotvarbccoeff** for VarBC coefficient time-series plotting 
 
 ## 3. Usage
 
-**varbcdiagnosis** extracts VarBC coefficients for certain satellite/instrument all all the channels with data and for 
-a certain period of time. VarBC coefficients are extracted from VARBC.cycle files and stored as ASCII files.
+**varbcdiagnosis** extracts VarBC coefficients for a certain satellite/instrument and all the channels with data and for 
+a certain period of time. VarBC coefficients are extracted from VARBC.cycle files.
 
 Script **varbcdiagnosis** arguments:
 
-        -i input-directory (where VARBC.cycle files are stored, usually in the form ./EXP/YYYY/MM/DD/HH
-           EXPERIMENT, Year, Month, Day and Hour
+        -i input-directory 
+           where VARBC.cycle files are stored, usually in the form ./EXP/YYYY/MM/DD/HH (EXPERIMENT, Year, Month, Day and                Hour)
 
         -o output-directory
            
@@ -38,7 +37,7 @@ Script **varbcdiagnosis** arguments:
         -h Help! Print usage information.
 
 
-**plotvarbccoeff** produces a plot for a selected satellite, sensor, channel and hour (optional, if not present all the assimilation cycles with observations are included in the ASCII file). 
+**plotvarbccoeff** produces a plot for a selected satellite, sensor, channel and hour (optional, if not present all the assimilation cycles with observations are included). 
 
 Script **plotvarbccoef** arguments:
 
@@ -48,12 +47,12 @@ Script **plotvarbccoef** arguments:
        -d LABELS   Optional experiment description
        -b          Batch mode, produce png only
 
-For example for METOP-B (3), MHS (15), Channel 9 at 21 UTC or at all assimilations cycles with data, IPATH are  
-output-directory/VARBC_3_15_9_210000 or output-directory/VARBC_3_15_9.
+For example for METOP-B (3), MHS (15), Channel 9 at 21 UTC (or at all assimilation cycles with data), IPATH is
+output-directory/VARBC_3_15_9_210000 (or output-directory/VARBC_3_15_9).
 
 
 ## 4. Interpretation
 
-Time-series of VarBC coefficients can be used for monitoring the performance of variational bias correction, specially at the initial steps of the bias correction, when usually inictial bias corrected is zero (cold-start) and satellite observations are assimilated in passive. Coefficents usually stabilize in time (it depends in many factors), and when they are stable it is assumed that satellite observations can be active assimilated. However, it is recommended to monitor mand and standard deviation of (ob-fg), for instance by obsmon. 
+Time-series of VarBC coefficients can be used for monitoring the performance of variational bias correction, specially at the initial steps of the bias correction, when usually initial bias is not corrected (cold-start) and satellite observations are assimilated in passive. Coefficients usually stabilize in time (it depends in many factors), and when they are stable it is assumed that satellite observations should be evaluated for active assimilatedo.
 
 
