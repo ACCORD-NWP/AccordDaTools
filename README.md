@@ -115,7 +115,7 @@ rundiacov -h
 
 Example:
 ```
-rundiacov -i dataTest -c METCOOP25D_65_2021100300-2021111006_412.cv -t METCOOP25D_65_2021100300-2021111006_412.cvt -l 65 -g 2.5 -m 539 -n 1080 -d DIACOV
+rundiacov -i dataTest -c METCOOP25D_65_2021100300-2021111006_412 -l 65 -g 2.5 -m 539 -n 1080 -d DIACOV
 ```
 
 #### Produce diagonal stats

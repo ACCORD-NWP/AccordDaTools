@@ -3,9 +3,9 @@ using Documenter
 
 pages = [
    "Jb diagnose" => "jbdiagnose.md",
+   "cv header list" => "cvheaderlist.md"
    "VarBc Coeff" => "varbccoeff.md"
 ]
-
 
 prettyurls = get(ENV, "CI", nothing) == "true" 
 
