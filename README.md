@@ -82,20 +82,6 @@ Example:
 plotvarbccoeff -i varbc_diag_out/VARBC_3_16_3309_210000 -b
 ```
 
-### DFS
-#### DFS computation
-The dfscomp tool reads the (ASCII) data from an unperturbed CCMA and a perturbed CCMA.
-
-Help/usage:
-```
-dfscomp -h
-```
-
-Example:
-```
-dfscomp -p CCMA_2022050112.dat -u CCMA_2022050112_unpert.dat -o dfs2022050112.dat
-```
-
 ### DIACOV
 First, you should have Festat output and the DIACOV binary compiled by Harmonie stored somewhere.
 Then, create the new directory, Jb files there. Example:
