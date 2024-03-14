@@ -5,21 +5,19 @@
 
 This diagnostic tool is intended for use in the evaluation of the performance of the variational bias correction (VarBC) used for satellite observations in the context of HARMONIE-AROME data assimilation systems. In particular for evaluating the performance in time of the VarBC coefficients.
 
-
-## 2. Content
-
-The tool comprises two scripts:
-
+There are tool two tools required:
 - **varbcdiagnosis** for data extraction
-
 - **plotvarbccoeff** for VarBC coefficient time-series plotting 
 
-## 3. Usage
+## 2. Tools
 
-**varbcdiagnosis** extracts VarBC coefficients for a certain satellite/instrument and all the channels with data and for 
-a certain period of time. VarBC coefficients are extracted from VARBC.cycle files.
+### VARBC.cycle data extraction
 
-Script **varbcdiagnosis** arguments:
+**varbcdiagnose** extracts VarBC coefficients for a certain satellite/instrument and all the channels with data and for a certain period of time. VarBC coefficients are extracted from VARBC.cycle files.
+
+Help/usage:
+```shell
+$~> varbcdiagnose -h
 
         -i input-directory 
            where VARBC.cycle files are stored, usually in the form ./EXP/YYYY/MM/DD/HH (EXPERIMENT, Year, Month, Day and                Hour)
@@ -35,21 +33,31 @@ Script **varbcdiagnosis** arguments:
            See https://apps.ecmwf.int/odbgov/sensor/ for more details.
 
         -h Help! Print usage information.
+```
 
+Example:
+```shell
+$~> varbcdiagnose -i /path/to/directory/with/varbc_files/ -o varbc_diag_out
+```
+
+### VarBC coefficient time-series plotting
 
 **plotvarbccoeff** produces a plot for a selected satellite, sensor, channel and hour (optional, if not present all the assimilation cycles with observations are included). 
 
-Script **plotvarbccoef** arguments:
-
+Help/usage:
+```
+$~> plotvarbccoeff -h
        -h, --help  show this help message and exit
        -i IPATH    Input file name
        -l LLOC     Legend location using matplotlib syntax
        -d LABELS   Optional experiment description
        -b          Batch mode, produce png only
+```
 
-For example for METOP-B (3), MHS (15), Channel 9 at 21 UTC (or at all assimilation cycles with data), IPATH is
-output-directory/VARBC_3_15_9_210000 (or output-directory/VARBC_3_15_9).
-
+Example: For METOP-B (3), MHS (15), Channel 9 at 21 UTC (or at all assimilation cycles with data), IPATH is output-directory/VARBC_3_15_9_210000 (or output-directory/VARBC_3_15_9).
+```
+plotvarbccoeff -i varbc_diag_out/VARBC_3_16_3309_210000 -b
+```
 
 ## 4. Interpretation
 

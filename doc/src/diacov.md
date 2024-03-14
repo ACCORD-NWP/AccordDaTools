@@ -23,7 +23,7 @@ rundiacov -h
 
 Example:
 ```
-rundiacov -i dataTest -c METCOOP25D_65_2021100300-2021111006_412.cv -t METCOOP25D_65_2021100300-2021111006_412.cvt -l 65 -g 2.5 -m 539 -n 1080 -d DIACOV
+rundiacov -i dataTest -c METCOOP25D_65_2021100300-2021111006_412 -g 2.5 -d /path/to/DIACOV
 ```
 
 #### Produce diagonal stats
@@ -47,7 +47,7 @@ plotdiacov -h
 
 You can either produce the plots for all of the available stat files, or to choose specific ones. Examples:
 ```
-plotdiacov -d ./stats (the plots will be saved to the same directory as stat files)
-plotdiacov -i ./stats/corqu65.dat -o ./stats/corqu65.png (if the output file name is not specified, the plot is saved to the pwd with the default name "output.png")
+plotdiacov -d ./stats                                     # the plots will be saved to the same directory as stat files
+plotdiacov -i ./stats/corqu65.dat -o ./stats/corqu65.png  # if the output file name is not specified, the plot is saved to the pwd with the default name "output.png"
 ```
 
