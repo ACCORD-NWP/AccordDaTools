@@ -6,6 +6,7 @@ import argparse
 import sys
 import glob
 import matplotlib as mpl
+from matplotlib.colors import TwoSlopeNorm
 mpl.use('Agg')
 
 # Authors Magnus Lindskog and Ulf Andrae, Dec 2021
@@ -32,8 +33,8 @@ def plotme(idata, oplot) :
   cc=plt.contour(xx,colors='black')
   plt.clabel(cc, inline=True, fontsize=12)
 
-
-  plt.contourf(xx, cmap='RdBu_r', alpha=0.5)
+  limit=np.max(np.abs(xx))
+  plt.contourf(xx, cmap='RdBu_r', alpha=0.5, norm=TwoSlopeNorm(vmin=-limit, vcenter=0, vmax=limit))
 
   plt.colorbar(orientation='vertical');
   if dim1==dim2:
@@ -51,7 +52,7 @@ def plotme(idata, oplot) :
 def main(argv) :
 
   parser = argparse.ArgumentParser(description='Plotting DIACOV diagnostics')
-  parser.add_argument('-d',dest="indir",help='Plot all input data files in this directory',default=False,required=False)
+  parser.add_argument('-d',dest="indir",help='Plot all the input data files in this directory',default=False,required=False)
   parser.add_argument('-i',dest="idata",help='Input data files',default=False,required=False)
   parser.add_argument('-o',dest="oplot",help='Output plot file names',default='output.png',required=False)
 
@@ -62,13 +63,21 @@ def main(argv) :
   args = parser.parse_args()
 
   if args.idata != False and args.indir == False:
-    plotme(args.idata,args.oplot)
+      try:
+          plotme(args.idata,args.oplot)
+      except:
+          pass
+      
   elif args.indir != False and args.idata == False:
     datlist=glob.glob(args.indir+'/*.dat') 
     for infile in datlist:
       output=infile.replace('.dat','.png')
       print (' ... plotting '+output)
-      plotme(infile,output)
+      try:
+          plotme(infile,output)
+      except:
+          print('Cannot produce the plot '+output+'!')
+          pass
   else:
     print ('Cannot do both!')
     sys.exit(1)

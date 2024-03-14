@@ -16,12 +16,8 @@ ${bold}NAME${normal}
 
 ${bold}USAGE${normal}
         ${PROGNAME} -i <data-dir>
-		    -c <cv-file>
-                    -t <cvt-file>
-		    -l <level-nr>
+		    -c <jb-file-name>
 		    -g <grid-spacing>
-		    -m <nsmax>
-		    -n <ndgl>
 		    -d <diacov-binary>
                     [ -h ]
 
@@ -32,26 +28,14 @@ ${bold}OPTIONS${normal}
 	-i ${unline}data-dir${normal}
 	   Input data directory (full path)
 
-        -c ${unline}cv-file${normal}
-           .cv file
-
-        -t ${unline}cvt-file${normal}
-           .cvt file
-		   
-	-l ${unline}level-nr${normal}
-           Number of domain's vertical levels
+        -c ${unline}jb-file-name${normal}
+	   Name of *.cv and *.cvt files (without extension)
 		   
 	-g ${unline}grid-spacing${normal}
            Grid-spacing in kilometers
 		   
-	-m ${unline}nsmax${normal}
-           NSMAX parameter specified in domain properties
-		   
-	-n ${unline}ndgl${normal}
-           NDGL parameter specified in domain properties
-		   
 	-d ${unline}diacov-binary${normal}
-           PATH to DIACOV executable compiled by makeup/GMKPACK.
+           PATH to DIACOV binary.
 
         -h Help! Print usage information.
 
@@ -59,12 +43,8 @@ USAGE
 }
 
 DATADIR=DUMMY
-CVFILE=DUMMY
-CVTFILE=DUMMY
-LEVELNUM=DUMMY
+JBFILE=DUMMY
 GRIDSIZE=DUMMY
-NSMAX=DUMMY
-NDGL=DUMMY
 BINPATH=DUMMY
 
 #wrkdir=/home/eela/EoinDiacovTest/ #need to be changed to be more flexible
@@ -79,29 +59,17 @@ if [ ${#} -eq 0 ]; then
   exit 1
 fi
 
-while getopts i:c:t:l:g:m:n:d:h option
+while getopts i:c:g:d:h option
 do
   case $option in
     i)
        DATADIR=$OPTARG
        ;;
     c)
-       CVFILE=$OPTARG
-       ;;
-    t)
-       CVTFILE=$OPTARG
-       ;;
-    l)
-       LEVELNUM=$OPTARG
+       JBFILE=$OPTARG
        ;;
     g)
        GRIDSIZE=$OPTARG
-       ;;
-    m)
-       NSMAX=$OPTARG
-       ;;
-    n)
-       NDGL=$OPTARG
        ;;
     d)
        BINPATH=$OPTARG
@@ -123,38 +91,14 @@ if [ ${DATADIR} == "DUMMY" ]; then
   exit 1
 fi
 
-if [ ${CVFILE} == "DUMMY" ]; then
-  echo "Please define cv-file using -c"
-  echo "Try '${PROGNAME} -h' for more information"
-  exit 1
-fi
-
-if [ ${CVTFILE} == "DUMMY" ]; then
-  echo "Please define cvt-file using -t"
-  echo "Try '${PROGNAME} -h' for more information"
-  exit 1
-fi
-
-if [ ${LEVELNUM} == "DUMMY" ]; then
-  echo "Please define number of vertical levels using -l"
+if [ ${JBFILE} == "DUMMY" ]; then
+  echo "Please define jb-file-name using -c"
   echo "Try '${PROGNAME} -h' for more information"
   exit 1
 fi
 
 if [ ${GRIDSIZE} == "DUMMY" ]; then
   echo "Please define grid-size using -g"
-  echo "Try '${PROGNAME} -h' for more information"
-  exit 1
-fi
-
-if [ ${NSMAX} == "DUMMY" ]; then
-  echo "Please define NSMAX using -m"
-  echo "Try '${PROGNAME} -h' for more information"
-  exit 1
-fi
-
-if [ ${NDGL} == "DUMMY" ]; then
-  echo "Please define NDGL using -n"
   echo "Try '${PROGNAME} -h' for more information"
   exit 1
 fi
@@ -166,6 +110,10 @@ if [ ${BINPATH} == "DUMMY" ]; then
 fi
 
 cd $tmpdir
+
+LEVELNUM=$(cv_header_list -i ../${DATADIR}/${JBFILE}.cv | grep "NFLEVG" | awk '{print $3}')
+NSMAX=$(cv_header_list -i ../${DATADIR}/${JBFILE}.cv | grep "NSMAX" | awk '{print $3}')
+NDGL=$(cv_header_list -i ../${DATADIR}/${JBFILE}.cv | grep "NDGL" | awk '{print $3}')
 
 # prepare namelist for diacov - full variables
 cat > nam_diag1 <<EOF
@@ -190,14 +138,14 @@ cat > nam_diag2 <<EOF
 EOF
 
 #Run DIACOV with stabal.cv
-ln -sf ../${DATADIR}/$CVTFILE stabal.cvt
+ln -sf ../${DATADIR}/${JBFILE}.cvt stabal.cvt
 cp nam_diag1 fort.4
-../${BINPATH}
+${BINPATH}
 
 #Run DIACOV with stabal.cvt
-ln -sf ../${DATADIR}/$CVFILE stabal.cv
+ln -sf ../${DATADIR}/${JBFILE}.cv stabal.cv
 cp nam_diag2 fort.4
-../${BINPATH}
+${BINPATH}
 
 # Take care of results
 mv *.xy ../${DATADIR}/.

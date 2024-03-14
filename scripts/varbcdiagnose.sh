@@ -34,14 +34,14 @@ unline=$(tput smul)
 cat << USAGE
 
 ${bold}NAME${normal}
-        ${PROGNAME} - process VarBC predictor information
+        ${PROGNAME} - process VarBC coefficient information
 
 ${bold}USAGE${normal}
         ${PROGNAME} -i <input-directory> -o <output-directory>
                     [ -h ]
 
 ${bold}DESCRIPTION${normal}
-        Script to process VarBC predictor information from VARBC.cycle files
+        Script to process VarBC coefficient information from VARBC.cycle files
         produced by IAAAH NWP System.
 
 ${bold}OPTIONS${normal}
@@ -145,7 +145,6 @@ find ${VARBCINP} -name "VARBC.cycle" | sort | while read FILEIN; do
     # params -> nl+4 ; four lines down
     n5=`expr $nl + 4`; params=`sed -n -e "${n5}"p ${FILEIN} |cut -c8-`
 
-    # name_key= $sat_$sensor_$channel
     name_key=`echo $key|awk '{print $1"_"$2"_"$3}'`
     sat=`echo $key|awk '{print $1}'`
     sensor=`echo $key|awk '{print $2}'`
