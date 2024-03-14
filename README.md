@@ -98,11 +98,10 @@ dfscomp -p CCMA_2022050112.dat -u CCMA_2022050112_unpert.dat -o dfs2022050112.da
 
 ### DIACOV
 First, you should have Festat output and the DIACOV binary compiled by Harmonie stored somewhere.
-Then, create the new directory, copy the DIACOV binary and Jb files there. Example:
+Then, create the new directory, Jb files there. Example:
 ```
 mkdir DiacovTest
 cd DiacovTest
-cp /path/to/DIACOV .
 mkdir dataTest
 cp /path/to/Jb/data dataTest/.
 ```
@@ -115,7 +114,7 @@ rundiacov -h
 
 Example:
 ```
-rundiacov -i dataTest -c METCOOP25D_65_2021100300-2021111006_412 -l 65 -g 2.5 -m 539 -n 1080 -d DIACOV
+rundiacov -i dataTest -c METCOOP25D_65_2021100300-2021111006_412 -g 2.5 -d /path/to/DIACOV
 ```
 
 #### Produce diagonal stats

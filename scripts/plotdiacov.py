@@ -63,13 +63,21 @@ def main(argv) :
   args = parser.parse_args()
 
   if args.idata != False and args.indir == False:
-    plotme(args.idata,args.oplot)
+      try:
+          plotme(args.idata,args.oplot)
+      except:
+          pass
+      
   elif args.indir != False and args.idata == False:
     datlist=glob.glob(args.indir+'/*.dat') 
     for infile in datlist:
       output=infile.replace('.dat','.png')
       print (' ... plotting '+output)
-      plotme(infile,output)
+      try:
+          plotme(infile,output)
+      except:
+          print('Cannot produce the plot '+output+'!')
+          pass
   else:
     print ('Cannot do both!')
     sys.exit(1)

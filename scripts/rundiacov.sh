@@ -17,10 +17,7 @@ ${bold}NAME${normal}
 ${bold}USAGE${normal}
         ${PROGNAME} -i <data-dir>
 		    -c <jb-file-name>
-		    -l <level-nr>
 		    -g <grid-spacing>
-		    -m <nsmax>
-		    -n <ndgl>
 		    -d <diacov-binary>
                     [ -h ]
 
@@ -34,17 +31,8 @@ ${bold}OPTIONS${normal}
         -c ${unline}jb-file-name${normal}
 	   Name of *.cv and *.cvt files (without extension)
 		   
-	-l ${unline}level-nr${normal}
-           Number of domain's vertical levels
-		   
 	-g ${unline}grid-spacing${normal}
            Grid-spacing in kilometers
-		   
-	-m ${unline}nsmax${normal}
-           NSMAX parameter specified in domain properties
-		   
-	-n ${unline}ndgl${normal}
-           NDGL parameter specified in domain properties
 		   
 	-d ${unline}diacov-binary${normal}
            PATH to DIACOV binary.
@@ -56,10 +44,7 @@ USAGE
 
 DATADIR=DUMMY
 JBFILE=DUMMY
-LEVELNUM=DUMMY
 GRIDSIZE=DUMMY
-NSMAX=DUMMY
-NDGL=DUMMY
 BINPATH=DUMMY
 
 #wrkdir=/home/eela/EoinDiacovTest/ #need to be changed to be more flexible
@@ -74,7 +59,7 @@ if [ ${#} -eq 0 ]; then
   exit 1
 fi
 
-while getopts i:c:l:g:m:n:d:h option
+while getopts i:c:g:d:h option
 do
   case $option in
     i)
@@ -83,17 +68,8 @@ do
     c)
        JBFILE=$OPTARG
        ;;
-    l)
-       LEVELNUM=$OPTARG
-       ;;
     g)
        GRIDSIZE=$OPTARG
-       ;;
-    m)
-       NSMAX=$OPTARG
-       ;;
-    n)
-       NDGL=$OPTARG
        ;;
     d)
        BINPATH=$OPTARG
@@ -121,26 +97,8 @@ if [ ${JBFILE} == "DUMMY" ]; then
   exit 1
 fi
 
-if [ ${LEVELNUM} == "DUMMY" ]; then
-  echo "Please define number of vertical levels using -l"
-  echo "Try '${PROGNAME} -h' for more information"
-  exit 1
-fi
-
 if [ ${GRIDSIZE} == "DUMMY" ]; then
   echo "Please define grid-size using -g"
-  echo "Try '${PROGNAME} -h' for more information"
-  exit 1
-fi
-
-if [ ${NSMAX} == "DUMMY" ]; then
-  echo "Please define NSMAX using -m"
-  echo "Try '${PROGNAME} -h' for more information"
-  exit 1
-fi
-
-if [ ${NDGL} == "DUMMY" ]; then
-  echo "Please define NDGL using -n"
   echo "Try '${PROGNAME} -h' for more information"
   exit 1
 fi
@@ -152,6 +110,10 @@ if [ ${BINPATH} == "DUMMY" ]; then
 fi
 
 cd $tmpdir
+
+LEVELNUM=$(cv_header_list -i ../${DATADIR}/${JBFILE}.cv | grep "NFLEVG" | awk '{print $3}')
+NSMAX=$(cv_header_list -i ../${DATADIR}/${JBFILE}.cv | grep "NSMAX" | awk '{print $3}')
+NDGL=$(cv_header_list -i ../${DATADIR}/${JBFILE}.cv | grep "NDGL" | awk '{print $3}')
 
 # prepare namelist for diacov - full variables
 cat > nam_diag1 <<EOF
