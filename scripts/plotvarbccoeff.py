@@ -133,7 +133,7 @@ def plot_varbc_pred_ts(datetime,data,labels,lloc,batch) :
 
   fig, ax = plt.subplots(figsize=(8.27,3.6))
 
-  title_string='VarBC Predictors for '+sat_map[nsat]+': ' +sen_map[nsen]+ ' Channel '+str(nchn)
+  title_string='VarBC Coefficients for '+sat_map[nsat]+': ' +sen_map[nsen]+ ' Channel '+str(nchn)
   plt.title(title_string)
 
   ax2=ax.twinx()
@@ -169,7 +169,7 @@ def plot_varbc_pred_ts(datetime,data,labels,lloc,batch) :
 
   # Ensure a major tick for each week using (interval=1) 
   ax.xaxis.set_major_locator(mdates.WeekdayLocator(interval=1))
-  ax.set_ylabel('Normalised Predictor Value',fontsize=10)
+  ax.set_ylabel('Coefficient Value',fontsize=10)
   ax2.set_ylabel('Number of observations',fontsize=10)
 
   #plot legend
@@ -179,7 +179,7 @@ def plot_varbc_pred_ts(datetime,data,labels,lloc,batch) :
   plt.tight_layout()
 
   figsuffix=str(nsat)+'_'+str(nsen)+'_'+str(nchn)
-  figname = 'varbc_pred_'+figsuffix+'.png'
+  figname = 'varbc_coeff_'+figsuffix+'.png'
   plt.savefig(figname)
   print("Output:",figname)
   if not batch :
@@ -209,7 +209,7 @@ def read_data(filename):
 #############################################################################################
 def main(argv) :
 
-  parser = argparse.ArgumentParser(description='Plot VarBC predictor time-series')
+  parser = argparse.ArgumentParser(description='Plot VarBC coefficient time-series')
   parser.add_argument('-i',dest="ipath",help='Input file name',default=None,required=True)
   parser.add_argument('-l',dest="lloc",help='Legend location using matplotlib syntax',default=None,required=False)
   parser.add_argument('-d',dest="labels",help='Optional experiment description',default=None,required=False)

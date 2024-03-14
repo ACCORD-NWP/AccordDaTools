@@ -71,15 +71,15 @@ Example:
 varbcdiagnose -i /path/to/directory/with/varbc_files/ -o varbc_diag_out
 ```
 
-#### VarBC predictor time-series plotting
+#### VarBC coefficient time-series plotting
 Help/usage:
 ```
-plotvarbcpred -h
+plotvarbccoeff -h
 ```
 
 Example:
 ```
-plotvarbcpred -i varbc_diag_out/VARBC_3_16_3309_210000 -b
+plotvarbccoeff -i varbc_diag_out/VARBC_3_16_3309_210000 -b
 ```
 
 ### DFS
