@@ -1,4 +1,6 @@
 # AccordDaTools
+
+## Description
 Collection of ACCORD DA tools. So far we have jbdiagnose and associated plotting. 
 Also available is DFS calculation and associated plotting.
 
@@ -8,7 +10,9 @@ Desirables:
 - obstat
 - Other ...
 
-## Installation
+## Getting started
+
+## Installing
 ```
 cd AccordDaTools
 mkdir build
@@ -23,64 +27,22 @@ Add DA Tools to your PATH:
 export PATH=/path/to/da_tools/bin:$PATH
 ```
 
-## Tools
-### Structure functions
-#### Jb diagnose
-Full documentation is available [here](doc/tools/jbdiagnose.md).
+## Documentation
+The documentation for _Accord DA tools_ is available on [https://accord-nwp.github.io/AccordDaTools](https://accord-nwp.github.io/AccordDaTools).
 
-Help/usage:
-```
-jbdiagnose -h
-```
+Contributions adding/correcting the documenation are welcome via using Pull Request.
 
-Example:
-```
-jbdiagnose -b jb_data/stabfiltn_IRELAND75L65_jbconv.bal -c jb_data/stabfiltn_IRELAND75L65_jbconv.cv -g 15000 -l harmL65 -e IRELAND75L65
-```
+## Help
+TBC
 
-#### plotjbbal
-Help/usage:
-```
-plotjbbal -h
-```
+## Authors
+TBC
 
-Example:
-```
-plotjbbal -t stdv -p QQ -r ./ -e IRELAND75L65
-```
+## Version history
+TBC
 
-#### plotjbdiag
-Help/usage:
-```
-plotjbdiag -h
-```
+## License
+TBC
 
-Example:
-```
-plotjbdiag -l 50 -t vercor -p QQ -r ./ -e IRELAND75L65 
-```
-
-### DFS
-The dfscomp tool reads the (ASCII) data from an unperturbed CCMA and a perturbed CCMA.
-
-#### Calculate DFS
-Help/usage:
-```
-scripts/dfscomp.sh -h
-```
-
-Example:
-```
-scripts/dfscomp.sh -u $DTG_CCMA_unpert.dat -p $DTG_CCMA.dat -o dfs.dat 
-```
-
-#### Plot DFS
-Help/usage:
-```
-python3 scripts/plotdfs.py -h
-```
-
-Example:
-```
-python3 scripts/plotdfs.py -i dfs.dat
-```
+## Acknowledgements
+TBC

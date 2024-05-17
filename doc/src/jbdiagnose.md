@@ -4,6 +4,43 @@
 A tool to diagnose HARMONIE structure function files and a comparison between structure functions for different AROME domains
 Converted from [original](assets/jbdiagnose.pdf) by Nils Gustafsson
 
+
+
+## jbdiagnose
+
+Help/usage:
+```
+jbdiagnose -h
+```
+
+Example:
+```
+jbdiagnose -b jb_data/stabfiltn_IRELAND75L65_jbconv.bal -c jb_data/stabfiltn_IRELAND75L65_jbconv.cv -g 15000 -l harmL65 -e IRELAND75L65
+```
+
+## plotjbbal
+Help/usage:
+```
+plotjbbal -h
+```
+
+Example:
+```
+plotjbbal -t stdv -p QQ -r ./ -e IRELAND75L65
+```
+
+## plotjbdiag
+Help/usage:
+```
+plotjbdiag -h
+```
+
+Example:
+```
+plotjbdiag -l 50 -t vercor -p QQ -r ./ -e IRELAND75L65
+```
+
+
 ## 1 Introduction
 The development and implementation of the HARMONIE data assimilation are now in a quite advanced stage with pre-operational testing at most of the HIRLAMmember weather services. At the same time, the technical and scientific knowledge about various components of this data assimilation is not so widely spread and a joint effort is needed forthe validation of these locally installed system. One of the important components of the HARMONIE data assimilation is the background error statistics. A tool for diagnostics of the background error statistics directly from the background error statistics files has therefore been developed and applied to the recently developed statistics files for HARMONIE at mesoscale (AROME)resolution (2.5 km grid resolution) at SMHI, met.no, FMI, DMI, KNMI and AEMET. This note describes the diagnostic tool (jbdiagnose) and presents results from a comparison of the different statistics from the AROME implementations. Since this diagnostic software is quite fresh, there may certainly be coding errors that could affect the results. Any comments on the comparison and the graphs presented here are therefore most welcome.
 
