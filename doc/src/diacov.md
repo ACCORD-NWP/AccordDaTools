@@ -5,6 +5,13 @@ The **DIACOV** tool is used to "_diagnose what's in covariance files_".
  1. First, you should have Festat output and the DIACOV binary compiled by Harmonie stored somewhere.
  2. Then, create the new directory, copy the DIACOV binary and Jb files there. Example:
 
+### Data flow
+
+```mermaid
+flowchart LR
+A{Output from FESTAT} --> B{DIACOV} --> C{diag_diacov} --> D{plotdiacov};
+```
+
 ## Tools
 ```
 mkdir DiacovTest
