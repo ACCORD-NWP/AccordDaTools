@@ -25,6 +25,10 @@ where:
 ### Practical Example
 In NWP, suppose you assimilate satellite radiance data into a global atmospheric model. The DFS would tell you how much the satellite data has altered the model's initial conditions. If the DFS is high, the satellite data has significantly adjusted the model state, indicating that the data is highly informative. Conversely, a low DFS might suggest that the observations are not very influential, possibly due to high observational errors or redundancy with existing data.
 
+### References
+ - Chapnik, B., Desroziers, G., Rabier, F., & Talagrand, O. (2006). Diagnosis and tuning of observational error statistics in a quasi-operational data assimilation setting. *Quarterly Journal of the Royal Meteorological Society, 132*(616), 543-565. https://doi.org/10.1256/qj.05.82
+ - Cardinali, C., Pezzulli, S., & Andersson, E. (2004). Influence-matrix diagnostic of a data assimilation system. *Quarterly Journal of the Royal Meteorological Society, 130*(603), 2767-2786. https://doi.org/10.1256/qj.03.205
+
 
 ## Calculate DFS
 
