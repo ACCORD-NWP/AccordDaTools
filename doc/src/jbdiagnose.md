@@ -45,16 +45,17 @@ plotjbdiag -l 50 -t vercor -p QQ -r ./ -e IRELAND75L65
 The development and implementation of the HARMONIE data assimilation are now in a quite advanced stage with pre-operational testing at most of the HIRLAMmember weather services. At the same time, the technical and scientific knowledge about various components of this data assimilation is not so widely spread and a joint effort is needed forthe validation of these locally installed system. One of the important components of the HARMONIE data assimilation is the background error statistics. A tool for diagnostics of the background error statistics directly from the background error statistics files has therefore been developed and applied to the recently developed statistics files for HARMONIE at mesoscale (AROME)resolution (2.5 km grid resolution) at SMHI, met.no, FMI, DMI, KNMI and AEMET. This note describes the diagnostic tool (jbdiagnose) and presents results from a comparison of the different statistics from the AROME implementations. Since this diagnostic software is quite fresh, there may certainly be coding errors that could affect the results. Any comments on the comparison and the graphs presented here are therefore most welcome.
 
 ## 2 The diagnostic tool
-The first part of the diagnostic tool is a simple standalone fortran program (jbdiagnose.F90) that reads the two main background error statistics files (jb\_filename.bal and jb\_filename.cv), calculates various diagnostic quantities and writes these diagnostic quantitiesin simple ASCII files that are then used by _plotjbdiag_ to produce various graphs. The input background error statistics files are opened with the local file names _stabal96.bal_ and _stabal96.cv_ and a namelist variable _gsizein_, describing the grid resolution, and namelist variables describing the vertical levels (_ahalf\_nl_ and _bhalf\_nl_, ) are needed.
+The first part of the diagnostic tool is a simple standalone fortran program (`jbdiagnose.F90`) that reads the two main background error statistics files (`jb_filename.bal` and `jb_filename.cv`), calculates various diagnostic quantities and writes these diagnostic quantitiesin simple ASCII files that are then used by `plotjbdiag` to produce various graphs. The input background error statistics files are opened with the local file names `stabal96.bal` and `stabal96.cv` and a namelist variable `gsizein`, describing the grid resolution, and namelist variables describing the vertical levels (`ahalf_nl` and `bhalf_nl`, ) are needed.
 
 The following vertical level definitions are available for use:
-| Name       | Description                      |
-| ---------- | -------------------------------- |
-|hirlL60.def |HIRLAM 60 level definition        | 
-|harmL65.def |Harmonie 65 level definition      | 
-|mcL90.def   |MetCoOp 90 level definition       | 
-|mfL70.def   |Meteo France 70 level definition  | 
-|mfL90.def   |Meteo France 90 level definition  | 
+
+| Name         | Description                      |
+| :----------- | :------------------------------- |
+|`hirlL60.def` |HIRLAM 60 level definition        | 
+|`harmL65.def` |Harmonie 65 level definition      | 
+|`mcL90.def`   |MetCoOp 90 level definition       | 
+|`mfL70.def`   |Meteo France 70 level definition  | 
+|`mfL90.def`   |Meteo France 90 level definition  | 
 
 
  Various information about the domain geometry is extracted from the input files. One example of a script to run the diagnostic tool is provided in jbdiagnose.sh. The output ASCII files are stored in the
