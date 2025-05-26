@@ -27,6 +27,7 @@ add_executable(jbdiagnose.x src/jbdiagnose.F90)
 add_executable(cv_header_list.x src/cv_header_list.F90)
 add_executable(dfscomp.x src/dfscomp.F90)
 add_executable(prepdiacov.x src/prepdiacov.F90)
+add_executable(clddet_analyzer.x src/clddet_analyzer.F90)
 
 # install executables and scripts
 install (TARGETS jbdiagnose.x
