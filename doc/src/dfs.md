@@ -32,28 +32,39 @@ In NWP, suppose you assimilate satellite radiance data into a global atmospheric
  - Cardinali, C., Pezzulli, S., & Andersson, E. (2004). Influence-matrix diagnostic of a data assimilation system. *Quarterly Journal of the Royal Meteorological Society, 130*(603), 2767-2786. https://doi.org/10.1256/qj.03.205
 
 
-## Calculate DFS
+## Calculate and plot DFS
 
-The dfscomp tool reads the (ASCII) data from an unperturbed CCMA and a perturbed CCMA.
+The `datool_dfs` tool reads the (ASCII) data from an unperturbed CCMA and a perturbed CCMA.
 
 Help/usage:
-```
-scripts/dfscomp.sh -h
+```bash
+user@pc:~$ ./datool_dfs.py -h
+usage: datool_dfs.py [-h] [--file1 FILE1] [--file2 FILE2] [--write-dfs] [--plot [{raw,perobs,percent}]] [--plot-style PLOT_STYLE] [--list-plot-styles]
+
+Compare DFS from perturbed and unperturbed CCMA ODB queries.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --file1 FILE1         ODB ASCII file from perturbed CCMA
+  --file2 FILE2         ODB ASCII file from unperturbed CCMA
+  --write-dfs           Write raw DFS data to dfs.dat
+  --plot [{raw,perobs,percent}]
+                        Generate a DFS plot:
+                          percent - percentage contribution (default)  perobs  - DFS per observation
+                          raw     - total DFS
+  --plot-style PLOT_STYLE
+                        Matplotlib style for plotting
+  --list-plot-styles    List available matplotlib plot styles and exit
+ewhelan@realin23:~/git/AccordDaTools_git/AccordDaTools/scripts (feature/move_dfs_to_python)$
 ```
 
 Example:
-```
-scripts/dfscomp.sh -u $DTG_CCMA_unpert.dat -p $DTG_CCMA.dat -o dfs.dat
-```
-
-## Plot DFS
-Help/usage:
-```
-python3 scripts/plotdfs.py -h
-```
-
-Example:
-```
-python3 scripts/plotdfs.py -i dfs.dat
+```bash
+user@pc:~$ datool_dfs.py  --file1=test_data/mbr000/ccma.dat --file2=test_data/mbrprt/ccma_pert.dat --plot=perobs --plot-style=fivethirtyeight && eog dfs_plot_perobs.png
+user@pc:~$ datool_dfs: Options OK. Let's process data ...
+user@pc:~$ datool_dfs: Observations used   : 249751
+user@pc:~$ datool_dfs: Observations unused : 0
+user@pc:~$ datool_dfs: Bar chart saved to dfs_plot_perobs.png
+ewhelan@realin23:~/gi
 ```
 
