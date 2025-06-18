@@ -22,8 +22,14 @@ where:
 
 As there is no explicit \( K \) in the variational assimilation, a _Monte Carlo_ approach can be applied:
 ```math
-\partial y'^T \mathbf{H} \mathbf{K} \partial y' = \text{Tr} (\mathbf{H} \mathbf{K})y'^T\partial y') = \text{Tr}(\mathbf{K} \mathbf{H})_i
+\partial y'^T \mathbf{H} \mathbf{K} \partial y' = \text{Tr} (\mathbf{H} \mathbf{K} y'^T\partial y') = \text{Tr}(\mathbf{H} \mathbf{K})
 ```
+
+If one sets
+```math
+y'= y + R^{\frac{1}{2}} \partial y'
+```
+the trace can be computed by two analyses \( x_a \), \( x'_a \) using 
 
 ### Interpretation
 1. **Information Content**: DFS indicates how much the observations have influenced the analysis. A higher DFS means that the observations have a significant impact on the analysis, providing more information.
