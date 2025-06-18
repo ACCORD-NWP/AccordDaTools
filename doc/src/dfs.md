@@ -29,7 +29,15 @@ If one sets
 ```math
 y'= y + R^{\frac{1}{2}} \partial y'
 ```
-the trace can be computed by two analyses \( x_a \), \( x'_a \) using 
+the trace can be computed by two analyses \( x_a \), \( x'_a \) using  \( y \), \( y' \):
+
+```math
+\text{Tr}(\mathbf{K} \mathbf{H}) = (y' - y) R^{-1} \mathbf{H} ( x'_a - x_a )
+```
+or in terms of ODB information:
+```math
+\text{DFS}_i = (fg_depar' - fg_depar )^{T} R^{-1} ( an_depar' - an_depar )
+```
 
 ### Interpretation
 1. **Information Content**: DFS indicates how much the observations have influenced the analysis. A higher DFS means that the observations have a significant impact on the analysis, providing more information.
