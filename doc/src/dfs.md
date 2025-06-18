@@ -20,6 +20,11 @@ where:
 - \( H \mathbf{x}_a \) is the analysis mapped to observation space.
 - \( y_i \) is the i-th observation.
 
+As there is no explicit \( K \) in the variational assimilation, a _Monte Carlo_ approach can be applied:
+```math
+\partial y'^T \mathbf{H} \mathbf{K} \partial y' = \text{Tr} (\mathbf{H} \mathbf{K})y'^T\partial y') = \text{Tr}(\mathbf{K} \mathbf{H})_i
+```
+
 ### Interpretation
 1. **Information Content**: DFS indicates how much the observations have influenced the analysis. A higher DFS means that the observations have a significant impact on the analysis, providing more information.
 2. **Observational Weight**: It reflects the relative weight of the observations compared to the background information (prior model state). A higher DFS suggests that the observations are trusted more compared to the model forecast.
