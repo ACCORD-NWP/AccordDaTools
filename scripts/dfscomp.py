@@ -104,8 +104,8 @@ def plot_results(mode="percent"):
         'SYNOP-Z','SYNOP-T2','SYNOP-R2','SYNOP-U10','GNSS-ZTD',
         'TEMP-U','TEMP-T','TEMP-Z','TEMP-Q','AIREP-T',
         'AIREP-U','SATOB-U','BUOY-Z','BUOY-U','PILOT-Z',
-        'PILOT-U','AMSUA-TB','MHS','ATMS','MWHS2',
-        'IASI','CRIS','SEVIRI','SCATT-U','RADAR-Z',
+        'PILOT-U','AMSUA-TB','MHS-TB','ATMS-TB','MWHS2-TB',
+        'IASI-TB','CRIS-TB','SEVIRI-TB','SCATT-U','RADAR-Z',
         'RADAR-U','TEMP_CLS','GPS-RO','SGNSS'
     )
 
