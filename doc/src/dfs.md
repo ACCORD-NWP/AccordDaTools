@@ -7,7 +7,9 @@
 The DFS is defined as the trace of the product of the observation sensitivity matrix and the observation error covariance matrix. Mathematically, it can be expressed as:
 
 ```math
-\text{DFS} = \text{Tr}(\mathbf{K} \mathbf{H})
+\text{DFS}_i = \sum_i \left( H \mathbf{x}_a - H \mathbf{x}_b \right)_i \cdot d_i
+\text{DFS} = \text{Tr}(\mathbf{K} \mathbf{H})a
+
 ```
 
 where:
@@ -31,6 +33,12 @@ In NWP, suppose you assimilate satellite radiance data into a global atmospheric
  - Chapnik, B., Desroziers, G., Rabier, F., & Talagrand, O. (2006). Diagnosis and tuning of observational error statistics in a quasi-operational data assimilation setting. *Quarterly Journal of the Royal Meteorological Society, 132*(616), 543-565. https://doi.org/10.1256/qj.05.82
  - Cardinali, C., Pezzulli, S., & Andersson, E. (2004). Influence-matrix diagnostic of a data assimilation system. *Quarterly Journal of the Royal Meteorological Society, 130*(603), 2767-2786. https://doi.org/10.1256/qj.03.205
 
+## `datool_dfs`
+
+The `datool_dfs` tool is written in Python and reads ASCII input files that have been produced using the following ODB SQL:
+```bash
+odbsql -q 'select obstype, codetype, statid, varno, vertco_reference_1, degrees(lat), degrees(lon), an_depar, tdiff(date,time,andate,antime)/60, fg_depar, obsvalue from hdr,desc,body where varno/=91 and an_depar/="NULL" and obstype/=7' > ccma.dat
+```
 
 ## Calculate and plot DFS
 
