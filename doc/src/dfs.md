@@ -59,11 +59,26 @@ In NWP, suppose you assimilate satellite radiance data into a global atmospheric
 ## `datool_dfs`
 ### Pertubed CCMA
 
+```bash
+ISEED=`shuf -i0-999 -n1`
+cp -Rf odb_ccma/CCMA odb_ccma/CCMA_unpert
+
+export ODB_CMA=CCMA
+export ODB_SRCPATH_CCMA=${WDIR}/odb_ccma/CCMA
+export ODB_DATAPATH_CCMA=${WDIR}/odb_ccma/CCMA
+export IOASSIGN=${WDIR}/odb_ccma/CCMA/IOASSIGN
+export ODB_IO_GRPSIZE=$(grpsize CCMA)
+
+cd ${WDIR}/odb_ccma/CCMA
+#ISEED=$(( $ISEED + 1 ))
+$MPPGL $BINDIR/PERTCMA $ISEED CCMA 
+```
+
 ### Extract ASCII data
 
 The `datool_dfs` tool is written in Python and reads ASCII input files that have been produced using the following ODB SQL:
 ```bash
-odbsql -q 'select obstype, codetype, statid, varno, vertco_reference_1, degrees(lat), degrees(lon), an_depar, tdiff(date,time,andate,antime)/60, fg_depar, obsvalue from hdr,desc,body where varno/=91 and an_depar/="NULL" and obstype/=7' > ccma.dat
+odbsql -q 'select obstype@hdr,codetype@hdr,vertco_reference_1@body,sensor@hdr,statid,varno,lat@hdr,lon@hdr,obsvalue,final_obs_error@errstat,fg_depar,an_depar FROM  hdr,desc,body,errstat WHERE (varno /= 91 ) AND (an_depar is not NULL) AND (datum_event1.fg2big@body == 0)'  > ccma.dat
 ```
 
 ### Observation groupings
