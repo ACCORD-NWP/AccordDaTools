@@ -7,8 +7,9 @@
 The DFS is defined as the trace of the product of the observation sensitivity matrix and the observation error covariance matrix. Mathematically, it can be expressed as:
 
 ```math
-\text{DFS}_i = \sum_i ( \frac{\partial H_i \mathbf{x}_a}{\partial y_i})
+\text{DFS}_i = \sum_i \frac{\partial H_i \mathbf{x}_a}{\partial y_i}
 ```
+or
 ```math
 \text{DFS}_i = \text{Tr}(\mathbf{K} \mathbf{H})_i
 ```
@@ -16,6 +17,8 @@ The DFS is defined as the trace of the product of the observation sensitivity ma
 where:
 - ``\mathbf{K}`` is the Kalman gain matrix, which represents how much weight is given to the observations in the assimilation process.
 - ``\mathbf{H}`` is the observation operator, which maps the model state variables to the observed variables.
+- ''H \mathbf{x}_a'' is the analysis mapped to observation space,
+- ''y_i'' is the i-th observation,
 
 ### Interpretation
 1. **Information Content**: DFS indicates how much the observations have influenced the analysis. A higher DFS means that the observations have a significant impact on the analysis, providing more information.
