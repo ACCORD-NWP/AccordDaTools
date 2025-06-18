@@ -57,11 +57,48 @@ In NWP, suppose you assimilate satellite radiance data into a global atmospheric
  - Cardinali, C., Pezzulli, S., & Andersson, E. (2004). Influence-matrix diagnostic of a data assimilation system. *Quarterly Journal of the Royal Meteorological Society, 130*(603), 2767-2786. https://doi.org/10.1256/qj.03.205
 
 ## `datool_dfs`
+### Pertubed CCMA
+
+### Extract ASCII data
 
 The `datool_dfs` tool is written in Python and reads ASCII input files that have been produced using the following ODB SQL:
 ```bash
 odbsql -q 'select obstype, codetype, statid, varno, vertco_reference_1, degrees(lat), degrees(lon), an_depar, tdiff(date,time,andate,antime)/60, fg_depar, obsvalue from hdr,desc,body where varno/=91 and an_depar/="NULL" and obstype/=7' > ccma.dat
 ```
+
+### Observation groupings
+`datool_dfs` groups observations together as follows:
+| Observation Type | Description                        |
+|------------------|------------------------------------|
+| `SYNOP-Z`        | Surface pressure from SYNOP        |
+| `SYNOP-T2`       | 2-meter temperature from SYNOP     |
+| `SYNOP-R2`       | 2-meter relative humidity from SYNOP |
+| `SYNOP-U10`      | 10-meter wind (U-component) from SYNOP |
+| `GNSS-ZTD`       | Zenith Total Delay from GNSS       |
+| `TEMP-U`         | Upper-air wind (U) from TEMP       |
+| `TEMP-T`         | Upper-air temperature from TEMP    |
+| `TEMP-Z`         | Geopotential height from TEMP      |
+| `TEMP-Q`         | Specific humidity from TEMP        |
+| `AIREP-T`        | Temperature from AIREP             |
+| `AIREP-U`        | Wind (U) from AIREP                |
+| `SATOB-U`        | Satellite wind (U-component)       |
+| `BUOY-Z`         | Surface pressure from BUOY         |
+| `BUOY-U`         | Surface wind (U) from BUOY         |
+| `PILOT-Z`        | Geopotential height from PILOT     |
+| `PILOT-U`        | Wind (U) from PILOT                |
+| `AMSUA-TB`       | Brightness temperature from AMSU-A |
+| `MHS-TB`         | Brightness temperature from MHS    |
+| `ATMS-TB`        | Brightness temperature from ATMS   |
+| `MWHS2-TB`       | Brightness temperature from MWHS-2 |
+| `IASI-TB`        | Brightness temperature from IASI   |
+| `CRIS-TB`        | Brightness temperature from CrIS   |
+| `SEVIRI-TB`      | Brightness temperature from SEVIRI |
+| `SCATT-U`        | Surface wind (U) from scatterometer |
+| `RADAR-Z`        | Radar reflectivity (Z)             |
+| `RADAR-U`        | Radial wind from radar             |
+| `TEMP_CLS`       | TEMP classification (diagnostic)   |
+| `GPS-RO`         | GPS Radio Occultation bending angle or refractivity |
+| `SGNSS`          | Slant GNSS observations            |
 
 ## Calculate and plot DFS
 
