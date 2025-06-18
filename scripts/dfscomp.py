@@ -57,9 +57,9 @@ def determine_index(indtyp, indvar, ios, indsen, ichan, chst):
         if indvar in [3, 4, 41, 42]: return 16
     if indtyp == 7:
         if indsen == 3: return 17  # AMSUA
-        if indsen in [4, 15]: return 18  # MHS
-        if indsen == 73: return 19  # MWHS2
-        if indsen == 19: return 20  # ATMS
+        if indsen in [4, 15]: return 18  # AMSUB/MHS
+        if indsen == 19: return 19  # ATMS
+        if indsen == 73: return 20  # MWHS2
         if indsen == 16: return 21  # IASI
         if indsen == 27: return 22  # CRIS
         if indsen == 29: return 23  # SEVIRI
@@ -104,7 +104,7 @@ def plot_results(mode="percent"):
         'SYNOP-Z','SYNOP-T2','SYNOP-R2','SYNOP-U10','GNSS-ZTD',
         'TEMP-U','TEMP-T','TEMP-Z','TEMP-Q','AIREP-T',
         'AIREP-U','SATOB-U','BUOY-Z','BUOY-U','PILOT-Z',
-        'PILOT-U','AMSU-A','MHS','MWHS','ATMS',
+        'PILOT-U','AMSUA-TB','MHS','ATMS','MWHS2',
         'IASI','CRIS','SEVIRI','SCATT-U','RADAR-Z',
         'RADAR-U','TEMP_CLS','GPS-RO','SGNSS'
     )
