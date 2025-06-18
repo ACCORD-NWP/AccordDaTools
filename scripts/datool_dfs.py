@@ -147,7 +147,7 @@ def plot_results(mode="percent"):
     plt.tight_layout()
     filename = f"dfs_plot_{mode}.png"
     plt.savefig(filename)
-    print(f"dfscomp: Bar chart saved to {filename}")
+    print(f"datool_dfs: Bar chart saved to {filename}")
 
 def main():
     global valdfs, numdfs, cntdfs, cntnot
@@ -182,7 +182,7 @@ def main():
     f1.readline()
     f2.readline()
 
-    print(f"dfscomp: Options OK. Let's process data ...")
+    print(f"datool_dfs: Options OK. Let's process data ...")
     while True:
         rec1 = read_next(f1)
         rec2 = read_next(f2)
@@ -218,8 +218,8 @@ def main():
 
     cntdfs = np.sum(numdfs)
 
-    print(f"dfscomp: Observations used   : {cntdfs}")
-    print(f"dfscomp: Observations unused : {cntnot}")
+    print(f"datool_dfs: Observations used   : {cntdfs}")
+    print(f"datool_dfs: Observations unused : {cntnot}")
 
     if args.write_dfs:
         with open("dfs.dat", "w") as out:
