@@ -15,10 +15,10 @@ or
 ```
 
 where:
-- ``\mathbf{K}`` is the Kalman gain matrix, which represents how much weight is given to the observations in the assimilation process.
-- ``\mathbf{H}`` is the observation operator, which maps the model state variables to the observed variables.
-- ''H \mathbf{x}_a'' is the analysis mapped to observation space,
-- ''y_i'' is the i-th observation,
+- \( \mathbf{K} \) is the Kalman gain matrix, which represents how much weight is given to the observations in the assimilation process.
+- \( \mathbf{H} \) is the observation operator, which maps the model state variables to the observed variables.
+- \( H \mathbf{x}_a \) is the analysis mapped to observation space,
+- \( y_i \) is the i-th observation,
 
 ### Interpretation
 1. **Information Content**: DFS indicates how much the observations have influenced the analysis. A higher DFS means that the observations have a significant impact on the analysis, providing more information.
