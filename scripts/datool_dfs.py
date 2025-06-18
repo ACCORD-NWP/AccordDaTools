@@ -29,6 +29,12 @@ def parse_args():
     parser.add_argument('--plot-style', help='Matplotlib style for plotting', default='default')
     parser.add_argument('--list-plot-styles', action='store_true', help='List available matplotlib plot styles and exit')
 
+    # Check if no arguments at all
+    if len(sys.argv) == 1:
+        print(f"datool_dfs: Error: No arguments provided.")
+        parser.print_usage()
+        sys.exit(1)
+
     return parser.parse_args()
 
 def determine_index(indtyp, indvar, ios, indsen, ichan, chst):
