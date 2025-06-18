@@ -7,9 +7,10 @@
 The DFS is defined as the trace of the product of the observation sensitivity matrix and the observation error covariance matrix. Mathematically, it can be expressed as:
 
 ```math
-\text{DFS}_i = \sum_i \left( H \mathbf{x}_a - H \mathbf{x}_b \right)_i \cdot d_i
-\text{DFS} = \text{Tr}(\mathbf{K} \mathbf{H})a
-
+\text{DFS}_i = \sum_i \left( \frac{\partial (H_i \mathbf{x}_a}{\partial y_i)
+```
+```math
+\text{DFS}_i = \text{Tr}(\mathbf{K} \mathbf{H})_i
 ```
 
 where:
