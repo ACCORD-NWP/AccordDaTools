@@ -58,7 +58,7 @@ In NWP, suppose you assimilate satellite radiance data into a global atmospheric
 
 ## `datool_dfs`
 ### Pertubed CCMA
-
+The `PERTCMA` program adds pertubration to observations with zero mean and \( \sigma = \sqrt{R} \)
 ```bash
 ISEED=`shuf -i0-999 -n1`
 cp -Rf odb_ccma/CCMA odb_ccma/CCMA_unpert
