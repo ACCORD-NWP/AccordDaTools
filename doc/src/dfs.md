@@ -133,7 +133,8 @@ optional arguments:
   --write-dfs           Write raw DFS data to dfs.dat
   --plot [{raw,perobs,percent}]
                         Generate a DFS plot:
-                          percent - percentage contribution (default)  perobs  - DFS per observation
+                          percent - percentage contribution (default)
+                          perobs  - DFS per observation
                           raw     - total DFS
   --plot-style PLOT_STYLE
                         Matplotlib style for plotting
