@@ -36,7 +36,7 @@ the trace can be computed by two analyses \( x_a \), \( x'_a \) using  \( y \), 
 ```
 or in terms of ODB information:
 ```math
-\text{DFS}_i = (fg_depar' - fg_depar )^{T} R^{-1} ( an_depar' - an_depar )
+\text{DFS}_i = (fg\_depar' - fg\_depar )^{T} R^{-1} ( an\_depar' - an\_depar )
 ```
 
 ### Interpretation
