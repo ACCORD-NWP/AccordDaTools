@@ -7,12 +7,37 @@
 The DFS is defined as the trace of the product of the observation sensitivity matrix and the observation error covariance matrix. Mathematically, it can be expressed as:
 
 ```math
-\text{DFS} = \text{Tr}(\mathbf{K} \mathbf{H})
+\text{DFS}_i = \sum_i \frac{\partial H_i \mathbf{x}_a}{\partial y_i}
+```
+or
+```math
+\text{DFS}_i = \text{Tr}(\mathbf{K} \mathbf{H})_i
 ```
 
 where:
-- ``\mathbf{K}`` is the Kalman gain matrix, which represents how much weight is given to the observations in the assimilation process.
-- ``\mathbf{H}`` is the observation operator, which maps the model state variables to the observed variables.
+- \( \mathbf{K} \) is the Kalman gain matrix, which represents how much weight is given to the observations in the assimilation process.
+- \( \mathbf{H} \) is the observation operator, which maps the model state variables to the observed variables.
+- \( H \mathbf{x}_a \) is the analysis mapped to observation space.
+- \( y_i \) is the i-th observation.
+
+As there is no explicit \( K \) in the variational assimilation, a _Monte Carlo_ approach can be applied:
+```math
+\partial y'^T \mathbf{H} \mathbf{K} \partial y' = \text{Tr} (\mathbf{H} \mathbf{K} y'^T\partial y') = \text{Tr}(\mathbf{H} \mathbf{K})
+```
+
+If one sets
+```math
+y'= y + R^{\frac{1}{2}} \partial y'
+```
+the trace can be computed by two analyses \( x_a \), \( x'_a \) using  \( y \), \( y' \):
+
+```math
+\text{Tr}(\mathbf{K} \mathbf{H}) = (y' - y) R^{-1} \mathbf{H} ( x'_a - x_a )
+```
+or in terms of ODB information:
+```math
+\text{DFS}_i = (fg\_depar' - fg\_depar )^{T} R^{-1} ( an\_depar' - an\_depar )
+```
 
 ### Interpretation
 1. **Information Content**: DFS indicates how much the observations have influenced the analysis. A higher DFS means that the observations have a significant impact on the analysis, providing more information.
@@ -31,29 +56,99 @@ In NWP, suppose you assimilate satellite radiance data into a global atmospheric
  - Chapnik, B., Desroziers, G., Rabier, F., & Talagrand, O. (2006). Diagnosis and tuning of observational error statistics in a quasi-operational data assimilation setting. *Quarterly Journal of the Royal Meteorological Society, 132*(616), 543-565. https://doi.org/10.1256/qj.05.82
  - Cardinali, C., Pezzulli, S., & Andersson, E. (2004). Influence-matrix diagnostic of a data assimilation system. *Quarterly Journal of the Royal Meteorological Society, 130*(603), 2767-2786. https://doi.org/10.1256/qj.03.205
 
+## `datool_dfs`
+### Pertubed CCMA
+The `PERTCMA` program adds pertubration to observations with zero mean and \( \sigma = \sqrt{R} \)
+```bash
+ISEED=`shuf -i0-999 -n1`
+cp -Rf odb_ccma/CCMA odb_ccma/CCMA_unpert
 
-## Calculate DFS
+export ODB_CMA=CCMA
+export ODB_SRCPATH_CCMA=${WDIR}/odb_ccma/CCMA
+export ODB_DATAPATH_CCMA=${WDIR}/odb_ccma/CCMA
+export IOASSIGN=${WDIR}/odb_ccma/CCMA/IOASSIGN
+export ODB_IO_GRPSIZE=$(grpsize CCMA)
 
-The dfscomp tool reads the (ASCII) data from an unperturbed CCMA and a perturbed CCMA.
+cd ${WDIR}/odb_ccma/CCMA
+#ISEED=$(( $ISEED + 1 ))
+$MPPGL $BINDIR/PERTCMA $ISEED CCMA 
+```
+
+### Extract ASCII data
+
+The `datool_dfs` tool is written in Python and reads ASCII input files that have been produced using the following ODB SQL:
+```bash
+odbsql -q 'select obstype@hdr,codetype@hdr,vertco_reference_1@body,sensor@hdr,statid,varno,lat@hdr,lon@hdr,obsvalue,final_obs_error@errstat,fg_depar,an_depar FROM  hdr,desc,body,errstat WHERE (varno /= 91 ) AND (an_depar is not NULL) AND (datum_event1.fg2big@body == 0)'  > ccma.dat
+```
+
+### Observation groupings
+`datool_dfs` groups observations together as follows:
+| Observation Type | Description                        |
+|------------------|------------------------------------|
+| `SYNOP-Z`        | Surface pressure from SYNOP        |
+| `SYNOP-T2`       | 2-meter temperature from SYNOP     |
+| `SYNOP-R2`       | 2-meter relative humidity from SYNOP |
+| `SYNOP-U10`      | 10-meter wind (U-component) from SYNOP |
+| `GNSS-ZTD`       | Zenith Total Delay from GNSS       |
+| `TEMP-U`         | Upper-air wind (U) from TEMP       |
+| `TEMP-T`         | Upper-air temperature from TEMP    |
+| `TEMP-Z`         | Geopotential height from TEMP      |
+| `TEMP-Q`         | Specific humidity from TEMP        |
+| `AIREP-T`        | Temperature from AIREP             |
+| `AIREP-U`        | Wind (U) from AIREP                |
+| `SATOB-U`        | Satellite wind (U-component)       |
+| `BUOY-Z`         | Surface pressure from BUOY         |
+| `BUOY-U`         | Surface wind (U) from BUOY         |
+| `PILOT-Z`        | Geopotential height from PILOT     |
+| `PILOT-U`        | Wind (U) from PILOT                |
+| `AMSUA-TB`       | Brightness temperature from AMSU-A |
+| `MHS-TB`         | Brightness temperature from MHS    |
+| `ATMS-TB`        | Brightness temperature from ATMS   |
+| `MWHS2-TB`       | Brightness temperature from MWHS-2 |
+| `IASI-TB`        | Brightness temperature from IASI   |
+| `CRIS-TB`        | Brightness temperature from CrIS   |
+| `SEVIRI-TB`      | Brightness temperature from SEVIRI |
+| `SCATT-U`        | Surface wind (U) from scatterometer |
+| `RADAR-Z`        | Radar reflectivity (Z)             |
+| `RADAR-U`        | Radial wind from radar             |
+| `TEMP_CLS`       | TEMP classification (diagnostic)   |
+| `GPS-RO`         | GPS Radio Occultation bending angle or refractivity |
+| `SGNSS`          | Slant GNSS observations            |
+
+## Calculate and plot DFS
+
+The `datool_dfs` tool reads the (ASCII) data from an unperturbed CCMA and a perturbed CCMA.
 
 Help/usage:
-```
-scripts/dfscomp.sh -h
+```bash
+user@pc:~$ ./datool_dfs.py -h
+usage: datool_dfs.py [-h] [--file1 FILE1] [--file2 FILE2] [--write-dfs] [--plot [{raw,perobs,percent}]] [--plot-style PLOT_STYLE] [--list-plot-styles]
+
+Compare DFS from perturbed and unperturbed CCMA ODB queries.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --file1 FILE1         ODB ASCII file from perturbed CCMA
+  --file2 FILE2         ODB ASCII file from unperturbed CCMA
+  --write-dfs           Write raw DFS data to dfs.dat
+  --plot [{raw,perobs,percent}]
+                        Generate a DFS plot:
+                          percent - percentage contribution (default)
+                          perobs  - DFS per observation
+                          raw     - total DFS
+  --plot-style PLOT_STYLE
+                        Matplotlib style for plotting
+  --list-plot-styles    List available matplotlib plot styles and exit
+ewhelan@realin23:~/git/AccordDaTools_git/AccordDaTools/scripts (feature/move_dfs_to_python)$
 ```
 
 Example:
-```
-scripts/dfscomp.sh -u $DTG_CCMA_unpert.dat -p $DTG_CCMA.dat -o dfs.dat
-```
-
-## Plot DFS
-Help/usage:
-```
-python3 scripts/plotdfs.py -h
-```
-
-Example:
-```
-python3 scripts/plotdfs.py -i dfs.dat
+```bash
+user@pc:~$ datool_dfs.py  --file1=test_data/mbr000/ccma.dat --file2=test_data/mbrprt/ccma_pert.dat --plot=perobs --plot-style=fivethirtyeight && eog dfs_plot_perobs.png
+user@pc:~$ datool_dfs: Options OK. Let's process data ...
+user@pc:~$ datool_dfs: Observations used   : 249751
+user@pc:~$ datool_dfs: Observations unused : 0
+user@pc:~$ datool_dfs: Bar chart saved to dfs_plot_perobs.png
+ewhelan@realin23:~/gi
 ```
 
