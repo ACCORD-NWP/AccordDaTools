@@ -1,5 +1,9 @@
 
-# Degree of Freedom Signal
+# datool\_dfs
+
+The `datool_dfs` tool provides the user the means to calculate DFS values and create plots of DFS using observation feedback information extracted from two CCMA ODBs.
+
+## Background
 
 "Degree of Freedom Signal" (DFS) is a used to quantify the influence of observational data on the analysis in numerical weather prediction (NWP) and other geophysical systems. It provides a measure of the information content of the observations with respect to the analysis.
 
@@ -15,12 +19,13 @@ or
 ```
 
 where:
-- \( \mathbf{K} \) is the Kalman gain matrix, which represents how much weight is given to the observations in the assimilation process.
-- \( \mathbf{H} \) is the observation operator, which maps the model state variables to the observed variables.
-- \( H \mathbf{x}_a \) is the analysis mapped to observation space.
-- \( y_i \) is the i-th observation.
 
-As there is no explicit \( K \) in the variational assimilation, a _Monte Carlo_ approach can be applied:
+ - ``\mathbf{K}`` is the Kalman gain matrix, which represents how much weight is given to the observations in the assimilation process.
+ - ``\mathbf{H}`` is the observation operator, which maps the model state variables to the observed variables.
+ - ``H_{i}\mathbf{x}_a`` is the analysis mapped to observation space.
+ - ``y_{i}`` is the i-th observation.
+
+As there is no explicit \( K \) in the variational assimilation, a _Monte Carlo_ approach can be applied usinf pertubed observations indicated by "'"'s:
 ```math
 \partial y'^T \mathbf{H} \mathbf{K} \partial y' = \text{Tr} (\mathbf{H} \mathbf{K} y'^T\partial y') = \text{Tr}(\mathbf{H} \mathbf{K})
 ```
@@ -29,14 +34,14 @@ If one sets
 ```math
 y'= y + R^{\frac{1}{2}} \partial y'
 ```
-the trace can be computed by two analyses \( x_a \), \( x'_a \) using  \( y \), \( y' \):
+the trace can be computed by two analyses ``\mathbf{x}_a``, ``\mathbf{x}'_a`` using  ``\mathbf{y}``, ``\mathbf{y}'``:
 
 ```math
-\text{Tr}(\mathbf{K} \mathbf{H}) = (y' - y) R^{-1} \mathbf{H} ( x'_a - x_a )
+\text{Tr}(\mathbf{K} \mathbf{H}) = (\mathbf{y}' - \mathbf{y}) R^{-1} \mathbf{H} ( \mathbf{x}'_a - \mathbf{x}_a )
 ```
 or in terms of ODB information:
 ```math
-\text{DFS}_i = (fg\_depar' - fg\_depar )^{T} R^{-1} ( an\_depar' - an\_depar )
+\text{DFS}_i = (\text{fg_depar}' - \text{fg_depar} )^{T} R^{-1} ( \text{an_depar}' - \text{an_depar} )
 ```
 
 ### Interpretation
@@ -56,9 +61,10 @@ In NWP, suppose you assimilate satellite radiance data into a global atmospheric
  - Chapnik, B., Desroziers, G., Rabier, F., & Talagrand, O. (2006). Diagnosis and tuning of observational error statistics in a quasi-operational data assimilation setting. *Quarterly Journal of the Royal Meteorological Society, 132*(616), 543-565. https://doi.org/10.1256/qj.05.82
  - Cardinali, C., Pezzulli, S., & Andersson, E. (2004). Influence-matrix diagnostic of a data assimilation system. *Quarterly Journal of the Royal Meteorological Society, 130*(603), 2767-2786. https://doi.org/10.1256/qj.03.205
 
-## `datool_dfs`
+## Input data
+
 ### Pertubed CCMA
-The `PERTCMA` program adds pertubration to observations with zero mean and \( \sigma = \sqrt{R} \)
+The `PERTCMA` program adds pertubration to observations with zero mean and ``\sigma = \sqrt{R} ``
 ```bash
 ISEED=`shuf -i0-999 -n1`
 cp -Rf odb_ccma/CCMA odb_ccma/CCMA_unpert
@@ -82,7 +88,9 @@ odbsql -q 'select obstype@hdr,codetype@hdr,vertco_reference_1@body,sensor@hdr,st
 ```
 
 ### Observation groupings
+
 `datool_dfs` groups observations together as follows:
+
 | Observation Type | Description                        |
 |------------------|------------------------------------|
 | `SYNOP-Z`        | Surface pressure from SYNOP        |
@@ -115,7 +123,7 @@ odbsql -q 'select obstype@hdr,codetype@hdr,vertco_reference_1@body,sensor@hdr,st
 | `GPS-RO`         | GPS Radio Occultation bending angle or refractivity |
 | `SGNSS`          | Slant GNSS observations            |
 
-## Calculate and plot DFS
+## Calculate DFS
 
 The `datool_dfs` tool reads the (ASCII) data from an unperturbed CCMA and a perturbed CCMA.
 
