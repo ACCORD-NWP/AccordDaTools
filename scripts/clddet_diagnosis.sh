@@ -219,8 +219,7 @@ cd ${outdir}
   echo
 
   cd ${outdir}
-  gfortran -o clddet_analyzer.x ${srcdir}/clddet_analyzer.F90
-  ./clddet_analyzer.x ${capital} ${width} ${thres}
+    ./clddet_analyzer.x ${capital} ${width} ${thres}
 
   cd ${workdir}
   ln -sf ${outdir}/clddet_sorted_smoothed.dat .
