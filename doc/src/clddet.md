@@ -49,7 +49,7 @@ and another code files (in src):
 ### Cloud detection diagnosis
 
 The main production script is **clddet_diagnosis.sh**. In the heading of this script, the user will need to specify
-4 mandatory and two optional arguments:
+four mandatory and two optional arguments:
 
 1. the input directory (*indir*), which usually is the experiment identification name
 2. the output directory (*outdir*), where large files are stored
@@ -96,5 +96,6 @@ Graphical plotting of results can then be done with the command
 where ARG is an integer number that represents a running index of an individual infrared satellite sounding. 
 By default, ARG=0, which means that the output figure will by representative of average spectrum computed from 
 the input data. The plotting script will save the produced figure in file clddet.png.
+
 
 
