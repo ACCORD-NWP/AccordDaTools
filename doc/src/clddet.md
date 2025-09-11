@@ -37,7 +37,7 @@ The tool comprises two scripts:
 
 - A shell script: **clddet_diagnosis.sh**
 
-- A python script: **clddet_plotter.sh**
+- A python script: **clddet_plotter.py**
 
 and another code files (in src):
 
@@ -96,6 +96,7 @@ Graphical plotting of results can then be done with the command
 where ARG is an integer number that represents a running index of an individual infrared satellite sounding. 
 By default, ARG=0, which means that the output figure will by representative of average spectrum computed from 
 the input data. The plotting script will save the produced figure in file clddet.png.
+
 
 
 
