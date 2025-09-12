@@ -45,6 +45,11 @@ install (TARGETS dfscomp.x
 install (TARGETS prepdiacov.x
          PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
          DESTINATION libexec)
+         
+install (TARGETS clddet_analyzer.x
+         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
+         DESTINATION libexec)
+       
 
 add_subdirectory (scripts)
 add_subdirectory (share)
