@@ -5,6 +5,7 @@ pages = [
    "Jb diagnose" => "jbdiagnose.md",
    "cv header" => "cvheaderlist.md",
    "DIACOV" => "diacov.md",
+   "Cloud detect" => "clddet.md",
    "datool_dfs" => "dfs.md",
    "VarBc Coeff" => "varbccoeff.md"
 ]

@@ -80,7 +80,7 @@ while getopts i:o:d:s:w:t:h option
 do
   case $option in
     i)
-       INDIR=${this_script_loc}/$OPTARG
+       INDIR=$OPTARG
        echo $INDIR
        if [ -d $INDIR ]; then
          echo "Directory with data ${INDIR} "
@@ -90,7 +90,7 @@ do
        fi
        ;;
     o)
-       OUTDIR=${this_script_loc}/$OPTARG
+       OUTDIR=$OPTARG
        if [ -d $OUTDIR ]; then
          echo "Directory ${OUTDIR} already exists. Please choose another name"
          exit 1
@@ -138,14 +138,8 @@ CLEAN=1
 # 1 Preparations that will always need to be done
 #
 
-echo
-echo "Started at"
-date
-echo
-
 # Identify working directories:
 
-echo
 echo Working directories are set as follows:
 workdir=${this_script_loc}
 echo "1) Directory where the script is run from:"
@@ -157,11 +151,6 @@ echo $OUTDIR
 echo "3) Personal base directory that contains user's HARMONIE experiments:"
 echo $INDIR
 
-echo "4) Directory with *.f90 or *.F90:"
-srcdir=${this_script_loc}/src
-echo $srcdir 
-echo
-
 if [ ${instrument} = "iasi" ]; then
   capital="IASI"
 elif [ ${instrument} = "cris" ]; then
@@ -172,82 +161,53 @@ else
   echo "FATAL: Unknown instrument: "${instrument}
 fi
 
-
 #---
 # 2 Fetch input files: relevant source code (~/src/clddet_analyzer.F90),
 #   HM_Date log file and odb file from ECMA (clddet_ascii.dat.*).
 #
 
-  echo
-  echo Fetching input files ...
-  echo
+# Fetch the log file
+hm_date=${INDIR}/HM_Date_${andate}.html
 
-  # Fetch the log file
-  echo
-  echo Fetch HM_Date.html from ...
+if [ -s ${hm_date} ]; then   # Source code in experiment work directory
+  echo "${PROGNAME}: Found log file, ${INDIR}/HM_Date_${andate}.html"
+  cp ${hm_date} ${OUTDIR}/HM_Date.html
+else
+  echo "FATAL: file " $hm_date " not found."
+  exit 1
+fi
 
-  hm_date=${INDIR}/HM_Date_${andate}.html
-
-  if [ -s ${hm_date} ]; then   # Source code in experiment work directory
-      echo ... found HM_Date.html
-      cp ${hm_date} ${OUTDIR}/HM_Date.html
-  else
-      echo "FATAL: file " $hm_date " not found."
-      exit
-  fi
-
-  # Fetch ascii file (clddet_ascii.dat)
-  echo
-  echo Fetch clddet_ascii.dat
-
-  outf=${INDIR}/clddet_ascii.dat.${andate}
-
-  if [ -s ${outf} ]; then   # Source code in experiment work directory
-      echo ... found /clddet_ascii.dat
-      cp ${outf} ${OUTDIR}/clddet_ascii.dat
-  else
-      echo "FATAL: file " $outf " not found."
-      exit
-  fi
+# Fetch ascii file (clddet_ascii.dat)
+outf=${INDIR}/clddet_ascii.dat.${andate}
+if [ -s ${outf} ]; then   # Source code in experiment work directory
+  echo "${PROGNAME}: Found input data, ${INDIR}/clddet_ascii.dat.${andate} "
+  cp ${outf} ${OUTDIR}/clddet_ascii.dat
+else
+  echo "${PROGNAME}: FATAL: file " $outf " not found. Exiting ..."
+  exit 1
+fi
 
 #---
 # 2 Running the FORTRAN code
 #
+echo "${PROGNAME}: Running clddet_analyzer.x ..."
 
-  echo
-  echo Running the FORTRAN code ...
-  echo
+cd ${OUTDIR}
+${exedir}/clddet_analyzer.x ${capital} ${width} ${thres}
 
-  cd ${OUTDIR}
-  ${exedir}/clddet_analyzer.x ${capital} ${width} ${thres}
+cd ${this_script_loc}
+ln -sf ${OUTDIR}/clddet_sorted_smoothed.dat .
 
-  cd ${this_script_loc}
-  ln -sf ${OUTDIR}/clddet_sorted_smoothed.dat .
-
-
-echo
-echo "Output available in clddet_sorted_smoothed.dat"
-echo
+echo "${PROGNAME}: clddet_analyzer.x complete"
+echo "${PROGNAME}: Output available in clddet_sorted_smoothed.dat"
 
 #---
 # Cleaning
 #
+echo "${PROGNAME}: Cleaning ..."
+cd ${OUTDIR}
+rm -f clddet_analyzer.x
+rm -f HM_Date.html
+rm -f clddet_ascii.dat
 
-  echo
-  echo Cleaning ...
-  echo
-
-  # Cleaning
-  cd ${OUTDIR}
-  rm -f clddet_analyzer.x
-  rm -f HM_Date.html
-  rm -f clddet_ascii.dat
-
-  echo ... done.
-  echo
-
-
-echo
-echo "Finished at"
-date
-echo
+exit 0
