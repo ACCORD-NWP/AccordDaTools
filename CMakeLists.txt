@@ -26,6 +26,7 @@ set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${dialect}")
 add_executable(jbdiagnose.x src/jbdiagnose.F90)
 add_executable(cv_header_list.x src/cv_header_list.F90)
 add_executable(prepdiacov.x src/prepdiacov.F90)
+add_executable(clddet_analyzer.x src/clddet_analyzer.F90)
 
 # install executables and scripts
 install (TARGETS jbdiagnose.x
@@ -39,6 +40,11 @@ install (TARGETS cv_header_list.x
 install (TARGETS prepdiacov.x
          PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
          DESTINATION libexec)
+         
+install (TARGETS clddet_analyzer.x
+         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
+         DESTINATION libexec)
+       
 
 add_subdirectory (scripts)
 add_subdirectory (share)
