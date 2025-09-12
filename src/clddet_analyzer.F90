@@ -167,6 +167,7 @@ subroutine read_logfile( &
      instrument_name, i_num_chans, i_chans, l_logfile_read)
   character(len=20) :: instrument_name  ! AIRS/CRIS/IASI
                                         ! (has been read from command line)
+  integer :: n_max_chans
   integer :: i_num_chans, i_chans(n_max_chans)
   logical :: l_logfile_read
   character(len=200) :: filename, line_of_chars
