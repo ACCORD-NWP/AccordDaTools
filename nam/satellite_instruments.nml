@@ -1,0 +1,14 @@
+&satellite_instruments
+satinst%noaa18_amsua=.true.
+satinst%noaa19_amsua=.true.
+satinst%metopb_amsua=.true.
+satinst%metopc_amsua=.true.
+satinst%noaa19_mhs=.true.
+satinst%metopb_mhs=.true.
+satinst%metopc_mhs=.true.
+satinst%fy3d_mwhs2=.true.
+satinst%snpp_atms=.true.
+satinst%noaa20_atms=.true.
+satinst%metopb_iasi=.true.
+satinst%metopc_iasi=.true.
+/
