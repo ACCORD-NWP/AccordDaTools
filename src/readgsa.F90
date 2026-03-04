@@ -1,7 +1,7 @@
        SUBROUTINE READCOV(pcov,kdim,nsmax,kpar,cfile ,llverb,kret)
        IMPLICIT NONE 
-!         read a set of nonsep matrices for the requested parameter
-!         from a GSA file
+!      read a set of nonsep matrices for the requested parameter
+!      from a GSA file
 !                                               F. Bouttier Oct 96
 !      input : cfile = GSAfilename
 !               kpar = GSA parameter selector (IPAR coding)
@@ -14,34 +14,33 @@
 !      USE AS PYTHON EXTENSION     :  I. Dehmous                    2023/10/03              
       
 
-!
-      INTEGER, PARAMETER            :: jplun=67
-      INTEGER, PARAMETER            :: JPRB = SELECTED_REAL_KIND(13,300)
+      INTEGER, PARAMETER             :: jplun=67
+      INTEGER, PARAMETER             :: JPRB = SELECTED_REAL_KIND(13,300)
       INTEGER, PARAMETER             :: JPIM = SELECTED_INT_KIND(9)
       INTEGER(KIND=JPIM),INTENT(IN ) :: kdim,nsmax ,kpar
       INTEGER(KIND=JPIM),INTENT(OUT) :: kret
       INTEGER(KIND=JPIM)  :: idim1,idim2,ipar1,ipar2,icor1,icor2, icheck
       REAL(KIND=JPRB)   ,INTENT(OUT) :: pcov(kdim,kdim,0:nsmax)
       CHARACTER(LEN=*)               :: cfile
-      CHARACTER                      :: clid*8,clcom*70
+      CHARACTER(LEN=8)               :: clid
+      CHARACTER(LEN=70)              :: clcom
       LOGICAL           ,INTENT(IN)  :: llverb
       LOGICAL                        :: llfound
-      INTEGER(KIND=JPRB)  :: iorig,idate,itime,inbset
-      INTEGER(KIND=JPRB)  :: jset , jj , jn , jk 
-      INTEGER(KIND=JPRB)  :: inbmat,iweight,itypmat,isetdist,ilendef
+      INTEGER(KIND=JPIM)  :: iorig,idate,itime,inbset
+      INTEGER(KIND=JPIM)  :: jset , jj , jn , jk 
+      INTEGER(KIND=JPIM)  :: inbmat,iweight,itypmat,isetdist,ilendef
 
 
 ! 1.OPEN FILE AND READ GSA HEADER
 ! THE FILE IS WRITTEN IN BIG ENDIAN MODE 
-! AVOID COMPILER OPTIONS ! 
-       OPEN(jplun,FILE=cfile,FORM='unformatted',STATUS='old',&
-     & ACCESS='sequential',convert='BIG_ENDIAN')
+! This option is added also in compiler options anyway  
 
-
+      OPEN(jplun,FILE=cfile,FORM='unformatted',STATUS='old',&
+     & ACCESS='sequential' ,convert='BIG_ENDIAN')
     
       IF (llverb) THEN
-      WRITE(*,*) 'SEARCHING FOR PARAMETER:',kpar, &
-     &           'IN GSA FILE ',cfile,'...'
+      WRITE(*,*) 'Searching for parameter :',kpar, &
+     &           'in GSA file: ',cfile,'...'
       ENDIF 
 
       READ(jplun) clid
@@ -60,7 +59,7 @@
       DO jset=1,inbset
         READ(jplun) inbmat,iweight,itypmat,isetdist,ilendef
         !IF (llverb) THEN 
-         WRITE(*,*) 'SCANNING SET No...',jset
+         WRITE(*,*) 'Scanning set No...',jset
         !ENDIF 
         IF (llverb) THEN 
           WRITE(*,*) '   ',inbmat,iweight,itypmat,isetdist,ilendef
@@ -70,13 +69,14 @@
           WRITE(*,*) '   ',idim1,idim2,ipar1,ipar2,icor1,icor2
         ENDIF 
         IF ((ipar1==kpar).AND.(ipar2==kpar)) llfound=.true.
+
 ! skip coordinate records
         READ(jplun)
         READ(jplun)
         IF (llfound) THEN 
           IF (llverb ) THEN 
-          WRITE(*,*) 'FOUND PARAM :', kpar ,' IN THE SET :', jset
-          WRITE(*,*) 'READING DATA ...'
+          WRITE(*,*) 'Found param  :', kpar ,' In the set No :', jset
+          WRITE(*,*) 'Reading data ...'
           ENDIF  
 
 ! THE OLD ABORT ROUTINE CAUSES PYTHON CRASH 
@@ -87,6 +87,7 @@
           IF (idim1/=kdim    )call abor1('Error - bad 1st dimension')
           IF (idim2/=kdim    )call abor1('Error - bad 2nd dimension')
           IF (icor1/=icor2   )call abor1('Error - coords differ')
+
           DO jn=0,nsmax
             READ(jplun)
             READ(jplun) ((pcov(jj,jk,jn),jk=1,kdim),jj=1,kdim),icheck
@@ -105,16 +106,17 @@
       IF (llfound) THEN
         kret=0
       ELSE
-        WRITE(*,*) 'WARNING : COULD NOT FIND MATRIX SET'
+        WRITE(*,*) 'WARNING : Could not find matrix set'
         pcov(:,:,:)=0.
         kret=1
       ENDIF 
       RETURN 
       END SUBROUTINE READCOV 
 
-!     ------------------------------------------------------------------
+!-------------------------abor1 -------------------------
       SUBROUTINE  abor1(cdmess)
       character(len=*) :: cdmess
       WRITE(*,*)          cdmess
       !call exit(1)
       END 
+! Finish 
