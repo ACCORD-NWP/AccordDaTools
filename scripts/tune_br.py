@@ -1,21 +1,19 @@
 #!/usr/bin/env python3
-
 # -*- coding: utf-8 -*-
-"""
-observation and background error tuning 
-re-implementation in python of the RC-LACE version. 
-"""
 
-import os
-import sys  
-sys.path.append("./modules")
+import os , sys  
 import configparser
 from   datetime            import  datetime ,timedelta 
 from   statistics          import  mean 
-from   modules.sigma_bo    import  Predef, Diag , Ratios 
-from   modules.setting_env import  TuneEnv 
-from   modules.odb         import  Odb
-import gsacov 
+from   pathlib import Path
+
+# TuneBR modules 
+# Insert parent directory to get "modules" directory 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from modules import Predef, Diag , Ratios
+from modules import Odb ,TuneEnv 
+from modules import GSA 
 
 
 StartTime = datetime.now()
@@ -66,14 +64,14 @@ rows_path=env.rows_path
 
 
 # Get background standard deviations  (Profiles +  means ) 
-g=gsacov.GSA(PathDict , statfile ,nsmax ,nlev , deltax , lverb ,lwrite )
+g=GSA(PathDict , statfile ,nsmax ,nlev , deltax , lverb ,lwrite )
 tsig_ver ,  sb_pred_t  = g.GetSigmaB (2)    # Temperature   KPAR=2
 qsig_ver ,  sb_pred_q  = g.GetSigmaB (3)    # Specific  q   KPAR=3
 vsig_ver ,  sb_pred_v  = g.GetSigmaB (4)    # Vorticity     KPAR=4
 dsig_ver ,  sb_pred_d  = g.GetSigmaB (5)    # Divergence    KPAR=5
 kesig_ver,  sb_pred_ke = g.GetSigmaB (999)  # UV Components not in stabal file --> set arbitrary unique number  999
 print("Extraction of SIGMA_B values, done !\n")
-
+quit()
 # Create datetime list
 cdtg=[]
 bdate =datetime.strptime( bdate , "%Y%m%d%H")
