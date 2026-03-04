@@ -13,7 +13,7 @@ from odb4py.core   import odbDict , odbConnect , odbClose , odbDca
 
 
 # TuneBR modules
-from config_env  import TuneEnv
+from .config_env  import TuneEnv
 
 class Odb:
       """
