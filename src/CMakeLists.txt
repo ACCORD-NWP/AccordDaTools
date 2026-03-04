@@ -1,13 +1,18 @@
-# CmakeFile to compile 
+# CmakeFile to compile readgsa.F90  
+# Creates a virtualenv , where f2py compiles the routine
+# When the venv is created , the numpy module is installed.
+# ==> Eveything is done inside the build directory  !
 cmake_minimum_required (VERSION 3.18)
+
 project  (readgsa LANGUAGES C Fortran)
+
 
 # Find system python
 find_package(Python REQUIRED COMPONENTS Interpreter)
 
 message(STATUS "System python: ${Python_EXECUTABLE}")
 
-# Create venv inside build tree
+# Create venv inside build 
 set(VENV_DIR ${CMAKE_BINARY_DIR}/venv)
 if(NOT EXISTS ${VENV_DIR}/bin/python)
     message(STATUS "Creating virtualenv")
@@ -23,10 +28,10 @@ if(NOT EXISTS ${VENV_DIR}/bin/python)
 endif()
 
 
-
 # Switch python to venv
 set(Python_EXECUTABLE ${VENV_DIR}/bin/python CACHE FILEPATH "" FORCE)
 
+# Look for numpy inside venv 
 find_package(Python REQUIRED COMPONENTS Interpreter Development NumPy)
 message(STATUS "Python from venv: ${Python_EXECUTABLE}")
 
@@ -47,9 +52,9 @@ add_custom_command( OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${f2py_module_c}" COMMAN
 
 # Set up target
 Python_add_library( readgsa  MODULE WITH_SOABI
-  "${CMAKE_CURRENT_BINARY_DIR}/${f2py_module_c}" # Generated
-  "${F2PY_INCLUDE_DIR}/fortranobject.c" # From NumPy
-  "${fortran_src_file}" # Fortran source(s)
+  "${CMAKE_CURRENT_BINARY_DIR}/${f2py_module_c}" # Generated   .c  module 
+  "${F2PY_INCLUDE_DIR}/fortranobject.c"          # From NumPy
+  "${fortran_src_file}"                          # Fortran source
 )
 
 # Include 
@@ -58,7 +63,7 @@ target_include_directories(${f2py_module_name} PRIVATE    ${F2PY_INCLUDE_DIR}   
 # Libs 
 target_link_libraries(${f2py_module_name} PRIVATE    Python::Module    Python::NumPy)
 
-# Set the suffix to  " .so "    without machine/system  architecture/realease  ..etc   
+# Set the suffix to  " .so "    without machine_system  architecture/realease info  ..etc   
 set_target_properties(readgsa PROPERTIES    PREFIX ""    SUFFIX ".so")
 
 # Add it to the python modules 
