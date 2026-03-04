@@ -30,51 +30,36 @@ set(Python_EXECUTABLE ${VENV_DIR}/bin/python CACHE FILEPATH "" FORCE)
 find_package(Python REQUIRED COMPONENTS Interpreter Development NumPy)
 message(STATUS "Python from venv: ${Python_EXECUTABLE}")
 
-# Locate f2py include
-execute_process(
-    COMMAND ${Python_EXECUTABLE}
-            -c "import numpy.f2py;print(numpy.f2py.get_include())"
-    OUTPUT_VARIABLE F2PY_INCLUDE
-    OUTPUT_STRIP_TRAILING_WHITESPACE
+# Locate f2py includes
+execute_process( COMMAND ${Python_EXECUTABLE} -c "import numpy.f2py;print(numpy.f2py.get_include())"    OUTPUT_VARIABLE F2PY_INCLUDE_DIR  OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+# Common variables
+set(f2py_module_name   "readgsa")
+set(fsrc_path          "${CMAKE_SOURCE_DIR}/src/readgsa.F90")
+set(fortran_src_file   "${fsrc_path}"  )
+set(f2py_module_c      "${f2py_module_name}module.c")
+
+add_custom_command( OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${f2py_module_c}" COMMAND ${Python_EXECUTABLE}  -m "numpy.f2py" "${fortran_src_file}"
+                   -m ${f2py_module_name}
+                   --lower 
+                   DEPENDS readgsa.F90 # Fortran source
 )
 
-# Generate f2py wrapper
-set(f2py_module_name readgsa)
-set(FSRC        ${CMAKE_SOURCE_DIR}/src/readgsa.F90)
-
-
-add_custom_command(
-    OUTPUT  readgsa 
-    COMMAND ${Python_EXECUTABLE} -m numpy.f2py
-            ${FSRC}
-            -m ${f2py_module_name}
-            --lower
-    DEPENDS ${FSRC} )
-
-# Build the module
-Python_add_library(${f2py_module_name}   MODULE WITH_SOABI
-    ${F2PY_INCLUDE_DIR}
-    ${f2py_module_name}
-    ${FSRC}
+# Set up target
+Python_add_library( readgsa  MODULE WITH_SOABI
+  "${CMAKE_CURRENT_BINARY_DIR}/${f2py_module_c}" # Generated
+  "${F2PY_INCLUDE_DIR}/fortranobject.c" # From NumPy
+  "${fortran_src_file}" # Fortran source(s)
 )
 
 # Include 
-target_include_directories(${f2py_module_name} PRIVATE
-    ${F2PY_INCLUDE_DIR}
-    ${Python_NumPy_INCLUDE_DIRS}
-)
+target_include_directories(${f2py_module_name} PRIVATE    ${F2PY_INCLUDE_DIR}    ${Python_NumPy_INCLUDE_DIRS})
 
 # Libs 
-target_link_libraries(${f2py_module_name} PRIVATE
-    Python::Module
-    Python::NumPy
-)
+target_link_libraries(${f2py_module_name} PRIVATE    Python::Module    Python::NumPy)
 
-# Set the suffix to  " .so " 
-set_target_properties(readgsa PROPERTIES
-    PREFIX ""
-    SUFFIX ".so"
-)
+# Set the suffix to  " .so "    without machine/system  architecture/realease  ..etc   
+set_target_properties(readgsa PROPERTIES    PREFIX ""    SUFFIX ".so")
 
 # Add it to the python modules 
 install(TARGETS readgsa LIBRARY DESTINATION ${CMAKE_SOURCE_DIR}/modules )
