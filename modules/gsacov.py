@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-import os  
-import sys  
-from   math import  sqrt, pi   
-import numpy as np  
+import os, sys
+from   pathlib import  Path
+from   math    import  sqrt, pi
+import numpy as np
 
 # Py/Fortran module (Reading B matrix )
 from  .readgsa   import readcov 
@@ -23,6 +23,7 @@ class GSA:
             3:"Specific humidity",
             4:"Vorticity"        ,
             5:"Divergence"       }          
+
       def __init__ (self,paths , cfile , nsmax , nflev , deltax , lverb ,lwrite):
           self.path  =paths  
           self.cfile =cfile 
