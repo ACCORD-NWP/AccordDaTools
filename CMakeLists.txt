@@ -19,6 +19,10 @@ endif()
 set(CMAKE_Fortran_FLAGS_DEBUG "${CMAKE_Fortran_FLAGS_DEBUG} ${bounds}")
 set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${dialect}")
 
+
+# Compile readgsa.F90 routine but as python module
+add_subdirectory(src)
+
 #
 # Compile.
 #
@@ -27,6 +31,8 @@ add_executable(jbdiagnose.x src/jbdiagnose.F90)
 add_executable(cv_header_list.x src/cv_header_list.F90)
 add_executable(prepdiacov.x src/prepdiacov.F90)
 add_executable(clddet_analyzer.x src/clddet_analyzer.F90)
+
+
 
 # install executables and scripts
 install (TARGETS jbdiagnose.x
@@ -46,6 +52,8 @@ install (TARGETS clddet_analyzer.x
          DESTINATION libexec)
        
 
+
 add_subdirectory (scripts)
+add_subdirectory (modules)
 add_subdirectory (share)
 add_subdirectory (tests)
