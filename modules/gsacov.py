@@ -4,8 +4,8 @@ import sys
 from   math import  sqrt, pi   
 import numpy as np  
 
-# Py/Fortran module 
-import readgsa  
+# Py/Fortran module (Reading B matrix )
+from  .readgsa   import readcov 
 
 
 
@@ -68,7 +68,7 @@ class GSA:
           if kpar == 2: 
              nlev=self.nlev + 1 
           else: nlev=self.nlev 
-          cov,kret = readgsa.readcov( nlev, self.nsmax , kpar,self.cfile,self.lverb)
+          cov,kret = readcov( nlev, self.nsmax , kpar,self.cfile,self.lverb)
           if kret != 0:  
              print( "FAILED TO READ MATRICES FOR PARAMETER :" , dpar[kpar] )
           else:
