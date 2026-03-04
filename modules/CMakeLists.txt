@@ -8,7 +8,7 @@ function (install_modules )
 endfunction()
 
 # Python modules For tuneBR 
-install_modules  (gsacov.py  odb.py  setting_env.py  sigma_bo.py )
+install_modules  (gsacov.py  odb.py  config_env.py  sigma_bo.py __init__.py)
 install_modules  (readgsa.so)
 
 
