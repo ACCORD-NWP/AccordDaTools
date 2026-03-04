@@ -5,8 +5,8 @@ import pandas as pd
 from math import sqrt
 from statistics    import stdev , mean 
 
-from  odb         import Odb 
-from  config_env  import TuneEnv  
+from .odb        import Odb 
+from .config_env import TuneEnv  
 
 
 # BASED ON THE PROGRAM ratio.F90  
