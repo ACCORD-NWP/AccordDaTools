@@ -28,7 +28,7 @@ if nargv > 1 :
 else :
   print("You need to provide the config.ini file!\n")
   print("Usage:")
-  print("> python tuneBR.py  config.ini\n")
+  print("> python tune_br.py  config.ini\n")
   exit(1)
 
 
