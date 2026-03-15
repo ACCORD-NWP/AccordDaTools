@@ -78,8 +78,10 @@ class Odb:
              raise Exception ("Supported formats for archive unpacking :", ext_list) # Supports: zip, tar, gztar, bztar, xztar  or zstdtar.
 
           if os.path.isfile(tarfile ):
+             print( "Decompress the ODB archive ...", tarfile  )
              # Unpack in tmp dir 
              shutil.unpack_archive(tarfile, dtedir , arc_ext)
+
 
 
 
