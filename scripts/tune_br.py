@@ -18,38 +18,25 @@ from modules import GSA
 
 
 
-# Get args 
-parser = argparse.ArgumentParser( description=" ")
-parser.add_argument("--config_file" ,required=True ,type=str ,default="../share/tunebr_conf/config.ini",choices=None ,help="Path to tuneBR config file" )
 
-if len(sys.argv) == 1:
-   parser.print_help()
-   sys.exit(1)
+# Get the config file 
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "config_file",
+    type=Path,
+    help="Path to tuneBR config file  (.ini file format )"
+)
 
-# Check  config filename 
-args=parser.parse_args()
+args = parser.parse_args()
+
+if not args.config_file.is_file():
+    parser.error(f"Config file '{args.config_file}' not found")
+
+
 ini_file=args.config_file
-if not os.path.isfile(ini_file):
-  print("The given .ini file {} not found !\n".format(ini_file )) 
-  print("Usage:")
-  print("> python tune_br.py  config.ini\n")
-  sys.exit(1)
 
 # Start 
 StartTime = datetime.now()
-
-# GET CONFIG FILE AS ARGUMENT 
-"""nargv = len(sys.argv)
-if nargv > 1 :
-  ini_file = sys.argv[1]
-  if not os.path.exists(ini_file) :
-    print("File " + ini_file + " not found.")
-    exit(1)
-else :
-  print("You need to provide the config.ini file!\n")
-  print("Usage:")
-  print("> python tune_br.py  config.ini\n")
-  exit(1)"""
 
 
 # Parse config file  
@@ -103,9 +90,7 @@ while bdate <= edate:
 
 
 # ODB extraction  
-print( "Proceed to ODB extraction ...!\n")
 db=Odb ( PathDict )
-#nslice=env.ntaks     # If in parallel (Later !!)
 
 # Get ODB rows  
 db.CreateDca  ( cdtg , ndca_cpu   )
