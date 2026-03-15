@@ -5,7 +5,7 @@ import pandas as pd
 from math import sqrt
 from statistics    import stdev , mean 
 
-from .odb        import Odb 
+from .read_odb        import Odb 
 from .config_env import TuneEnv  
 
 
