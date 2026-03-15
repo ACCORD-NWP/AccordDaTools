@@ -8,8 +8,8 @@ import tarfile
 
 
 # odb4py 
-from odb4py.utils  import OdbEnv , StringParser , OdbObject
-from odb4py.core   import odbDict , odbConnect , odbClose , odbDca
+from odb4py.utils  import SqlParser , OdbObject
+from odb4py.core   import odb_open , odb_dca ,odb_dict 
 
 
 # TuneBR modules
@@ -107,15 +107,18 @@ class Odb:
               if os.path.isdir  ( dbpath ):
                  # It can hapen to have  CCMA directory but a missing  CCMA.dd , .sch or .desc 
                  # Better use try 
+                 conn = odb_open ( dbpath   )
                  try:
                     db      = OdbObject (dbpath)
-                    db_attrs= db.GetAttrib ()
+                    db_attrs= db.get_attrib ()
                     tab_list= db_attrs["tables"]
-                    ic   = odbDca    (odbdir =dbpath , 
-                                   dbtype ="CCMA" ,
-                                   ncpu   = NCPU  ,
+                    ic   = conn.odb_dca(database =dbpath , 
+                                   dbtype   ="CCMA" ,
+                                   ncpu     = NCPU  ,
                                    extra_args ="-z -u -q ", # Means Update if existe,remove empty files and run in quite mode 
                                    tables =tab_list  )      # Only the tables found in the CCMA 
+                    conn.odb_close()
+
                  except:
                     FileNotFoundError
                     print( f"Missing meta-data files in ODB : {dbpath}" )
@@ -175,8 +178,9 @@ class Odb:
                  # Skip the datetime if the odb rows are already there !
                  if not os.path.isfile (outfile):
                     try:
-                       # odbDict method throws an exception if no rows returned 
-                       data_dict =odbDict (database=dbpath            ,
+                       # odb_dict method throws an exception if no rows returned 
+                       conn      =odb_open( dbpath  )
+                       data_dict =conn.odb_dict (database=dbpath,
                                      sql_query  =self.sql_query , 
                                      nfunc      =0        ,
                                      fmt_float  =10       , 
@@ -191,6 +195,7 @@ class Odb:
                                                        index= False , 
                                                        sep=","      ,
                                                        decimal='.' )
+                       conn.odb_close()
                     except:
                        RuntimeError
                        print("No data returned for ODB {} \n".format( dt ) )
