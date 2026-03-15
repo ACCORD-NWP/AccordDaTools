@@ -3,6 +3,7 @@
 
 import os , sys  
 import configparser
+import argparse
 from   datetime      import  datetime ,timedelta 
 from   statistics    import  mean 
 from   pathlib       import  Path
@@ -15,11 +16,30 @@ from modules import Predef, Diag , Ratios
 from modules import Odb ,TuneEnv 
 from modules import GSA 
 
+
+
+# Get args 
+parser = argparse.ArgumentParser( description=" ")
+parser.add_argument("--config_file" ,required=True ,type=str ,default="../share/tunebr_conf/config.ini",choices=None ,help="Path to tuneBR config file" )
+
+if len(sys.argv) == 1:
+   parser.print_help()
+   sys.exit(1)
+
+# Check  config filename 
+args=parser.parse_args()
+ini_file=args.config_file
+if not os.path.isfile(ini_file):
+  print("The given .ini file {} not found !\n".format(ini_file )) 
+  print("Usage:")
+  print("> python tune_br.py  config.ini\n")
+  sys.exit(1)
+
 # Start 
 StartTime = datetime.now()
 
 # GET CONFIG FILE AS ARGUMENT 
-nargv = len(sys.argv)
+"""nargv = len(sys.argv)
 if nargv > 1 :
   ini_file = sys.argv[1]
   if not os.path.exists(ini_file) :
@@ -29,14 +49,12 @@ else :
   print("You need to provide the config.ini file!\n")
   print("Usage:")
   print("> python tune_br.py  config.ini\n")
-  exit(1)
-
+  exit(1)"""
 
 
 # Parse config file  
 config=configparser.ConfigParser( 
-interpolation=configparser.ExtendedInterpolation() 
-)
+interpolation=configparser.ExtendedInterpolation()  )
 
 # All items in upper case 
 config.optionxform = str
@@ -71,7 +89,8 @@ vsig_ver ,  sb_pred_v  = g.GetSigmaB (4)    # Vorticity     KPAR=4
 dsig_ver ,  sb_pred_d  = g.GetSigmaB (5)    # Divergence    KPAR=5
 kesig_ver,  sb_pred_ke = g.GetSigmaB (999)  # UV Components not in stabal file --> set arbitrary unique number  999
 print("Extraction of SIGMA_B values, done !\n")
-quit()
+
+
 # Create datetime list
 cdtg=[]
 bdate =datetime.strptime( bdate , "%Y%m%d%H")
