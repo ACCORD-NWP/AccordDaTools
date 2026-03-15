@@ -88,6 +88,7 @@ class Odb:
 
 
       def CreateDca  ( self,  dates , ncpu   ):
+          print("Prepare DCA file for all ODBs ...\n")
           NCPU = int(ncpu ) 
           basedir     =self.paths["BASEDIR"]
           tmpdir=  "/".join((basedir, "tmp" ))          
@@ -101,7 +102,7 @@ class Odb:
                  print("Malformatted start date. Must be YYYYMMDDHH\n") 
                  sys.exit(1)
                  
-              print( "Prepare ODB : Date ...  {} \n".format( dt )  )
+              #print( "Prepare ODB : Date ...  {} \n".format( dt )  )
               self.CopyOdb (  dt )
               dtedir=  "/".join((tmpdir ,  dt   ))
               # Get attributes and create DCA                  
