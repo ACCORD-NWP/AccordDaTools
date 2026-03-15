@@ -88,7 +88,7 @@ class Odb:
 
 
       def CreateDca  ( self,  dates , ncpu   ):
-          print("Prepare DCA file for all ODBs ...\n")
+          print("Prepare DCA files for all ODBs ...\n")
           NCPU = int(ncpu ) 
           basedir     =self.paths["BASEDIR"]
           tmpdir=  "/".join((basedir, "tmp" ))          
