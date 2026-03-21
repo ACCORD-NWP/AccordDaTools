@@ -7,8 +7,11 @@ function (install_modules )
   endforeach ()
 endfunction()
 
+
+# __init__ file 
+install_modules  (__init__.py)
 # Py  modules For tuneBR 
-install_modules  (__init__.py  
+install_modules  (readgsa.so   
 	          gsacov.py  
 	          read_odb.py  
 		  config_env.py  
