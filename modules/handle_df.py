@@ -5,7 +5,7 @@ import numpy  as np
 from   itertools import repeat 
 
 
-from   io_base import DataIO 
+from   .io_base import DataIO 
 
  
 
