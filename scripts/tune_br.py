@@ -12,9 +12,9 @@ from   pathlib       import  Path
 # Insert parent directory to get "modules" directory 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from modules import Predef, Diag , Ratios
-from modules import Odb ,TuneEnv 
-from modules import GSA 
+from modules.sigma_bo  import Predef, Diag , Ratios
+from modules.read_odb  import Odb ,TuneEnv 
+from modules.gsacov    import GSA 
 
 
 
@@ -24,7 +24,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "config_file",
     type=Path,
-    help="Path to tuneBR config file  (.ini file format )"
+    help="Path to tuneBR config file  ( .ini format )"
 )
 
 args = parser.parse_args()
