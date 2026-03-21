@@ -125,7 +125,7 @@ for var  in var_list:
     diag.to_csv ( "py_"+var+".csv",  index=False , header=True  )
 
 
-# Finalize 
+# Finish
 end_time = datetime.now()
 
 # Time duration of stats computation 
