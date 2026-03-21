@@ -6,10 +6,10 @@ from  odb4py.utils   import SqlParser
 
 class SqlHandler:
     """
-    Class :  Parse the different observation dictionaries and build the 
-             SQL query according to obstype, codetype, varno , sensor and level range  
-             Checks the SQL statement before sending. 
-    Returns :The sql statement according to variable and varno  
+    Class : @ Parse the different observation dictionaries and build the 
+              SQL query according to obstype, codetype, varno , sensor and level range  
+            @ Checks the SQL statement before sending. 
+    Returns : The sql statement according to variable and varno  
 
             Methods : BuildQuery  
                       CheckQuery
@@ -103,6 +103,7 @@ class SqlHandler:
 
 
         # Check level range 
+        level_list=[]
         if self.levels != None :
           if len (self.levels) <2  or  len( self.levels ) > 2:
              print ( "Level range must have two limites   [l1 , l2], but got argument:", self.levels  )
@@ -117,13 +118,16 @@ class SqlHandler:
              l1 =str(self.levels[0] )
              l2 =str(self.levels[1] )
              level_cond="vertco_reference_1 >="+l1+" AND vertco_reference_1 <= "+l2 
+             level_list.append(level_cond)
 
 
         where_cond_list=[]
         for tp in type_list:
            for vr in varno_list:
-                where_cond_list.append(  " AND ".join(  (tp, vr  ))   )
-
+               where_cond_list.append(  " AND ".join(  (tp, vr  ))   )
+               if len(level_list) !=0:
+                   for lv in level_list:
+                       where_cond_list.append(  " AND ".join(  (tp, vr ,  lv  ))   )
 
         query=" " 
         if   self.other !=None and len(where_cond_list) == 0:
