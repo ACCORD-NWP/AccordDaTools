@@ -20,12 +20,12 @@ set(CMAKE_Fortran_FLAGS_DEBUG "${CMAKE_Fortran_FLAGS_DEBUG} ${bounds}")
 set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${dialect}")
 
 
-# Compile readgsa.F90 routine but as python module
+#
+# .Compile 
+#
+# compilation of readgsa.F90 routine as a python extention 
 add_subdirectory(src)
 
-#
-# Compile.
-#
 
 add_executable(jbdiagnose.x src/jbdiagnose.F90)
 add_executable(cv_header_list.x src/cv_header_list.F90)
