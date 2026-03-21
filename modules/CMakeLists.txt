@@ -7,8 +7,21 @@ function (install_modules )
   endforeach ()
 endfunction()
 
-# Python modules For tuneBR 
-install_modules  (gsacov.py  read_odb.py  config_env.py  sigma_bo.py __init__.py)
-install_modules  (readgsa.so)
+# Py  modules For tuneBR 
+install_modules  (__init__.py  
+	          gsacov.py  
+	          read_odb.py  
+		  config_env.py  
+		  sigma_bo.py )
+
+# Py modules for obstool 
+install_modules  (build_sql.py  
+	         conv_stats.py  
+		 handle_df.py  
+		 io_base.py  
+		 setting.py  
+		 utils.py
+		 obstype_info.py)
+		  
 
 
