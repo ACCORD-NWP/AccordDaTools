@@ -10,7 +10,6 @@ class DataIO:
     """
     Class:  DataIO : Contains methods to write and read the statstics dataframes  
                      for each cycle (in .csv files)
-                     It uses the format 'feather'. Fast for I/O  Compatible with pandas 
             Methods  : 
                       FlushFrame 
                       ReadFrame 
