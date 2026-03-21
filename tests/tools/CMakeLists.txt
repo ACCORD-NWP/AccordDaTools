@@ -9,6 +9,7 @@ list( APPEND tools_tests_scripts
              test_varbcdiagnose_help.sh
              test_plotvarbcpred_help.sh
 	     test_tune_br_help.sh
+	     test_obstool_help.sh
      )
 
 
