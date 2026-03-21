@@ -14,11 +14,11 @@ from odb4py.utils import SqlParser , OdbObject
 from odb4py.core  import odb_dca, odb_open , odb_close ,odb_dict, odb_gcdist
 
 # Obstool, Desroziers & Jarvinen  , Tools &  modules 
-from build_sql       import SqlHandler
-from obstype_info    import ObsType
-from setting         import Setting  , Conv
-from handle_df       import *
-from io_base         import DataIO
+from .build_sql       import SqlHandler
+from .obstype_info    import ObsType
+from .setting         import Setting  , Conv
+from .handle_df       import *
+from .io_base         import DataIO
 
 
 
