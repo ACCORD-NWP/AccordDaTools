@@ -3,7 +3,7 @@ import os , sys
 from datetime      import datetime ,timedelta
 
 # Obstool modules 
-from obstype_info  import  ObsType
+from .obstype_info  import  ObsType
 
 
 class Setting:
