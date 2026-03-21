@@ -14,9 +14,9 @@ from odb4py.utils import SqlParser , OdbObject
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 # Obstool modules 
-from setting     import Setting 
-from utils       import OdbReader , Rows2Df
-from conv_stats  import DHLStat
+from modules.setting     import Setting 
+from modules.utils       import OdbReader , Rows2Df
+from modules.conv_stats  import DHLStat
 
 
 
