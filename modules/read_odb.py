@@ -17,17 +17,17 @@ from .config_env  import TuneEnv
 
 class Odb:
       """
-      Class : Odb , GET THE PATHS FROM TuneEnv OBJECT 
-                    PRFORMS A PARALLEL ODB EXRACTION.
-                    CONTAINS : ReadOdbRows   Method TO READ 
-                    OBS-ERROR , obs-guess DEPARTURES AND obs-analysis 
-                    DEPARTURES 
-                    Return :Obs_err , obs-fg , obs-an  departures  
+      Class : read_odb. Get the paths from TuneEnv object and extrcat odb rows 
+                        
+      Method: ReadOdbRows. read obs_error , obs-guess, obs-analysis departures 
       """
+
       def __init__(self, Paths ):
           self.paths    =Paths
           self.dbtype   ="CCMA"   # Can be hard coded since it's NOT possible to use ECMA in TuneBR 
+          # Static query can be used here !
           self.sql_query="SELECT obstype,varno,an_depar,fg_depar,final_obs_error FROM  hdr, body, errstat"
+
           self.ext_list=[ item [0] for item in shutil.get_archive_formats() ]
           self.rows_path =Path (Paths["ROWS_PATH"] )
 
