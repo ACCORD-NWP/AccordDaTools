@@ -9,18 +9,18 @@ import argparse
 # odb4py  
 from odb4py.utils import SqlParser , OdbObject  
 
+
+# Insert parent directory to get "modules" directory
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 # Obstool modules 
 from setting     import Setting 
 from utils       import OdbReader , Rows2Df
 from conv_stats  import DHLStat
 
 
-# Insert parent directory to get "modules" directory 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-
-
-# Simple methods to parse arguments from the command line
+# Parse arguments from the command line
 def Usage():
     help_= "Description  :\n\
             Diagnostic tool 'obstool'.\n\
