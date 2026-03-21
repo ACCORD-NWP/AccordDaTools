@@ -107,7 +107,7 @@ class Setting:
 
 class Conv:
     """
-    class : instantiate Conv obs category  and corresponding sql env 
+    class : instantiate Conv obs category  and corresponding SQL query
     """
     def __init__(self ):
         # ---> CAUTION !: NEVER CHANGE THE ORDER OF COLUMNS 
