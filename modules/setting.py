@@ -9,8 +9,7 @@ from .obstype_info  import  ObsType
 class Setting:
     """
     class : contains methods to set datetime period and varlist for obstool           
-            Methods :  (Better to use snake_case names for the methods  !)
-                      set_period 
+            Methods : set_period 
                       set_obs_list
     """ 
     def __init__ (self ):
