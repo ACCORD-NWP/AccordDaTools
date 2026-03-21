@@ -5,7 +5,7 @@ from   math    import  sqrt, pi
 import numpy as np
 
 # Py/Fortran module (Reading B matrix )
-from  .readgsa   import readcov 
+from  .readgsa  import  readcov 
 
 
 
