@@ -9,16 +9,32 @@ from   multiprocessing import Pool , cpu_count,  shared_memory
 from   itertools import chain 
 
 
+"""sys.path.insert(0,"/home/idehmous/Desktop/rmib_dev/github/pyodb_1.1.0/build/lib.linux-x86_64-cpython-39")
+from pyodb_extra  import OdbEnv
+env= OdbEnv ("/home/idehmous/Desktop/rmib_dev/github/pkg", "libodb.so")
+env.InitEnv ()
+# pyodb modules 
+from pyodb_extra.odb_ob    import  OdbObject  
+env= OdbEnv ("/home/idehmous/Desktop/rmib_dev/github/pkg", "libodb.so")
+env.InitEnv ()
+# --> NOW pyodb could be imported  !
+import pyodb   
+from   pyodb   import  odbDict , odbGcdistance
+from   pyodb   import  odbConnect , odbClose 
+from   pyodb   import  odbDca  """
+
 # odb4py  
 from odb4py.utils import SqlParser , OdbObject
 from odb4py.core  import odb_dca, odb_open , odb_close ,odb_dict, odb_gcdist
 
+
+
 # Obstool, Desroziers & Jarvinen  , Tools &  modules 
-from .build_sql       import SqlHandler
-from .obstype_info    import ObsType
-from .setting         import Setting  , Conv
-from .handle_df       import *
-from .io_base         import DataIO
+from build_sql       import SqlHandler
+from obstype_info    import ObsType
+from setting         import Setting  , Conv
+from handle_df       import *
+from io_base         import DataIO
 
 
 
@@ -37,22 +53,27 @@ class DCAFiles:
 
     def CheckDca( self,   dbpath , sub_base=None   , verbose = False   ):
         # Prepare DCA files if not  in ODB 
-        db      = OdbObject ( dbpath )
-        dbname  = db.get_attrib()["name"]
+        try:  # os.path.isdir( dbpath  ):
+           db      = OdbObject ( dbpath )
+           dbname  = db.get_attrib()["name"]
         
-        if not os.path.isdir ("/".join(  [dbpath , "dca"] )  ):
-           if verbose in [2,3 ]:
-              print( "No DCA files in {} 'directory'".format(dbpath ) )
-           #env.OdbVars["CCMA.IOASSIGN"]="/".join(  (dbname, "CCMA.IOASSIGN" ) )
-           #env.OdbVars["ECMA.IOASSIGN"]="/".join(  (dbname, "ECMA.IOASSIGN" ) )
-           status =    odb_dca ( dbpath=dbpath , db=dbname , ncpu=8  )
-           if status < 0 :
-               print("Failed to create DCA files ... \n Another attempt will be done with odb_dict !" )
-        else :
-           if  verbose ==True :
-               print("DCA files already in database: '{}'".format( dbname )  )
-           else:
-               pass 
+           if not os.path.isdir ("/".join(  [dbpath , "dca"] )  ):
+              if verbose in [2,3 ]:
+                 print( "No DCA files in {} 'directory'".format(dbpath ) )
+                 #env.OdbVars["CCMA.IOASSIGN"]="/".join(  (dbname, "CCMA.IOASSIGN" ) )
+                 #env.OdbVars["ECMA.IOASSIGN"]="/".join(  (dbname, "ECMA.IOASSIGN" ) )
+                 status =    odb_dca ( database=dbpath , dbtype=dbname , ncpu=8  )
+                 if status < 0 :
+                    print("Failed to create DCA files ... \n Another attempt will be done with odb_dict !" )
+              else :
+                 if  verbose ==True :
+                     print("DCA files already in database: '{}'".format( dbname )  )
+                 else:
+                     pass 
+        except:
+          FileNotFoundError
+          print("WARNING : ODB path {} not found".format(dbpath))
+          pass 
 
 
 
@@ -64,7 +85,7 @@ class OdbReader:
             The SQL query is sent directly to the ECMA or CCMA ODB .
 
             Returns data are as python dictionary 
-            Methods : get_odb_rows
+          Methods : get_odb_rows
 
     """
     def __init__(self , dbpath ,type_  ):
@@ -169,7 +190,6 @@ class OdbReader:
                                                  vertco        =vertco   [jo]  , 
                                                  sensor        =sensor   [jo]  ,
                                                  remaining_sql =self.other_sql )
-
                 nfunc , sql_query = self.sql.CheckQuery( query)
                 cdtg =  period [i]
                 if vrb in [0, 1, 2, 3]:
