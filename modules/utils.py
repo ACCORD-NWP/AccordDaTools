@@ -30,11 +30,11 @@ from odb4py.core  import odb_dca, odb_open , odb_close ,odb_dict, odb_gcdist
 
 
 # Obstool, Desroziers & Jarvinen  , Tools &  modules 
-from build_sql       import SqlHandler
-from obstype_info    import ObsType
-from setting         import Setting  , Conv
-from handle_df       import *
-from io_base         import DataIO
+from .build_sql       import SqlHandler
+from .obstype_info    import ObsType
+from .setting         import Setting  , Conv
+from .handle_df       import *
+from .io_base         import DataIO
 
 
 
@@ -129,8 +129,9 @@ class OdbReader:
                                  obs_list    ,
                                  max_dist    ,
                                  bin_dist    ,
-                                 #file_io     ,  later !
+                                 #file_io    ,  later !
                                  file_path   ,
+                                 fextract   ,
                                  cycle_inc  =3, 
                                  pbar       =False ,
                                  verbosity  =0,
@@ -193,7 +194,7 @@ class OdbReader:
                 nfunc , sql_query = self.sql.CheckQuery( query)
                 cdtg =  period [i]
                 if vrb in [0, 1, 2, 3]:
-                   print( "Process observation type: {}    ODB date : {} ".format( obs , cdtg   ))                       
+                   print( "Process observation type: {}    ODB date : {}     ".format( obs , cdtg   ))                       
                 query_file=None   ;
                 poolmask = None   ; 
                 pool      =None   ; 
@@ -208,29 +209,36 @@ class OdbReader:
                 if vrb in [2,3]: 
                    pbar   = True 
                 
-                
+
                 # Write odb rows once , if there is a rerun of the same period 
                 # the odb extraction is skipped 
                 filename = "_".join(  ( "df_rows" ,  obs ,cdtg))   +".csv"
                 fpath    = "/".join(  (self.odb_path,cdtg , filename) )
-                if os.path.isfile(  fpath   ):
-                   if vrb in [1,2,3]:
-                      print("ODB rows already in file obstype: {} , date: {}".format( obs, cdtg ) ) 
-                      rows    = self.io.ReadFrame(  fpath )
-                      # Process rows from file 
-                      df_dist = self.rd.DfDist (rows, obs, cdtg,  max_dist )                                                                                 
+            
+                if fextract is True :
+                   os.remove ( fpath  )
+                elif os.path.isfile(fpath) and  fextract is False and vrb in [1,2,3]:
+                   print("ODB rows already in file for :    obstype: {} , date: {}".format( obs, cdtg ) )
+
+
+                if os.path.isfile(fpath):
+                   rows    = self.io.ReadFrame(  fpath )
+                   # Process rows from file 
+                   df_dist = self.rd.DfDist (rows, obs, cdtg,  max_dist )                                                                                 
                       
-                      # Subset df
-                      spl      =  SplitDf (df_dist , obs , cdtg  )                
-                      ndist    =  df_dist.dropna(subset=["dist"]).copy()
-                      df_stat  =  spl.SubsetDf(  bin_dist , max_dist) 
-                      self.dlist[obs].append( df_stat ) 
+                   # Subset df
+                   spl      =  SplitDf (df_dist , obs , cdtg  )                
+                   ndist    =  df_dist.dropna(subset=["dist"]).copy()
+                   df_stat  =  spl.SubsetDf(  bin_dist , max_dist) 
+                   self.dlist[obs].append( df_stat ) 
+
+
                 else:
-                   # Get and process the rows from ODB 
+                   # Get (or Get again if fextracted =True) and process the rows from ODB 
                    if vrb in [ 2,3]:
-                      print( "ODB rows not available from file :", filename  ) 
+                      print( "ODB rows NOT available from file :", filename  ) 
                       print( "Proceed to data extraction ...")
-                   try:   
+                   try:                         
                       rows= conn.odb_dict (cma_path  ,
                                        sql_query , 
                                        nfunc     , 
