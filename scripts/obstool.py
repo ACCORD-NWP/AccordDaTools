@@ -38,7 +38,17 @@ def Usage():
 def ParseArgs():
     # The var list must be given as a liste sperated with ":"
     var=lambda s:s.split(":")    
+    ft =lambda x: x.lower() == "true"
     parser  = argparse.ArgumentParser( description=" ")
+ 
+    obslist=["synop_t" ,"synop_z" ,"synop_u" ,"synop_v","synop_h",
+             "airep_t" ,"airep_u" ,"airep_v" ,
+             "airepl_t","airepl_u","airepl_v",        
+             "temp_t"  ,"temp_u"  ,"temp_v"  ,"temp_q" ,   
+             "templ_u" ,"templ_u" ,"templ_v" ,"templ_q",
+             "dribu_t" ,"dribu_u" ,"dribu_v" ,"dribu_z", 
+             "radar_rh","radar_dow" ]
+
 
     # Args significations 
     arg1 ="Path to ODB directory.  (default=.)"
@@ -46,21 +56,29 @@ def ParseArgs():
     arg3 ="Begin date. Format YYYYMMDDHH. ( default=1970010100)"
     arg4 ="End   date. Format YYYYMMDDHH. ( default=1970010103)"
     arg5 ="Observation category. (default=conv)"
-    arg6 ="List of observation types separated by ':'  (default=airep_t:airep_v)"
+    arg6 ="List of observation types separated by ':'  ( e.g: airep_t:synop_u)"
     arg7 ="Cycle increment in hours.  (default= 3)"
     arg8 ="Maximum distance for diagnostics in [Km]  (default=100 Km)"
-    arg9 ="Bin distance for diagnostics in  [Km]     (default=10  Km)"
+    arg9 ="Bin distance for diagnostics     in [Km]  (default=10  Km)"
+    arg10="--force_extract ( without  value ) :"               \
+          "The ODB rows are archived when obstool is running. " \
+          "If the same period has been chosen the ODB rows " \
+          "won't be extracted except if --force_extract is used in command line"
 
     # Required 
-    parser.add_argument("-odb_path"    ,required=True ,type=str   ,default="."         ,choices=None    ,help=arg1)
-    parser.add_argument("-odb_type"    ,required=True ,type=str   ,default="CCMA"      ,choices=["CCMA"],help=arg2)
-    parser.add_argument("-bdate"       ,required=True ,type=str   ,default="1970010100",choices=None    ,help=arg3)
-    parser.add_argument("-edate"       ,required=True ,type=str   ,default="1970010103",choices=None    ,help=arg4)
-    parser.add_argument("-obs_category",required=True ,type=str   ,default="conv"      ,choices=["conv","satem"], help=arg5)
-    parser.add_argument("-var_list"    ,required=True ,type=var   ,default="synop_t:airep_v",choices=None,help=arg6)
-    parser.add_argument("-cycle_inc"   ,required=True ,type=int   ,default=3           ,choices=None    ,help=arg7)
-    parser.add_argument("-max_dist"    ,required=False,type=float ,default=100.0       ,choices=None    ,help=arg8)
-    parser.add_argument("-bin_dist"    ,required=False,type=float ,default=10.0        ,choices=None    ,help=arg9)
+    parser.add_argument("--odb_path"     ,required=True ,type=str   ,default="."         ,help=arg1)
+    parser.add_argument("--odb_type"     ,required=True ,type=str   ,default="CCMA"      ,choices=["CCMA"],  help=arg2 )
+    parser.add_argument("--bdate"        ,required=True ,type=str   ,default="1970010100",help=arg3)
+    parser.add_argument("--edate"        ,required=True ,type=str   ,default="1970010103",help=arg4)
+    parser.add_argument("--obs_category" ,required=True ,type=str   ,default="conv"      ,choices=["conv","satem"], help=arg5)
+    parser.add_argument("--var_list"     ,required=True ,type=var   ,default="synop_t"   ,choices=None    ,help=arg6)
+    parser.add_argument("--cycle_inc"    ,required=True ,type=int   ,default=3           ,choices=None       ,help=arg7)
+
+    # Optional 
+    parser.add_argument("--max_dist"     ,required=False ,type=float ,default=100.0       ,choices=None  ,help=arg8)
+    parser.add_argument("--bin_dist"     ,required=False ,type=float ,default=10.0        ,choices=None  ,help=arg9)
+    parser.add_argument("--force_extract",action="store_true",  help=arg10 )
+    #
     if len(sys.argv) == 1:
        Usage() 
        parser.print_help()
@@ -86,6 +104,9 @@ cycle_inc=args.cycle_inc
 var_list= []
 for v in   args.var_list: var_list.append(  v.lstrip () )
 
+# Extract ODB rows again 
+fextract=args.force_extract
+
 # Max and binning distances 
 max_dist= args.max_dist  
 bin_dist= args.bin_dist 
@@ -102,7 +123,15 @@ period=st.set_period(  bdate, edate  )
 st.set_obs_list(  var_list     )
 
 # Collection of pre-selected frames with distances <= max_dist    
-frame_liste  = rr.get_odb_rows (period ,var_list, max_dist ,bin_dist , odbpath ,  cycle_inc,  pbar =True , verbosity =2)
+frame_liste  = rr.get_odb_rows (period     , 
+                                var_list   , 
+                                max_dist   ,
+                                bin_dist   , 
+                                odbpath    ,
+                                fextract   ,
+                                cycle_inc  ,  
+                                pbar =True , 
+                                verbosity =2  )
 
 # Concat Df for the final stats 
 cdf = rd.DfPrep( frame_liste )
