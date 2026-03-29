@@ -42,7 +42,7 @@ class Odb:
                     return False
           except:
             FileNotFoundError
-            print("WARNING : tar file {} not found. ".format(tarpath))
+            print("**WARNING : tar file {} not found. ".format(tarpath))
             pass 
 
 
@@ -208,7 +208,7 @@ class Odb:
                      print(f"Rows are already extracted for the ODB {dbpath} \n" )
                      continue 
               else:
-                  print(f"WARNING : CCMA directory not found for the ODB {dbpath} \n")
+                  print(f"**WARNING : CCMA directory not found for the ODB {dbpath} \n")
 
 
       def ReadOdbRows ( basedir,  rows_path,  cdtg, target ):
