@@ -15,7 +15,7 @@ message(STATUS "System python: ${Python_EXECUTABLE}")
 # Create venv inside build 
 set(VENV_DIR ${CMAKE_BINARY_DIR}/venv)
 if(NOT EXISTS ${VENV_DIR}/bin/python)
-    message(STATUS "Creating virtualenv")
+    message(STATUS "Creating virtualenv ...")
     execute_process(
         COMMAND ${Python_EXECUTABLE} -m venv ${VENV_DIR}
         RESULT_VARIABLE venv_status
