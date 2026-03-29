@@ -9,21 +9,7 @@ from   multiprocessing import Pool , cpu_count,  shared_memory
 from   itertools import chain 
 
 
-"""sys.path.insert(0,"/home/idehmous/Desktop/rmib_dev/github/pyodb_1.1.0/build/lib.linux-x86_64-cpython-39")
-from pyodb_extra  import OdbEnv
-env= OdbEnv ("/home/idehmous/Desktop/rmib_dev/github/pkg", "libodb.so")
-env.InitEnv ()
-# pyodb modules 
-from pyodb_extra.odb_ob    import  OdbObject  
-env= OdbEnv ("/home/idehmous/Desktop/rmib_dev/github/pkg", "libodb.so")
-env.InitEnv ()
-# --> NOW pyodb could be imported  !
-import pyodb   
-from   pyodb   import  odbDict , odbGcdistance
-from   pyodb   import  odbConnect , odbClose 
-from   pyodb   import  odbDca  """
-
-# odb4py  
+# odb4py  mdules 
 from odb4py.utils import SqlParser , OdbObject
 from odb4py.core  import odb_dca, odb_open , odb_close ,odb_dict, odb_gcdist
 
@@ -72,7 +58,7 @@ class DCAFiles:
                      pass 
         except:
           FileNotFoundError
-          print("WARNING : ODB path {} not found".format(dbpath))
+          print("**WARNING : ODB path {} not found".format(dbpath))
           pass 
 
 
@@ -193,7 +179,7 @@ class OdbReader:
                                                  remaining_sql =self.other_sql )
                 nfunc , sql_query = self.sql.CheckQuery( query)
                 cdtg =  period [i]
-                if vrb in [0, 1, 2, 3]:
+                if vrb in [0, 1, 2, 3,4]:
                    print( "Process observation type: {}    ODB date : {}     ".format( obs , cdtg   ))                       
                 query_file=None   ;
                 poolmask = None   ; 
@@ -204,9 +190,9 @@ class OdbReader:
 
                 # Progress bar & Verbosity inside pyodb  
                 # Progress bar is useful for huge ODBs
-                if vrb in [3  ]: 
+                if vrb in [3,4]: 
                    verbose= True 
-                if vrb in [2,3]: 
+                if vrb in [2,3,4]: 
                    pbar   = True 
                 
 
@@ -215,12 +201,10 @@ class OdbReader:
                 filename = "_".join(  ( "df_rows" ,  obs ,cdtg))   +".csv"
                 fpath    = "/".join(  (self.odb_path,cdtg , filename) )
             
-                if fextract is True :
+                if fextract is True  and os.path.isfile(fpath):
                    os.remove ( fpath  )
                 elif os.path.isfile(fpath) and  fextract is False and vrb in [1,2,3]:
                    print("ODB rows already in file for :    obstype: {} , date: {}".format( obs, cdtg ) )
-
-
                 if os.path.isfile(fpath):
                    rows    = self.io.ReadFrame(  fpath )
                    # Process rows from file 
@@ -235,7 +219,7 @@ class OdbReader:
 
                 else:
                    # Get (or Get again if fextracted =True) and process the rows from ODB 
-                   if vrb in [ 2,3]:
+                   if vrb in [ 1,2,3,4]:
                       print( "ODB rows NOT available from file :", filename  ) 
                       print( "Proceed to data extraction ...")
                    try:                         
@@ -249,13 +233,15 @@ class OdbReader:
                                        verbose )         
                       conn.odb_close()
                       if not rows:
-                         print( "WARNING : Data not available for the variable {} and varno={}".format( obs , varno[jo])  )
+                         if vrb in [0,1,2,3,4]:
+                            print( "**WARNING : Data not available for obstype={} and varno={}".format( obs , varno[jo])  )
                          empty_df=  pd.DataFrame([])
                          self.dlist[obs].append( empty_df  )
                          
                    except:
                       RuntimeError
-                      print( "WARNING : Data not available for the variable {} and varno={}".format( obs , varno[jo])  )
+                      if vrb  in [0,1,2,3,4]:
+                         print( "**WARNING : Data not available for obstype={} and varno={}".format( obs , varno[jo]  ))
                       empty_df=  pd.DataFrame([])
                       self.dlist[obs].append( empty_df  )                      
                       pass 
@@ -436,8 +422,8 @@ class Rows2Df :
                         ):
         #pd.set_option('display.max_rows',  20 )
         vrb=verbosity
-        if vrb not in [0,1,2,3]:
-            print("WARNING : Min and max verbosity levels: 0 ->  3.  Got :  ", vrb )
+        if vrb not in [0,1,2,3,4]:
+            print("**WARNING : Min and max verbosity levels: 0 ->  4  Got :  ", vrb )
             print("Fallback to default value:  verbosity=", vrb  ) 
 
         if rows is None:
