@@ -39,6 +39,7 @@ class SqlHandler:
         self.sensor    =kwarg["sensor"        ]
         self.other     =kwarg["remaining_sql"]
 
+
         # Obstool columns and tables 
         self.obstool_select="SELECT  "+self.cols+" FROM " +self.tabs
 
@@ -50,14 +51,11 @@ class SqlHandler:
                   if tp is not None:
                      type_list.append (" obstype =="+str( tp ) )
            elif isinstance (self.obst, int  ):
-              type_list.append (" obstype =="+str( self.obst ) )
-                
+              type_list.append (" obstype =="+str( self.obst ) )                
            else:
               print(self.obs_, " : obstype  must be integer or a list" )
               sys.exit()
 
-
-        
         # Check varno  
         varno_list=[]
         if self.varno is not None:
@@ -120,11 +118,14 @@ class SqlHandler:
              level_cond="vertco_reference_1 >="+l1+" AND vertco_reference_1 <= "+l2 
              level_list.append(level_cond)
 
-
+       
         where_cond_list=[]
-        for tp in type_list:
+        for tp in type_list:            
+           if len( type_list) !=0 : 
+               where_cond_list.append(  "".join( ( tp )  ) )
            for vr in varno_list:
-               where_cond_list.append(  " AND ".join(  (tp, vr  ))   )
+               if  len( varno_list) !=0:
+                   where_cond_list.append(  " AND ".join(  (tp, vr  ))   )
                if len(level_list) !=0:
                    for lv in level_list:
                        where_cond_list.append(  " AND ".join(  (tp, vr ,  lv  ))   )
