@@ -60,7 +60,8 @@ def ParseArgs():
     arg7 ="Cycle increment in hours.  (default= 3)"
     arg8 ="Maximum distance for diagnostics in [Km]  (default=100 Km)"
     arg9 ="Bin distance for diagnostics     in [Km]  (default=10  Km)"
-    arg10="--force_extract ( without  value ) :"               \
+    arg10="Verbosity level. 0 to 4"
+    arg11="--force_extract ( without  value ) :"               \
           "The ODB rows are archived when obstool is running. " \
           "If the same period has been chosen the ODB rows " \
           "won't be extracted except if --force_extract is used in command line"
@@ -77,7 +78,8 @@ def ParseArgs():
     # Optional 
     parser.add_argument("--max_dist"     ,required=False ,type=float ,default=100.0       ,choices=None  ,help=arg8)
     parser.add_argument("--bin_dist"     ,required=False ,type=float ,default=10.0        ,choices=None  ,help=arg9)
-    parser.add_argument("--force_extract",action="store_true",  help=arg10 )
+    parser.add_argument("--verbose"      ,required=False ,type=int   ,default=1           ,choices=None  ,help=arg10)
+    parser.add_argument("--force_extract",action="store_true",  help=arg11 )
     #
     if len(sys.argv) == 1:
        Usage() 
@@ -91,6 +93,7 @@ start_time = datetime.now()
 
 # Get args  
 args= ParseArgs ()   
+
 # Odb 
 odbpath= args.odb_path  
 odbtype= args.odb_type
@@ -107,9 +110,15 @@ for v in   args.var_list: var_list.append(  v.lstrip () )
 # Extract ODB rows again 
 fextract=args.force_extract
 
+# verbose 
+verb=args.verbose
+
 # Max and binning distances 
 max_dist= args.max_dist  
 bin_dist= args.bin_dist 
+
+
+
 
 # Instantiate    
 st = Setting ()
@@ -130,8 +139,8 @@ frame_liste  = rr.get_odb_rows (period     ,
                                 odbpath    ,
                                 fextract   ,
                                 cycle_inc  ,  
-                                pbar =True , 
-                                verbosity =2  )
+                                pbar      =True , 
+                                verbosity = verb  )
 
 # Concat Df for the final stats 
 cdf = rd.DfPrep( frame_liste )
