@@ -203,8 +203,9 @@ class OdbReader:
             
                 if fextract is True  and os.path.isfile(fpath):
                    os.remove ( fpath  )
-                elif os.path.isfile(fpath) and  fextract is False and vrb in [1,2,3]:
+                elif os.path.isfile(fpath) and  fextract is False and vrb in [1,2,3,4]:
                    print("ODB rows already in file for :    obstype: {} , date: {}".format( obs, cdtg ) )
+                   
                 if os.path.isfile(fpath):
                    rows    = self.io.ReadFrame(  fpath )
                    # Process rows from file 
@@ -219,9 +220,6 @@ class OdbReader:
 
                 else:
                    # Get (or Get again if fextracted =True) and process the rows from ODB 
-                   if vrb in [ 1,2,3,4]:
-                      print( "ODB rows NOT available from file :", filename  ) 
-                      print( "Proceed to data extraction ...")
                    try:                         
                       rows= conn.odb_dict (cma_path  ,
                                        sql_query , 
@@ -442,7 +440,7 @@ class Rows2Df :
            # The distances ar rounded to 0 decimals 
            # Else , there will be a number of observations sets in each bins. 
            # It leads to different statistics  between R and   Python  whil perfomrming the cut , subset etc . 
-           dist =  d.GcdistParallel().round(0)  #astype(int) 
+           dist =  d.GcdistParallel().round(0)  
 
            N = len(lats)
            dist_1d = dist.ravel()
@@ -480,8 +478,8 @@ class Rows2Df :
            # For safety  
            df_dist = df_dist[df_dist["dist"] <= max_dist].copy()           
 
-           # Round to 4 decimal precision   
-           return df_dist.round(4)
+           # Round to 6 decimal precision   
+           return df_dist.round(6)
 
 
 
