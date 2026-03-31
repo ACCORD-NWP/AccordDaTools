@@ -142,8 +142,6 @@ class SqlHandler:
              for condition in where_cond_list:
                  query= self.obstool_select  +" WHERE  " +  condition 
         
-        print(query ) 
-        #quit()
         return  query
 
 
