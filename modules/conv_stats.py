@@ -243,7 +243,7 @@ class DHLStat:
                   }
 
         # Return statistics DF 
-        # Remark that the dataframe is rounded to 4 decimal digits 
+        # Remark that the dataframe is rounded to 6 decimal digits 
         # It's done to allow a consistent comparison with the values given by R code 
         stat_frame =pd.DataFrame (   drhl_frame  ).astype({
                                               "nobs":"int32"   ,     
@@ -258,7 +258,7 @@ class DHLStat:
                                          "COR_HL"   :"float64" ,      
                                          "COR_DR-R" :"float64" ,      
                                          "COR_DR-B" :"float64"      
-                                                             }).round(4)
+                                                             }).round(6)
 
 
 
