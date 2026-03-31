@@ -51,7 +51,7 @@ class SplitDf:
                     num       = ("dist"  , "count"),
                     FGsqr1    = ("FGsqr1", "sum"),
                     FGsqr2    = ("FGsqr2", "sum"),
-                    Asqr1     = ("Asqr1" , "sum")   ).reset_index()  ).round(4) 
+                    Asqr1     = ("Asqr1" , "sum")   ).reset_index()  ).round(6) 
 
         # Add var and date 
         spdf["var" ]=[ self.var   for v in range(len( spdf["num"] ) ) ]
